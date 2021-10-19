@@ -1,11 +1,15 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-const App = () => {
+import { Request } from "./components/request";
+
+function App() {
     const [name, updateName] = useState("World")
 
     const handleChange = (e) => {
-        updateName(e.target.value.trim());
+        let name = e.target.value.trim();
+
+        updateName(name.length > 0 ? name : "World");
     };
 
     return (
@@ -17,6 +21,10 @@ const App = () => {
                 Name:
                 <input name="name" onChange={handleChange} />
             </label>
+
+            <p />
+
+            <Request />
         </div>
     );
 }
