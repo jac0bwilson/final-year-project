@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 
 import { Workflow } from "./components/workflow";
 
+/**
+ * A container for the React application
+ */
 function App() {
     const [name, updateName] = useState("World")
 

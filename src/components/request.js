@@ -1,5 +1,9 @@
 import React from "react";
 
+/**
+ * Creates a form to allow the user to provide the details for the request
+ * @param {*} handleSubmit the function to pass the data back to the workflow 
+ */
 function EditableRequest({ handleSubmit }) {
     return (
         <div>
@@ -17,6 +21,11 @@ function EditableRequest({ handleSubmit }) {
     )
 }
 
+/**
+ * Creates a visualisation of the completed form, and allows the user to edit
+ * @param {*} url the URL to submit the request to
+ * @param {*} method the HTTP method to use for the request 
+ */
 function Request({ url, method }) {
     return (
         <div>
