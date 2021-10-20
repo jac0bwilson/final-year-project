@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-import { Request } from "./components/request";
+import { Workflow } from "./components/workflow";
 
 function App() {
     const [name, updateName] = useState("World")
@@ -24,7 +24,7 @@ function App() {
 
             <p />
 
-            <Request />
+            <Workflow />
         </div>
     );
 }
