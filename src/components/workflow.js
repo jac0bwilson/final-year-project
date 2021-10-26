@@ -9,8 +9,6 @@ function Workflow() {
     const [list, editList] = useState([]);
 
     const handleSubmit = (event) => {
-        event.preventDefault(); // prevents the values from being added to the URL
-
         let newRequest = {
             url: event.target.url.value,
             method: event.target.method.value
