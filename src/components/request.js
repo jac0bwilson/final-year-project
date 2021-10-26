@@ -39,15 +39,18 @@ function EditableRequest({ handleSubmit }) {
 
     };
 
+    const httpMethods = ["get", "post", "put", "delete"];
+
     return (
         <div>
             <form onSubmit={onSubmit}>
-                <input name="url" placeholder="https://google.com/test" onChange={validateURL} />
+                <input name="url" defaultValue="" placeholder="https://google.com/test" onChange={validateURL} />
                 <select name="method">
-                    <option value="get">GET</option>
-                    <option value="post">POST</option>
-                    <option value="put">PUT</option>
-                    <option value="delete">DELETE</option>
+                    {httpMethods.map((value) => {
+                        return (
+                            <option value={value}>{value.toUpperCase()}</option>
+                        );
+                    })}
                 </select>
                 <input type="submit" value="Done" disabled={urlError} />
             </form>
