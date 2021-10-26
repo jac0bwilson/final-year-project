@@ -2,21 +2,27 @@ import React, { useState } from "react";
 
 /**
  * Creates a form to allow the user to provide the details for the request
- * @param {*} handleSubmit the function to pass the data back to the workflow 
+ * @param {*} handleSubmit the function to pass the data back to the workflow
+ * @param {*} handleEdit the function to update the saved data in the workflow
+ * @param {string} url the URL to be displayed - "" by default
+ * @param {string} method the HTTP method to be displayed - "GET" by default
+ * @param {boolean} editing whether the information should initialise in an editable state
+ * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function EditableRequest({ handleSubmit }) {
+function Request({ handleSubmit, handleEdit, url, method, editing, idx }) {
     const [urlError, setError] = useState(false);
+    const [editable, setEditable] = useState(editing);
 
     /**
      * Checks the current value of the URL field and sets the state to indicate if it is valid
      * @param {*} event the event caused by the field being edited
      */
     const validateURL = (event) => {
-        let url = event.target.value;
+        let toCheck = event.target.value;
 
-        if (url.length > 0) { // prevents error being shown on empty strings
+        if (toCheck.length > 0) { // prevents error being shown on empty strings
             try {
-                new URL(url);
+                new URL(toCheck);
             } catch (e) {
                 setError(true);
                 return; // needs to be done to prevent falling to default case 
@@ -35,6 +41,13 @@ function EditableRequest({ handleSubmit }) {
 
         if (!urlError) {
             handleSubmit(event);
+
+            if (editing) { // if the item has just been created
+                handleSubmit(event);
+            } else { // if an existing item has been rendered
+                handleEdit(event, idx);
+                setEditable(false);
+            }
         }
 
     };
@@ -44,18 +57,19 @@ function EditableRequest({ handleSubmit }) {
     return (
         <div>
             <form onSubmit={onSubmit}>
-                <input name="url" defaultValue="" placeholder="https://google.com/test" onChange={validateURL} />
-                <select name="method">
+                <input name="url" defaultValue={url} placeholder="https://google.com/test" disabled={!editable} onChange={validateURL} />
+                <select name="method" defaultValue={method} disabled={!editable}>
                     {httpMethods.map((value) => {
                         return (
-                            <option value={value}>{value.toUpperCase()}</option>
+                            <option value={value} key={value}>{value.toUpperCase()}</option>
                         );
                     })}
                 </select>
-                <input type="submit" value="Done" disabled={urlError} />
+                {editable ?
+                    <input type="submit" value="Done" disabled={urlError} /> : <button onClick={() => setEditable(true)}>Edit</button>}
             </form>
 
-            {urlError &&
+            {(urlError && editable) &&
                 <div>
                     The provided URL is not valid, please correct it.
                 </div>
@@ -65,19 +79,4 @@ function EditableRequest({ handleSubmit }) {
     )
 }
 
-/**
- * Creates a visualisation of the completed form, and allows the user to edit
- * @param {*} url the URL to submit the request to
- * @param {*} method the HTTP method to use for the request 
- */
-function Request({ url, method }) {
-    return (
-        <div>
-            <p>{url}</p>
-            <p>{method}</p>
-            <button>Edit</button>
-        </div>
-    );
-}
-
-export { EditableRequest, Request };
+export { Request };
