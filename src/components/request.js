@@ -4,14 +4,15 @@ import React, { useState } from "react";
  * Creates a form to allow the user to provide the details for the request
  * @param {*} handleSubmit the function to pass the data back to the workflow
  * @param {*} handleEdit the function to update the saved data in the workflow
+ * @param {*} handleDelete the function to delete the request in the workflow
  * @param {string} url the URL to be displayed - "" by default
  * @param {string} method the HTTP method to be displayed - "GET" by default
- * @param {boolean} editing whether the information should initialise in an editable state
+ * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, url, method, editing, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, url = "", method, newInput = false, idx }) {
     const [urlError, setError] = useState(false);
-    const [editable, setEditable] = useState(editing);
+    const [editable, setEditable] = useState(newInput);
 
     /**
      * Checks the current value of the URL field and sets the state to indicate if it is valid
@@ -25,7 +26,7 @@ function Request({ handleSubmit, handleEdit, url, method, editing, idx }) {
                 new URL(toCheck);
             } catch (e) {
                 setError(true);
-                return; // needs to be done to prevent falling to default case 
+                return; // needs to be done to prevent falling to default case
             }
         }
 
@@ -34,7 +35,7 @@ function Request({ handleSubmit, handleEdit, url, method, editing, idx }) {
 
     /**
      * Performs error checking, then submits the entered details
-     * @param {*} event 
+     * @param {*} event
      */
     const onSubmit = (event) => {
         event.preventDefault(); // prevents the values from being added to the URL
@@ -42,7 +43,7 @@ function Request({ handleSubmit, handleEdit, url, method, editing, idx }) {
         if (!urlError) {
             handleSubmit(event);
 
-            if (editing) { // if the item has just been created
+            if (newInput) { // if the item has just been created
                 handleSubmit(event);
             } else { // if an existing item has been rendered
                 handleEdit(event, idx);
@@ -50,6 +51,7 @@ function Request({ handleSubmit, handleEdit, url, method, editing, idx }) {
             }
         }
 
+        event.target.reset(); // clear the form after submission
     };
 
     const httpMethods = ["get", "post", "put", "delete"];
@@ -65,8 +67,15 @@ function Request({ handleSubmit, handleEdit, url, method, editing, idx }) {
                         );
                     })}
                 </select>
-                {editable ?
-                    <input type="submit" value="Done" disabled={urlError} /> : <button onClick={() => setEditable(true)}>Edit</button>}
+
+                {editable
+                    ? <input type="submit" value="Done" disabled={urlError} />
+                    : <button onClick={() => setEditable(true)}>Edit</button>
+                } {/* if editable - present submit button, if not - show the edit button */}
+
+                {(editable && !newInput) &&
+                    <button onClick={() => handleDelete(idx)}>Delete</button>
+                } {/* if editable and not the new input box - allow deleting the item */}
             </form>
 
             {(urlError && editable) &&

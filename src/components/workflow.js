@@ -38,17 +38,36 @@ function Workflow() {
         editRequests(newRequests);
     };
 
+    /**
+     * Removes a specific request from the list
+     * @param {*} index the index of the request to be removed from the list
+     */
+    const handleDelete = (index) => {
+        let newRequests = [...requests];
+        newRequests.splice(index, 1);
+
+        editRequests(newRequests);
+    }
+
     return (
         <div>
             {requests.length > 0 && requests.map((value, index) => {
                 return (
-                    <Request key={index} handleSubmit={handleSubmit} handleEdit={handleEdit} url={value.url} method={value.method} editing={false} id={index} />
+                    <Request
+                        key={index}
+                        handleSubmit={handleSubmit}
+                        handleEdit={handleEdit}
+                        handleDelete={handleDelete}
+                        url={value.url}
+                        method={value.method}
+                        id={index}
+                    />
                 );
             })}
 
             <p />
 
-            <Request handleSubmit={handleSubmit} url="" editing={true} />
+            <Request handleSubmit={handleSubmit} newInput={true} />
         </div>
     );
 }
