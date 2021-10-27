@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import "./request.css";
+
 /**
  * Creates a form to allow the user to provide the details for the request
  * @param {*} handleSubmit the function to pass the data back to the workflow
@@ -57,29 +59,40 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method, new
     const httpMethods = ["get", "post", "put", "delete"];
 
     return (
-        <div>
+        <div className="request-container">
             <form onSubmit={onSubmit}>
-                <input name="url" defaultValue={url} placeholder="https://google.com/test" disabled={!editable} onChange={validateURL} />
-                <select name="method" defaultValue={method} disabled={!editable}>
-                    {httpMethods.map((value) => {
-                        return (
-                            <option value={value} key={value}>{value.toUpperCase()}</option>
-                        );
-                    })}
-                </select>
-
-                {editable
-                    ? <input type="submit" value="Done" disabled={urlError} />
-                    : <button onClick={() => setEditable(true)}>Edit</button>
-                } {/* if editable - present submit button, if not - show the edit button */}
-
-                {(editable && !newInput) &&
-                    <button onClick={() => handleDelete(idx)}>Delete</button>
-                } {/* if editable and not the new input box - allow deleting the item */}
+                <div className="field has-addons">
+                    <div className="control">
+                        <input name="url" className="input is-link" defaultValue={url} placeholder="https://google.com/test" disabled={!editable} onChange={validateURL} />
+                    </div>
+                    
+                    <div className="control select is-link">
+                        <select name="method" className="select" defaultValue={method} disabled={!editable}>
+                            {httpMethods.map((value) => {
+                                return (
+                                    <option value={value} key={value}>{value.toUpperCase()}</option>
+                                );
+                            })}
+                        </select>
+                    </div>
+                </div>
+                <div className="field has-addons">
+                    <div className="control">
+                        {editable
+                            ? <input className="button is-success" type="submit" value="Done" disabled={urlError} />
+                            : <button className="button is-warning" onClick={() => setEditable(true)}>Edit</button>
+                        } {/* if editable - present submit button, if not - show the edit button */}
+                    </div>
+                    {(editable && !newInput) &&
+                        <div class="control">
+                            <button className="button is-danger" onClick={() => handleDelete(idx)}>Delete</button>
+                        </div>
+                    } {/* if editable and not the new input box - allow deleting the item */}
+                </div>
             </form>
 
             {(urlError && editable) &&
-                <div>
+                <div className="notification is-danger">
                     The provided URL is not valid, please correct it.
                 </div>
             } {/* only shown when state indicates an error in the URL */}

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { Request } from "./request";
 
+import "./workflow.css";
+
 /**
  * Creates a workflow which contains a number of request elements.
  */
@@ -50,7 +52,7 @@ function Workflow() {
     }
 
     return (
-        <div>
+        <div className="workflow">
             {requests.length > 0 && requests.map((value, index) => {
                 return (
                     <Request
