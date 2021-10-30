@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { TextIcon } from "./icon";
+
 import "./request.css";
 
 /**
@@ -37,7 +39,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method, new
 
     /**
      * Performs error checking, then submits the entered details
-     * @param {*} event
+     * @param {*} event the event caused by the field being edited
      */
     const onSubmit = (event) => {
         event.preventDefault(); // prevents the values from being added to the URL
@@ -53,6 +55,16 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method, new
 
         event.target.reset(); // clear the form after submission
     };
+    
+    /**
+     * Handles the action when the edit button is pressed
+     * @param {*} event the event caused by the edit button being pressed
+     */
+    const startEditing = (event) => {
+        event.preventDefault();
+
+        setEditable(true);
+    }
 
     const httpMethods = ["get", "post", "put", "delete"];
 
@@ -63,7 +75,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method, new
                     <div className="control">
                         <input name="url" className="input is-link" defaultValue={url} placeholder="https://google.com/test" disabled={!editable} onChange={validateURL} />
                     </div>
-                    
+
                     <div className="control select is-link">
                         <select name="method" className="select" defaultValue={method} disabled={!editable}>
                             {httpMethods.map((value) => {
@@ -77,13 +89,19 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method, new
                 <div className="field has-addons">
                     <div className="control">
                         {editable
-                            ? <input className="button is-success" type="submit" value="Done" disabled={urlError} />
-                            : <button className="button is-warning" onClick={() => setEditable(true)}>Edit</button>
+                            ? <button className="button is-success" type="submit" disabled={urlError}>
+                                <TextIcon text="Done" iconName="fa-check" />
+                            </button>
+                            : <button className="button is-warning" type="button" onClick={startEditing}>
+                                <TextIcon text="Edit" iconName="fa-edit" />
+                            </button>
                         } {/* if editable - present submit button, if not - show the edit button */}
                     </div>
                     {(editable && !newInput) &&
                         <div class="control">
-                            <button className="button is-danger" onClick={() => handleDelete(idx)}>Delete</button>
+                            <button className="button is-danger" onClick={() => handleDelete(idx)}>
+                                <TextIcon text="Delete" iconName="fa-trash-alt" />
+                            </button>
                         </div>
                     } {/* if editable and not the new input box - allow deleting the item */}
                 </div>
