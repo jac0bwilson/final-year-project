@@ -62,7 +62,7 @@ function Workflow() {
                         handleDelete={handleDelete}
                         url={value.url}
                         method={value.method}
-                        id={index}
+                        idx={index}
                     />
                 );
             })}

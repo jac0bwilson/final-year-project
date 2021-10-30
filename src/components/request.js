@@ -43,8 +43,6 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method, new
         event.preventDefault(); // prevents the values from being added to the URL
 
         if (!urlError) {
-            handleSubmit(event);
-
             if (newInput) { // if the item has just been created
                 handleSubmit(event);
             } else { // if an existing item has been rendered
