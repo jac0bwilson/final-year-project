@@ -10,9 +10,10 @@ import React, { useState } from "react";
  * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, handleDelete, url = "", method, newInput = false, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "get", newInput = false, idx }) {
     const [urlError, setError] = useState(false);
     const [editable, setEditable] = useState(newInput);
+    const [selectedMethod, setMethod] = useState(method);
 
     /**
      * Checks the current value of the URL field and sets the state to indicate if it is valid
@@ -43,6 +44,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method, new
         if (!urlError) {
             if (newInput) { // if the item has just been created
                 handleSubmit(event);
+                setMethod("get");
             } else { // if an existing item has been rendered
                 handleEdit(event, idx);
                 setEditable(false);
@@ -58,7 +60,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method, new
         <div>
             <form onSubmit={onSubmit}>
                 <input name="url" defaultValue={url} placeholder="https://google.com/test" disabled={!editable} onChange={validateURL} />
-                <select name="method" defaultValue={method} disabled={!editable}>
+                <select name="method" value={selectedMethod} disabled={!editable} onChange={(e) => setMethod(e.target.value)}>
                     {httpMethods.map((value) => {
                         return (
                             <option value={value} key={value}>{value.toUpperCase()}</option>
