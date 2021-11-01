@@ -57,7 +57,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
 
         event.target.reset(); // clear the form after submission
     };
-    
+
     /**
      * Handles the action when the edit button is pressed
      * @param {*} event the event caused by the edit button being pressed

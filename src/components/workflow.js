@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 import { Request } from "./request";
+import { TextIcon } from "./icon";
 
 import "./workflow.css";
 
@@ -9,6 +11,7 @@ import "./workflow.css";
  */
 function Workflow() {
     const [requests, editRequests] = useState([]);
+    const [responses, editResponses] = useState([]);
 
     /**
      * Handles new submissions of information
@@ -49,7 +52,32 @@ function Workflow() {
         newRequests.splice(index, 1);
 
         editRequests(newRequests);
-    }
+    };
+
+    /**
+     * Run the whole workflow, sending the API requests and then displaying the results
+     */
+    const runAllRequests = () => {
+        let temp = requests.filter((request) => request.method === "get"); //temporarily restrict to GET requests
+        let outputs = temp.map((request) => {
+            let output;
+            axios({
+                url: request.url,
+                method: request.method
+            }).then((response) => {
+                console.log(response);
+            }).catch((error) => {
+                console.log(error);
+            }).then((response) => {
+                output = response;
+            })
+
+            return output;
+        });
+
+
+        editResponses(outputs); // save received responses in state
+    };
 
     return (
         <div className="workflow">
@@ -65,13 +93,17 @@ function Workflow() {
                         idx={index}
                     />
                 );
-            })}
+            })} {/* displays when any request details have been provided */}
 
-            <p />
+            {requests.length > 0 &&
+                <button className="button is-primary is-rounded is-medium" onClick={runAllRequests}>
+                    <TextIcon text="Run Workflow" iconName="fa-play" />
+                </button>
+            } {/* displays when any request details have been provided */}
 
             <Request handleSubmit={handleSubmit} newInput={true} />
         </div>
     );
 }
 
-export { Workflow }
+export { Workflow };
