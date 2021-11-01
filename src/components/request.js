@@ -73,39 +73,41 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
     return (
         <div className="request-container">
             <form onSubmit={onSubmit}>
-                <div className="field has-addons">
-                    <div className="control">
-                        <input name="url" className="input is-link" defaultValue={url} placeholder="https://google.com/test" disabled={!editable} onChange={validateURL} />
-                    </div>
-
-                    <div className="control select is-link">
-                        <select name="method" className="select" value={selectedMethod} disabled={!editable} onChange={(e) => setMethod(e.target.value)}>
-                            {httpMethods.map((value) => {
-                                return (
-                                    <option value={value} key={value}>{value.toUpperCase()}</option>
-                                );
-                            })}
-                        </select>
-                    </div>
-                </div>
-                <div className="field has-addons">
-                    <div className="control">
-                        {editable
-                            ? <button className="button is-success" type="submit" disabled={urlError}>
-                                <TextIcon text="Done" iconName="fa-check" />
-                            </button>
-                            : <button className="button is-warning" type="button" onClick={startEditing}>
-                                <TextIcon text="Edit" iconName="fa-edit" />
-                            </button>
-                        } {/* if editable - present submit button, if not - show the edit button */}
-                    </div>
-                    {(editable && !newInput) &&
-                        <div class="control">
-                            <button className="button is-danger" onClick={() => handleDelete(idx)}>
-                                <TextIcon text="Delete" iconName="fa-trash-alt" />
-                            </button>
+                <div className="field is-grouped">
+                    <div className="field has-addons request-inputs">
+                        <div className="control">
+                            <input name="url" className="input is-link" defaultValue={url} placeholder="https://google.com/test" disabled={!editable} onChange={validateURL} />
                         </div>
-                    } {/* if editable and not the new input box - allow deleting the item */}
+
+                        <div className="control select is-link is-expanded">
+                            <select name="method" className="select" value={selectedMethod} disabled={!editable} onChange={(e) => setMethod(e.target.value)}>
+                                {httpMethods.map((value) => {
+                                    return (
+                                        <option value={value} key={value}>{value.toUpperCase()}</option>
+                                    );
+                                })}
+                            </select>
+                        </div>
+                    </div>
+                    <div className="field is-grouped">
+                        <div className="control">
+                            {editable
+                                ? <button className="button is-success" type="submit" disabled={urlError}>
+                                    <TextIcon text="Done" iconName="fa-check" />
+                                </button>
+                                : <button className="button is-warning" type="button" onClick={startEditing}>
+                                    <TextIcon text="Edit" iconName="fa-edit" />
+                                </button>
+                            } {/* if editable - present submit button, if not - show the edit button */}
+                        </div>
+                        {(editable && !newInput) &&
+                            <div class="control">
+                                <button className="button is-danger" onClick={() => handleDelete(idx)}>
+                                    <TextIcon text="Delete" iconName="fa-trash-alt" />
+                                </button>
+                            </div>
+                        } {/* if editable and not the new input box - allow deleting the item */}
+                    </div>
                 </div>
             </form>
 
