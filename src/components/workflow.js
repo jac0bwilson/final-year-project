@@ -29,7 +29,7 @@ function Workflow() {
     /**
      * Handles the updating of existing information
      * @param {*} event the event from the trigger
-     * @param {*} index the index of the request to be updated
+     * @param {number} index the index of the request to be updated
      */
     const handleEdit = (event, index) => {
         const modifiedRequest = {
@@ -45,7 +45,7 @@ function Workflow() {
 
     /**
      * Removes a specific request from the list
-     * @param {*} index the index of the request to be removed from the list
+     * @param {number} index the index of the request to be removed from the list
      */
     const handleDelete = (index) => {
         let newRequests = [...requests];
@@ -55,17 +55,19 @@ function Workflow() {
     };
 
     /**
-     * Run the whole workflow, sending the API requests and then saving the results
+     * Run the whole workflow, sending the API requests and then saving the results in the state value
      */
     const runAllRequests = () => {
-        editResponses({}); // reset stored responses before running
+        editResponses(() => {
+            return {};
+        }); // reset stored responses before running
 
         let temp = requests.filter((request) => request.method === "get"); //temporarily restrict to GET requests
         temp.map((request, index) => {
-            axios({
+            axios({ // make the request
                 url: request.url,
                 method: request.method
-            }).then((response) => {
+            }).then((response) => { // process values if all went well
                 console.log(response);
 
                 return {
@@ -73,7 +75,7 @@ function Workflow() {
                     status: response.status,
                     statusText: response.statusText
                 };
-            }).catch((error) => {
+            }).catch((error) => { // if an error was thrown, save the status code and description
                 // console.log(error.toJSON());
                 console.log(error.response);
 
@@ -82,10 +84,14 @@ function Workflow() {
                     statusText: error.response.statusText
                 };
             }).then((values) => {
-                let newResponses = {...responses};
+                // add responses to an object with the index of the request used as the key for the responses
+                // this prevents the order being corrupted due to any asynchronous weirdness 
+                editResponses(previous => {
+                    let newResponses = { ...previous };
+                    newResponses[index] = values;
 
-                newResponses[index] = values;
-                editResponses(newResponses);
+                    return newResponses;
+                });
             });
 
             return {};

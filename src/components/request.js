@@ -72,7 +72,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
     const httpMethods = ["get", "post", "put", "delete"];
 
     const renderResponse = () => {
-        if (response.status === 200) {
+        if (response.status === 200) { // if request worked okay, display the data that was returned
             return (
                 <pre>
                     <code>
@@ -80,7 +80,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                     </code>
                 </pre>
             );
-        } else if (response.status >= 400 && response.status < 500) {
+        } else if (response.status >= 400 && response.status < 500) { // if error, use Bulma hero card to show code and description
             return (
                 <section className="hero is-danger">
                     <div className="hero-body">
