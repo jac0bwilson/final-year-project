@@ -58,6 +58,8 @@ function Workflow() {
      * Run the whole workflow, sending the API requests and then saving the results
      */
     const runAllRequests = () => {
+        editResponses({}); // reset stored responses before running
+
         let temp = requests.filter((request) => request.method === "get"); //temporarily restrict to GET requests
         temp.map((request, index) => {
             axios({
@@ -66,17 +68,24 @@ function Workflow() {
             }).then((response) => {
                 console.log(response);
 
-                let newResponses = {...responses};
-                let newResponse = {
+                return {
                     data: response.data,
                     status: response.status,
                     statusText: response.statusText
                 };
-
-                newResponses[index] = newResponse;
-                editResponses(newResponses);
             }).catch((error) => {
-                console.log(error);
+                // console.log(error.toJSON());
+                console.log(error.response);
+
+                return {
+                    status: error.response.status,
+                    statusText: error.response.statusText
+                };
+            }).then((values) => {
+                let newResponses = {...responses};
+
+                newResponses[index] = values;
+                editResponses(newResponses);
             });
 
             return {};
