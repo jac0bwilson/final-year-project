@@ -74,9 +74,11 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
     const renderResponse = () => {
         if (response.status === 200) {
             return (
-                <code>
-                    {JSON.stringify(response.data, null, 2)}
-                </code>
+                <pre>
+                    <code>
+                        {JSON.stringify(response.data, null, 2)}
+                    </code>
+                </pre>
             );
         } else if (response.status >= 400 && response.status < 500) {
             return (
