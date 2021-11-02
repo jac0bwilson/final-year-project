@@ -41,6 +41,12 @@ function Workflow() {
         newRequests[index] = modifiedRequest;
 
         editRequests(newRequests);
+
+        // remove response when the request is edited
+        let newResponses = { ...responses };
+        newResponses[index] = {};
+
+        editResponses(newResponses);
     };
 
     /**
@@ -52,6 +58,8 @@ function Workflow() {
         newRequests.splice(index, 1);
 
         editRequests(newRequests);
+
+        // TODO: shuffle all response keys down to adjust for the item being removed
     };
 
     /**
