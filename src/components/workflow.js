@@ -11,7 +11,7 @@ import "./workflow.css";
  */
 function Workflow() {
     const [requests, editRequests] = useState([]);
-    const [responses, editResponses] = useState([]);
+    const [responses, editResponses] = useState({});
 
     /**
      * Handles new submissions of information
@@ -55,28 +55,32 @@ function Workflow() {
     };
 
     /**
-     * Run the whole workflow, sending the API requests and then displaying the results
+     * Run the whole workflow, sending the API requests and then saving the results
      */
     const runAllRequests = () => {
         let temp = requests.filter((request) => request.method === "get"); //temporarily restrict to GET requests
-        let outputs = temp.map((request) => {
-            let output;
+        temp.map((request, index) => {
             axios({
                 url: request.url,
                 method: request.method
             }).then((response) => {
                 console.log(response);
+
+                let newResponses = {...responses};
+                let newResponse = {
+                    data: response.data,
+                    status: response.status,
+                    statusText: response.statusText
+                };
+
+                newResponses[index] = newResponse;
+                editResponses(newResponses);
             }).catch((error) => {
                 console.log(error);
-            }).then((response) => {
-                output = response;
-            })
+            });
 
-            return output;
+            return {};
         });
-
-
-        editResponses(outputs); // save received responses in state
     };
 
     return (
@@ -90,6 +94,7 @@ function Workflow() {
                         handleDelete={handleDelete}
                         url={value.url}
                         method={value.method}
+                        response={Object.keys(responses).length > 0 ? responses[index] : {}}
                         idx={index}
                     />
                 );

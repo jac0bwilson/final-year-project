@@ -11,10 +11,11 @@ import "./request.css";
  * @param {*} handleDelete the function to delete the request in the workflow
  * @param {string} url the URL to be displayed - "" by default
  * @param {string} method the HTTP method to be displayed - "GET" by default
+ * @param {Object} response the response to the request if run from outside
  * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "get", newInput = false, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "get", response = {}, newInput = false, idx }) {
     const [urlError, setError] = useState(false);
     const [editable, setEditable] = useState(newInput);
     const [selectedMethod, setMethod] = useState(method);
@@ -70,6 +71,35 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
 
     const httpMethods = ["get", "post", "put", "delete"];
 
+    const renderResponse = () => {
+        if (response.status === 200) {
+            return (
+                <code>
+                    {JSON.stringify(response.data, null, 2)}
+                </code>
+            );
+        } else if (response.status >= 400 && response.status < 500) {
+            return (
+                <section className="hero is-danger">
+                    <div className="hero-body">
+                        <p className="title">
+                            {response.status}
+                        </p>
+                        <p className="subtitle">
+                            {response.statusText}
+                        </p>
+                    </div>
+                </section>
+            );
+        } else {
+            return (
+                <p>
+                    Unknown response
+                </p>
+            )
+        }
+    }
+
     return (
         <div className="request-container">
             <form onSubmit={onSubmit}>
@@ -101,7 +131,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                             } {/* if editable - present submit button, if not - show the edit button */}
                         </div>
                         {(editable && !newInput) &&
-                            <div class="control">
+                            <div className="control">
                                 <button className="button is-danger" onClick={() => handleDelete(idx)}>
                                     <TextIcon text="Delete" iconName="fa-trash-alt" />
                                 </button>
@@ -109,6 +139,12 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                         } {/* if editable and not the new input box - allow deleting the item */}
                     </div>
                 </div>
+                {!newInput &&
+                    <div className="columns">
+                        <div className="column box">Args</div>
+                        <div className="column box">{renderResponse()}</div>
+                    </div>
+                }
             </form>
 
             {(urlError && editable) &&
