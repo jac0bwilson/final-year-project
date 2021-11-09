@@ -37,16 +37,19 @@ function Workflow() {
             method: event.target.method.value
         };
 
-        let newRequests = [...requests];
-        newRequests[index] = modifiedRequest;
+        editRequests(previous => {
+            let newRequests = [...previous];
+            newRequests[index] = modifiedRequest;
 
-        editRequests(newRequests);
+            return newRequests;
+        });
 
-        // remove response when the request is edited
-        let newResponses = { ...responses };
-        newResponses[index] = {};
+        editResponses(previous => {
+            let newResponses = { ...previous };
+            newResponses[index] = {};
 
-        editResponses(newResponses);
+            return newResponses;
+        });
     };
 
     /**
@@ -54,12 +57,30 @@ function Workflow() {
      * @param {number} index the index of the request to be removed from the list
      */
     const handleDelete = (index) => {
-        let newRequests = [...requests];
-        newRequests.splice(index, 1);
+        editRequests(previous => {
+            let newRequests = [...previous];
+            newRequests.splice(index, 1);
 
-        editRequests(newRequests);
+            return newRequests;
+        });
 
-        // TODO: shuffle all response keys down to adjust for the item being removed
+        editResponses(previous => {
+            let newResponses = {};
+
+            for (const [key, value] of Object.entries(previous)) {
+                let keyInt = parseInt(key);
+
+                if (keyInt > index) {
+                    newResponses[keyInt - 1] = value;
+                } else if (keyInt === index) {
+                    continue;
+                } else {
+                    newResponses[keyInt] = value;
+                }
+            }
+
+            return newResponses;
+        });
     };
 
     /**
