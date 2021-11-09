@@ -96,7 +96,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
         } else {
             return (
                 <p>
-                    Unknown response
+                    No response yet, try running the workflow!
                 </p>
             )
         }

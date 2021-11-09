@@ -145,9 +145,11 @@ function Workflow() {
             })} {/* displays when any request details have been provided */}
 
             {requests.length > 0 &&
-                <button className="button is-primary is-rounded is-medium" onClick={runAllRequests}>
-                    <TextIcon text="Run Workflow" iconName="fa-play" />
-                </button>
+                <div className="has-text-centered">
+                    <button className="button is-primary is-rounded is-medium run-button" onClick={runAllRequests}>
+                        <TextIcon text="Run Workflow" iconName="fa-play" />
+                    </button>
+                </div>
             } {/* displays when any request details have been provided */}
 
             <Request handleSubmit={handleSubmit} newInput={true} />
