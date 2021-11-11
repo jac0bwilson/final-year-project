@@ -117,7 +117,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
     }
 
     return (
-        <div className="request-container">
+        <div data-testid={getTestId("request")} className="request-container">
             <form onSubmit={onSubmit}>
                 <div className="field is-grouped">
                     <div className="field has-addons request-inputs">
@@ -156,7 +156,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                         </div>
                         {(editable && !newInput) &&
                             <div className="control">
-                                <button data-testid={getTestId("delete")} className="button is-danger" onClick={() => handleDelete(idx)}>
+                                <button data-testid={getTestId("delete")} className="button is-danger" type="button" onClick={() => handleDelete(idx)}>
                                     <TextIcon text="Delete" iconName="fa-trash-alt" />
                                 </button>
                             </div>
