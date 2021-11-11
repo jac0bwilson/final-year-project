@@ -19,8 +19,8 @@ function Workflow() {
      */
     const handleSubmit = (event) => {
         const newRequest = {
-            url: event.target.url.value,
-            method: event.target.method.value
+            url: event.target.elements.url.value,
+            method: event.target.elements.method.value
         };
 
         editRequests(requests.concat([newRequest])); // adds the new data to the list in state
@@ -33,8 +33,8 @@ function Workflow() {
      */
     const handleEdit = (event, index) => {
         const modifiedRequest = {
-            url: event.target.url.value,
-            method: event.target.method.value
+            url: event.target.elements.url.value,
+            method: event.target.elements.method.value
         };
 
         editRequests(previous => {
@@ -146,7 +146,7 @@ function Workflow() {
 
             {requests.length > 0 &&
                 <div className="has-text-centered">
-                    <button className="button is-primary is-rounded is-medium run-button" onClick={runAllRequests}>
+                    <button data-testid="run" className="button is-primary is-rounded is-medium run-button" onClick={runAllRequests}>
                         <TextIcon text="Run Workflow" iconName="fa-play" />
                     </button>
                 </div>
