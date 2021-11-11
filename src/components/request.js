@@ -71,6 +71,11 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
 
     const httpMethods = ["get", "post", "put", "delete"];
 
+    /**
+     * Creates the appropriate output based on the response to the request, either a formatted JSON,
+     * a Bulma Hero card for an error, or a simple message if there is no response yet
+     * @returns HTML output
+     */
     const renderResponse = () => {
         if (response.status === 200) { // if request worked okay, display the data that was returned
             return (
