@@ -21,6 +21,15 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
     const [selectedMethod, setMethod] = useState(method);
 
     /**
+     * Create the test ID for the HTML feature in order to run unit tests
+     * @param {string} name the name of the feature
+     * @returns the test ID
+     */
+    const getTestId = (name) => {
+        return name + "-" + (idx == null ? "main" : idx);
+    }
+
+    /**
      * Checks the current value of the URL field and sets the state to indicate if it is valid
      * @param {*} event the event caused by the field being edited
      */
@@ -113,11 +122,19 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                 <div className="field is-grouped">
                     <div className="field has-addons request-inputs">
                         <div className="control">
-                            <input name="url" className="input is-link" defaultValue={url} placeholder="https://google.com/test" disabled={!editable} onChange={validateURL} />
+                            <input
+                                name="url"
+                                data-testid={getTestId("url")}
+                                className="input is-link"
+                                defaultValue={url}
+                                placeholder="https://google.com/test"
+                                disabled={!editable}
+                                onChange={validateURL}
+                            />
                         </div>
 
                         <div className="control select is-link is-expanded">
-                            <select name="method" className="select" value={selectedMethod} disabled={!editable} onChange={(e) => setMethod(e.target.value)}>
+                            <select name="method" data-testid={getTestId("method")} className="select" value={selectedMethod} disabled={!editable} onChange={(e) => setMethod(e.target.value)}>
                                 {httpMethods.map((value) => {
                                     return (
                                         <option value={value} key={value}>{value.toUpperCase()}</option>
@@ -129,17 +146,17 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                     <div className="field is-grouped">
                         <div className="control">
                             {editable
-                                ? <button className="button is-success" type="submit" disabled={urlError}>
+                                ? <button data-testid={getTestId("done")} className="button is-success" type="submit" disabled={urlError}>
                                     <TextIcon text="Done" iconName="fa-check" />
                                 </button>
-                                : <button className="button is-warning" type="button" onClick={startEditing}>
+                                : <button data-testid={getTestId("edit")} className="button is-warning" type="button" onClick={startEditing}>
                                     <TextIcon text="Edit" iconName="fa-edit" />
                                 </button>
                             } {/* if editable - present submit button, if not - show the edit button */}
                         </div>
                         {(editable && !newInput) &&
                             <div className="control">
-                                <button className="button is-danger" onClick={() => handleDelete(idx)}>
+                                <button data-testid={getTestId("delete")} className="button is-danger" onClick={() => handleDelete(idx)}>
                                     <TextIcon text="Delete" iconName="fa-trash-alt" />
                                 </button>
                             </div>
