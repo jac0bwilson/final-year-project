@@ -105,7 +105,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
             );
         } else if (response.status >= 400 && response.status < 500) { // if error, use Bulma hero card to show code and description
             return (
-                <section className="hero is-danger">
+                <section data-testid={getTestId("error")} className="hero is-danger">
                     <div className="hero-body">
                         <p className="title">
                             {response.status}
@@ -175,7 +175,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                 {!newInput &&
                     <div className="columns">
                         <div className="column box">Args</div>
-                        <div className="column box">{renderResponse()}</div>
+                        <div data-testid={getTestId("response")} className="column box">{renderResponse()}</div>
                     </div>
                 }
             </form>

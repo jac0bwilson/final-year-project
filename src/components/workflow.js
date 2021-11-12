@@ -97,16 +97,13 @@ function Workflow() {
                 url: request.url,
                 method: request.method
             }).then((response) => { // process values if all went well
-                console.log(response);
-
                 return {
                     data: response.data,
                     status: response.status,
                     statusText: response.statusText
                 };
             }).catch((error) => { // if an error was thrown, save the status code and description
-                // console.log(error.toJSON());
-                console.log(error.response);
+                // console.log(error.response);
 
                 return {
                     status: error.response.status,

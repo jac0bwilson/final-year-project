@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Workflow } from "./workflow";
@@ -8,7 +8,7 @@ describe("Workflow Instantiation", () => {
         const { getByTestId } = render(<Workflow />);
 
         expect(getByTestId("url-main")).toBeInTheDocument(); // URL input present
-    })
+    });
 
     test("HTTP Method", () => {
         const { getByTestId } = render(<Workflow />);
@@ -116,5 +116,21 @@ describe("Interaction", () => {
 
         expect(screen.queryByTestId("url-0")).toBeInTheDocument(); // 0 removed, 1 set to 0
         expect(screen.queryByDisplayValue(URL_2)).toBeInTheDocument(); // second URL present
-    })
+    });
+});
+
+describe("Running Requests", () => {
+    test("404 Error", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "http://httpstat.us/404";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("error-0")).toBeInTheDocument()); // 404 error present
+    });
 });
