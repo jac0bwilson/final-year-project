@@ -27,7 +27,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
      */
     const getTestId = (name) => {
         return name + "-" + (idx == null ? "main" : idx);
-    }
+    };
 
     /**
      * Checks the current value of the URL field and sets the state to indicate if it is valid
@@ -46,7 +46,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
         }
 
         setError(false);
-    }
+    };
 
     /**
      * Performs error checking, then submits the entered details
@@ -76,7 +76,16 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
         event.preventDefault();
 
         setEditable(true);
-    }
+    };
+
+    /**
+     * Sets the cell to be non-editable and initiates the deletion
+     */
+    const onDelete = () => {
+        setEditable(false);
+
+        handleDelete(idx);
+    };
 
     const httpMethods = ["get", "post", "put", "delete"];
 
@@ -114,14 +123,14 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                 </p>
             )
         }
-    }
+    };
 
     return (
         <div data-testid={getTestId("request")} className="request-container">
             <form onSubmit={onSubmit}>
                 <div className="field is-grouped">
                     <div className="field has-addons request-inputs">
-                        <div className="control">
+                        <div className="control" key={url}>
                             <input
                                 name="url"
                                 data-testid={getTestId("url")}
@@ -156,7 +165,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                         </div>
                         {(editable && !newInput) &&
                             <div className="control">
-                                <button data-testid={getTestId("delete")} className="button is-danger" type="button" onClick={() => handleDelete(idx)}>
+                                <button data-testid={getTestId("delete")} className="button is-danger" type="button" onClick={onDelete}>
                                     <TextIcon text="Delete" iconName="fa-trash-alt" />
                                 </button>
                             </div>
@@ -178,7 +187,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
             } {/* only shown when state indicates an error in the URL */}
 
         </div>
-    )
+    );
 }
 
 export { Request };
