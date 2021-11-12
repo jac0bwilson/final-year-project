@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { TextIcon } from "./icon";
 
@@ -19,6 +19,10 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
     const [urlError, setError] = useState(false);
     const [editable, setEditable] = useState(newInput);
     const [selectedMethod, setMethod] = useState(method);
+
+    useEffect(() => {
+        setMethod(method);
+    }, [method]);
 
     /**
      * Create the test ID for the HTML feature in order to run unit tests

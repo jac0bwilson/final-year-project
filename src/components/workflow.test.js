@@ -75,7 +75,7 @@ describe("Interaction", () => {
         userEvent.click(getByTestId("done-0")); // click done
 
         expect(getByTestId("request-0")).toBeInTheDocument(); // same cell present
-        expect(getByTestId("method-0")).toHaveDisplayValue(METHOD.toUpperCase()); // new URL in field
+        expect(getByTestId("method-0")).toHaveDisplayValue(METHOD.toUpperCase()); // new method in field
     });
 
     test("Delete Entered Request", () => {
@@ -97,6 +97,7 @@ describe("Interaction", () => {
         const { getByTestId } = render(<Workflow />);
         const URL_1 = "http://httpstat.us/404";
         const URL_2 = "http://httpstat.us/400";
+        const METHOD_2 = "post";
 
         userEvent.type(getByTestId("url-main"), URL_1); // type URL
         userEvent.click(getByTestId("done-main")); // click done
@@ -104,6 +105,7 @@ describe("Interaction", () => {
         expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
 
         userEvent.type(getByTestId("url-main"), URL_2); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), METHOD_2); // select post
         userEvent.click(getByTestId("done-main")); // click done
 
         expect(getByTestId("request-1")).toBeInTheDocument(); // new cell present
@@ -116,6 +118,7 @@ describe("Interaction", () => {
 
         expect(screen.queryByTestId("url-0")).toBeInTheDocument(); // 0 removed, 1 set to 0
         expect(screen.queryByDisplayValue(URL_2)).toBeInTheDocument(); // second URL present
+        expect(getByTestId("method-0")).toHaveDisplayValue(METHOD_2.toUpperCase()); // method present
     });
 });
 
