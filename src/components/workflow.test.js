@@ -92,4 +92,29 @@ describe("Interaction", () => {
 
         expect(screen.queryByTestId("url-0")).not.toBeInTheDocument(); // should be removed
     });
+
+    test("Delete From Multiple", () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL_1 = "http://httpstat.us/404";
+        const URL_2 = "http://httpstat.us/400";
+
+        userEvent.type(getByTestId("url-main"), URL_1); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.type(getByTestId("url-main"), URL_2); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-1")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("edit-0")); // click edit
+        userEvent.click(getByTestId("delete-0")); // click delete
+
+        expect(screen.queryByTestId("url-1")).not.toBeInTheDocument(); // 0 removed, 1 set to 0
+        expect(screen.queryByDisplayValue(URL_1)).not.toBeInTheDocument(); // first URL removed
+
+        expect(screen.queryByTestId("url-0")).toBeInTheDocument(); // 0 removed, 1 set to 0
+        expect(screen.queryByDisplayValue(URL_2)).toBeInTheDocument(); // second URL present
+    })
 });
