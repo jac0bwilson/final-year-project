@@ -93,7 +93,7 @@ describe("Interaction", () => {
         expect(screen.queryByTestId("url-0")).not.toBeInTheDocument(); // should be removed
     });
 
-    test("Delete From Multiple", () => {
+    test("Delete First of Multiple", () => {
         const { getByTestId } = render(<Workflow />);
         const URL_1 = "http://httpstat.us/404";
         const URL_2 = "http://httpstat.us/400";
@@ -114,9 +114,11 @@ describe("Interaction", () => {
         userEvent.click(getByTestId("delete-0")); // click delete
 
         expect(screen.queryByTestId("url-1")).not.toBeInTheDocument(); // 0 removed, 1 set to 0
+        expect(screen.queryByTestId("method-1")).not.toBeInTheDocument(); // 0 removed, 1 set to 0
         expect(screen.queryByDisplayValue(URL_1)).not.toBeInTheDocument(); // first URL removed
 
         expect(screen.queryByTestId("url-0")).toBeInTheDocument(); // 0 removed, 1 set to 0
+        expect(screen.queryByTestId("method-0")).toBeInTheDocument(); // 0 removed, 1 set to 0
         expect(screen.queryByDisplayValue(URL_2)).toBeInTheDocument(); // second URL present
         expect(getByTestId("method-0")).toHaveDisplayValue(METHOD_2.toUpperCase()); // method present
     });
