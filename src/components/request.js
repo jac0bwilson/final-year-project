@@ -101,7 +101,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
     const renderResponse = () => {
         if (response.status === 200) { // if request worked okay, display the data that was returned
             return (
-                <pre>
+                <pre data-testid={getTestId("response-data")}>
                     <code>
                         {JSON.stringify(response.data, null, 2)}
                     </code>

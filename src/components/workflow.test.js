@@ -138,4 +138,18 @@ describe("Running Requests", () => {
 
         await waitFor(() => expect(getByTestId("error-0")).toBeInTheDocument()); // 404 error present
     });
+
+    test("Successful Single Request", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://yesno.wtf/api";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+    });
 });
