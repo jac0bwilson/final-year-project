@@ -92,7 +92,7 @@ describe("Interaction", () => {
 
         expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
         expect(getByTestId("url-0")).toHaveDisplayValue(URL); // URL in field
-        expect(getByTestId("arguments-0")).toHaveDisplayValue(ARGS); // arguments in field
+        expect(getByTestId("arguments-0")).toHaveDisplayValue(JSON.stringify(JSON.parse(ARGS), null, 2)); // arguments in field
         expect(getByTestId("url-main")).toHaveDisplayValue(/^$/); // URL input blank
         expect(getByTestId("arguments-main")).toHaveDisplayValue(/^$/); // arguments input blank
 
@@ -153,7 +153,7 @@ describe("Interaction", () => {
         userEvent.click(getByTestId("done-0")); // click done
 
         expect(getByTestId("request-0")).toBeInTheDocument(); // same cell present
-        expect(getByTestId("arguments-0")).toHaveDisplayValue(ARGS_2); // new arguments in field
+        expect(getByTestId("arguments-0")).toHaveDisplayValue(JSON.stringify(JSON.parse(ARGS_2), null, 2)); // new arguments in field
     });
 
     test("Delete Entered Request", () => {

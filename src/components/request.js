@@ -92,20 +92,19 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
     const onSubmit = (event) => {
         event.preventDefault(); // prevents the values from being added to the URL
 
-        if (!urlError) {
+        if (!urlError && !argsError) {
+            // if the arguments are a valid JSON string, replace it with a formatted version
+            let tempArgs = event.target.elements.arguments.value;
+            event.target.elements.arguments.value = tempArgs.length > 0 ? JSON.stringify(JSON.parse(tempArgs), null, 2) : "";
+
             if (newInput) { // if the item has just been created
                 handleSubmit(event);
                 setMethod("get");
+                setArgs("");
             } else { // if an existing item has been rendered
                 handleEdit(event, idx);
                 setEditable(false);
             }
-        }
-
-        if (!argsError) { // if the arguments are a valid JSON string, replace it with a formatted version
-            setArgs(previous => {
-                return previous.length > 0 ? JSON.stringify(JSON.parse(previous), null, 2) : "";
-            });
         }
 
         event.target.reset(); // clear the form after submission
@@ -229,7 +228,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                 <div className="field is-grouped is-grouped-right">
                     <div className="control">
                         {editable
-                            ? <button data-testid={getTestId("done")} className="button is-success" type="submit" disabled={urlError}>
+                            ? <button data-testid={getTestId("done")} className="button is-success" type="submit" disabled={urlError || argsError}>
                                 <TextIcon text="Done" iconName="fa-check" />
                             </button>
                             : <button data-testid={getTestId("edit")} className="button is-warning" type="button" onClick={startEditing}>
