@@ -183,11 +183,29 @@ describe("Running Requests", () => {
         await waitFor(() => expect(getByTestId("error-0")).toBeInTheDocument()); // 404 error present
     });
 
-    test("Successful Single Request", async () => {
+    test("Successful GET Request", async () => {
         const { getByTestId } = render(<Workflow />);
         const URL = "https://yesno.wtf/api";
 
         userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+    });
+
+    test("Successful POST Request", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/post";
+        const DATA = "{\"abc\":\"def\"}";
+        const METHOD = "post";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), METHOD); // select post
+        userEvent.type(getByTestId("arguments-main"), DATA); // type arguments
         userEvent.click(getByTestId("done-main")); // click done
 
         expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present

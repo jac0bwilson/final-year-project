@@ -170,7 +170,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                         <textarea
                             name="arguments"
                             data-testid={getTestId("arguments")}
-                            className="textarea"
+                            className="textarea has-fixed-size"
                             defaultValue={args}
                             placeholder="{ ... }"
                             disabled={!editable}

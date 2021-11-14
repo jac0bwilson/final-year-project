@@ -93,12 +93,20 @@ function Workflow() {
             return {};
         }); // reset stored responses before running
 
-        let temp = requests.filter((request) => request.method === "get"); //temporarily restrict to GET requests
+        let temp = requests;
         temp.map((request, index) => {
-            axios({ // make the request
+            let config = {
                 url: request.url,
                 method: request.method
-            }).then((response) => { // process values if all went well
+            };
+
+            if (request.method !== "get") {
+                config["data"] = request.arguments;
+            }
+
+            axios(
+                config
+            ).then((response) => { // process values if all went well
                 return {
                     data: response.data,
                     status: response.status,
