@@ -20,7 +20,8 @@ function Workflow() {
     const handleSubmit = (event) => {
         const newRequest = {
             url: event.target.elements.url.value,
-            method: event.target.elements.method.value
+            method: event.target.elements.method.value,
+            arguments: event.target.elements.arguments.value
         };
 
         editRequests(requests.concat([newRequest])); // adds the new data to the list in state
@@ -34,7 +35,8 @@ function Workflow() {
     const handleEdit = (event, index) => {
         const modifiedRequest = {
             url: event.target.elements.url.value,
-            method: event.target.elements.method.value
+            method: event.target.elements.method.value,
+            arguments: event.target.elements.arguments.value
         };
 
         editRequests(previous => {
@@ -135,6 +137,7 @@ function Workflow() {
                         handleDelete={handleDelete}
                         url={value.url}
                         method={value.method}
+                        args={value.arguments}
                         response={Object.keys(responses).length > 0 ? responses[index] : {}}
                         idx={index}
                     />

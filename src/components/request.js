@@ -11,11 +11,12 @@ import "./request.css";
  * @param {*} handleDelete the function to delete the request in the workflow
  * @param {string} url the URL to be displayed - "" by default
  * @param {string} method the HTTP method to be displayed - "GET" by default
+ * @param {string} args the arguments to be sent to the endpoint - "" by default
  * @param {Object} response the response to the request if run from outside
  * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "get", response = {}, newInput = false, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "get", args = "", response = {}, newInput = false, idx }) {
     const [urlError, setError] = useState(false);
     const [editable, setEditable] = useState(newInput);
     const [selectedMethod, setMethod] = useState(method);
@@ -176,12 +177,22 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                         } {/* if editable and not the new input box - allow deleting the item */}
                     </div>
                 </div>
-                {!newInput &&
-                    <div className="columns">
-                        <div className="column box">Args</div>
-                        <div data-testid={getTestId("response")} className="column box">{renderResponse()}</div>
+                
+                <div className="columns field">
+                    <div className="column box" key={args}>
+                        <textarea
+                            name="arguments"
+                            data-testid={getTestId("arguments")}
+                            className="textarea"
+                            defaultValue={args}
+                            placeholder="{ ... }"
+                            disabled={!editable}
+                        />
                     </div>
-                }
+                    {!newInput &&
+                        <div data-testid={getTestId("response")} className="column box">{renderResponse()}</div>
+                    }
+                </div>
             </form>
 
             {(urlError && editable) &&

@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { Workflow } from "./workflow";
 
 describe("Workflow Instantiation", () => {
-    test("URL Input", () => {
+    test("URL", () => {
         const { getByTestId } = render(<Workflow />);
 
         expect(getByTestId("url-main")).toBeInTheDocument(); // URL input present
@@ -15,6 +15,12 @@ describe("Workflow Instantiation", () => {
 
         expect(getByTestId("method-main")).toBeInTheDocument(); // method input present
         expect(screen.getByText("GET")).toBeInTheDocument(); // method defaults to GET
+    });
+
+    test("Arguments", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        expect(getByTestId("arguments-main")).toBeInTheDocument(); // arguments input present
     });
 
     test("Done Button", () => {
@@ -41,6 +47,25 @@ describe("Interaction", () => {
         expect(screen.getByText("Run Workflow")).toBeInTheDocument(); // run button says "Run Workflow"
     });
 
+    test("Submit Request with Arguments", () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "http://httpstat.us/404";
+        const ARGS = "{\"a\":\"abc\"}";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.type(getByTestId("arguments-main"), ARGS); // type arguments
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+        expect(getByTestId("url-0")).toHaveDisplayValue(URL); // URL in field
+        expect(getByTestId("arguments-0")).toHaveDisplayValue(ARGS); // arguments in field
+        expect(getByTestId("url-main")).toHaveDisplayValue(/^$/); // URL input blank
+        expect(getByTestId("arguments-main")).toHaveDisplayValue(/^$/); // arguments input blank
+
+        expect(getByTestId("run")).toBeInTheDocument(); // run button present
+        expect(screen.getByText("Run Workflow")).toBeInTheDocument(); // run button says "Run Workflow"
+    });
+
     test("Edit Request URL", () => {
         const { getByTestId } = render(<Workflow />);
         const URL = "http://httpstat.us/404";
@@ -49,8 +74,6 @@ describe("Interaction", () => {
         userEvent.click(getByTestId("done-main")); // click done
 
         expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
-        expect(getByTestId("url-0")).toHaveDisplayValue(URL); // URL in field
-        expect(getByTestId("url-main")).toHaveDisplayValue(/^$/); // URL input blank
 
         userEvent.click(getByTestId("edit-0")); // click edit
         userEvent.type(getByTestId("url-0"), "{backspace}0"); // change url
@@ -76,6 +99,27 @@ describe("Interaction", () => {
 
         expect(getByTestId("request-0")).toBeInTheDocument(); // same cell present
         expect(getByTestId("method-0")).toHaveDisplayValue(METHOD.toUpperCase()); // new method in field
+    });
+
+    test("Edit Request Arguments", () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "http://httpstat.us/404";
+        const ARGS_1 = "{\"a\":\"abc\"}";
+        const ARGS_2 = "{\"a\":\"def\"}";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.type(getByTestId("arguments-main"), ARGS_1); // type arguments
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("edit-0")); // click edit
+        userEvent.clear(getByTestId("arguments-0")); // clear arguments
+        userEvent.type(getByTestId("arguments-0"), ARGS_2); // change arguments
+        userEvent.click(getByTestId("done-0")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // same cell present
+        expect(getByTestId("arguments-0")).toHaveDisplayValue(ARGS_2); // new arguments in field
     });
 
     test("Delete Entered Request", () => {
