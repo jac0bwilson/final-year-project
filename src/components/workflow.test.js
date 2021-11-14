@@ -31,6 +31,40 @@ describe("Workflow Instantiation", () => {
     });
 });
 
+describe("Data Validation", () => {
+    test("Valid URL", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.type(getByTestId("url-main"), "https://google.com"); // type URL
+
+        expect(screen.queryByTestId("url-error-main")).not.toBeInTheDocument(); // should not show
+    });
+
+    test("Valid Arguments", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.type(getByTestId("arguments-main"), "{\"abc\":\"def\"}"); // type arguments
+
+        expect(screen.queryByTestId("arguments-error-main")).not.toBeInTheDocument(); // should not show
+    });
+
+    test("Invalid URL", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.type(getByTestId("url-main"), "https://google"); // type incomplete URL
+
+        expect(screen.queryByTestId("url-error-main")).toBeInTheDocument(); // should show
+    });
+
+    test("Invalid Arguments", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.type(getByTestId("arguments-main"), "{\"abc\"}"); // type incomplete arguments
+
+        expect(screen.queryByTestId("arguments-error-main")).toBeInTheDocument(); // should show
+    });
+});
+
 describe("Interaction", () => {
     test("Submit Request", () => {
         const { getByTestId } = render(<Workflow />);

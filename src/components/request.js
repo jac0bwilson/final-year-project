@@ -17,13 +17,25 @@ import "./request.css";
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
 function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "get", args = "", response = {}, newInput = false, idx }) {
-    const [urlError, setError] = useState(false);
+    const [urlError, setUrlError] = useState(false);
+    const [argsError, setArgsError] = useState(false);
     const [editable, setEditable] = useState(newInput);
     const [selectedMethod, setMethod] = useState(method);
+    const [savedArgs, setArgs] = useState(args);
 
+    /**
+     * Update method when component receives new values
+     */
     useEffect(() => {
         setMethod(method);
     }, [method]);
+
+    /**
+     * Update arguments when component received new values
+     */
+    useEffect(() => {
+        setArgs(args);
+    }, [args]);
 
     /**
      * Create the test ID for the HTML feature in order to run unit tests
@@ -45,12 +57,32 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
             try {
                 new URL(toCheck);
             } catch (e) {
-                setError(true);
+                setUrlError(true);
                 return; // needs to be done to prevent falling to default case
             }
         }
 
-        setError(false);
+        setUrlError(false);
+    };
+
+    /**
+     * Checks the current value of the arguments field and sets the state to indicate if it is valid
+     * @param {*} event the event caused by the field being edited
+     */
+    const validateArgs = (event) => {
+        // TODO: when it comes to using saved values, perform the replacement, the do the validation on that
+        let toCheck = event.target.value;
+
+        if (toCheck.length > 0) {
+            try {
+                JSON.parse(toCheck);
+            } catch (e) {
+                setArgsError(true);
+                return;
+            }
+        }
+
+        setArgsError(false);
     };
 
     /**
@@ -68,6 +100,12 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                 handleEdit(event, idx);
                 setEditable(false);
             }
+        }
+
+        if (!argsError) { // if the arguments are a valid JSON string, replace it with a formatted version
+            setArgs(previous => {
+                return previous.length > 0 ? JSON.stringify(JSON.parse(previous), null, 2) : "";
+            });
         }
 
         event.target.reset(); // clear the form after submission
@@ -159,28 +197,34 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                 </div>
 
                 {(urlError && editable) &&
-                    <div className="notification is-danger">
+                    <div data-testid={getTestId("url-error")} className="notification is-danger">
                         The provided URL is not valid, please correct it.
                     </div>
                 } {/* only shown when state indicates an error in the URL */}
-                
+
                 {/* Arguments and response (if applicable) */}
                 <div className="columns field">
-                    <div className="column box" key={args}>
+                    <div className="column box">
                         <textarea
                             name="arguments"
                             data-testid={getTestId("arguments")}
                             className="textarea has-fixed-size"
-                            defaultValue={args}
+                            defaultValue={savedArgs}
                             placeholder="{ ... }"
                             disabled={!editable}
+                            onChange={validateArgs}
                         />
+                        {(argsError && editable) &&
+                            <div data-testid={getTestId("arguments-error")} className="notification is-danger">
+                                The provided arguments are not valid, please correct them.
+                            </div>
+                        }
                     </div>
                     {!newInput &&
                         <div data-testid={getTestId("response")} className="column box">{renderResponse()}</div>
                     }
                 </div>
-                
+
                 {/* Buttons */}
                 <div className="field is-grouped is-grouped-right">
                     <div className="control">
