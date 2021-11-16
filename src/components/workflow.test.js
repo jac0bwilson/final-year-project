@@ -233,12 +233,48 @@ describe("Running Requests", () => {
 
     test("Successful POST Request", async () => {
         const { getByTestId } = render(<Workflow />);
-        const URL = "https://httpbin.org/post";
-        const DATA = "{\"abc\":\"def\"}";
         const METHOD = "post";
+        const URL = "https://httpbin.org/" + METHOD;
+        const DATA = "{\"abc\":\"def\"}";
 
         userEvent.type(getByTestId("url-main"), URL); // type URL
-        userEvent.selectOptions(getByTestId("method-main"), METHOD); // select post
+        userEvent.selectOptions(getByTestId("method-main"), METHOD); // select method
+        userEvent.type(getByTestId("arguments-main"), DATA); // type arguments
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+    });
+    
+    test("Successful DELETE Request", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const METHOD = "post";
+        const URL = "https://httpbin.org/" + METHOD;
+        const DATA = "{\"abc\":\"def\"}";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), METHOD); // select method
+        userEvent.type(getByTestId("arguments-main"), DATA); // type arguments
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+    });
+
+    test("Successful PUT Request", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const METHOD = "post";
+        const URL = "https://httpbin.org/" + METHOD;
+        const DATA = "{\"abc\":\"def\"}";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), METHOD); // select method
         userEvent.type(getByTestId("arguments-main"), DATA); // type arguments
         userEvent.click(getByTestId("done-main")); // click done
 
