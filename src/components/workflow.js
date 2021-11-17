@@ -86,7 +86,49 @@ function Workflow() {
     };
 
     /**
-     * Run the whole workflow, sending the API requests and then saving the results in the state value
+     * Perform the specified HTTP request, saving the returned value to the state for the workflow
+     * @param {Object} request the values for the specific request
+     * @param {number} index the index of the request being run
+     */
+    const runRequest = (request, index) => {
+        let config = {
+            url: request.url,
+            method: request.method
+        };
+
+        if (request.method !== "get") {
+            config["data"] = request.arguments;
+        }
+
+        axios(
+            config
+        ).then((response) => { // process values if all went well
+            return {
+                data: response.data,
+                status: response.status,
+                statusText: response.statusText
+            };
+        }).catch((error) => { // if an error was thrown, save the status code and description
+            // console.log(error.response);
+
+            return {
+                status: error.response.status,
+                statusText: error.response.statusText
+            };
+        }).then((values) => {
+            // add responses to an object with the index of the request used as the key for the responses
+            // this prevents the order being corrupted due to any asynchronous weirdness 
+            editResponses(previous => {
+                let newResponses = { ...previous };
+                newResponses[index] = values;
+
+                return newResponses;
+            });
+        });
+    };
+
+    /**
+     * Run the whole workflow
      */
     const runAllRequests = () => {
         editResponses(() => {
@@ -95,40 +137,7 @@ function Workflow() {
 
         let temp = requests;
         temp.map((request, index) => {
-            let config = {
-                url: request.url,
-                method: request.method
-            };
-
-            if (request.method !== "get") {
-                config["data"] = request.arguments;
-            }
-
-            axios(
-                config
-            ).then((response) => { // process values if all went well
-                return {
-                    data: response.data,
-                    status: response.status,
-                    statusText: response.statusText
-                };
-            }).catch((error) => { // if an error was thrown, save the status code and description
-                // console.log(error.response);
-
-                return {
-                    status: error.response.status,
-                    statusText: error.response.statusText
-                };
-            }).then((values) => {
-                // add responses to an object with the index of the request used as the key for the responses
-                // this prevents the order being corrupted due to any asynchronous weirdness 
-                editResponses(previous => {
-                    let newResponses = { ...previous };
-                    newResponses[index] = values;
-
-                    return newResponses;
-                });
-            });
+            runRequest(request, index);
 
             return {};
         });
