@@ -284,4 +284,24 @@ describe("Running Requests", () => {
 
         await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
     });
+
+    test("Run Individual Request", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-1")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run-individual-0")); // click run individual
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+        await waitFor(() => expect(screen.queryByTestId("response-data-1")).not.toBeInTheDocument()); // JSON response not present
+    });
 });

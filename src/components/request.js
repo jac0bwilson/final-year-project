@@ -9,6 +9,7 @@ import "./request.css";
  * @param {*} handleSubmit the function to pass the data back to the workflow
  * @param {*} handleEdit the function to update the saved data in the workflow
  * @param {*} handleDelete the function to delete the request in the workflow
+ * @param {*} runIndividual the function to run the individual request
  * @param {string} url the URL to be displayed - "" by default
  * @param {string} method the HTTP method to be displayed - "GET" by default
  * @param {string} args the arguments to be sent to the endpoint - "" by default
@@ -16,7 +17,7 @@ import "./request.css";
  * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "get", args = "", response = {}, newInput = false, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, runIndividual, url = "", method = "get", args = "", response = {}, newInput = false, idx }) {
     const [urlError, setUrlError] = useState(false);
     const [argsError, setArgsError] = useState(false);
     const [editable, setEditable] = useState(newInput);
@@ -129,6 +130,16 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
         handleDelete(idx);
     };
 
+    /**
+     * Handles the action when the run button is pressed
+     * @param {*} event the event caused by the run button being pressed
+     */
+    const run = (event) => {
+        event.preventDefault();
+
+        runIndividual(idx);
+    };
+
     const httpMethods = ["get", "post", "put", "delete"];
 
     /**
@@ -225,25 +236,37 @@ function Request({ handleSubmit, handleEdit, handleDelete, url = "", method = "g
                 </div>
 
                 {/* Buttons */}
-                <div className="field is-grouped is-grouped-right">
-                    <div className="control">
-                        {editable
-                            ? <button data-testid={getTestId("done")} className="button is-success" type="submit" disabled={urlError || argsError}>
-                                <TextIcon text="Done" iconName="fa-check" />
-                            </button>
-                            : <button data-testid={getTestId("edit")} className="button is-warning" type="button" onClick={startEditing}>
-                                <TextIcon text="Edit" iconName="fa-edit" />
-                            </button>
-                        } {/* if editable - present submit button, if not - show the edit button */}
-                    </div>
-                    {(editable && !newInput) &&
-                        <div className="control">
-                            <button data-testid={getTestId("delete")} className="button is-danger" type="button" onClick={onDelete}>
-                                <TextIcon text="Delete" iconName="fa-trash-alt" />
-                            </button>
+                <nav className="level">
+                    <div className="level-left">
+                        <div className="level-item">
+                            {!editable &&
+                                <button data-testid={getTestId("run-individual")} className="button is-success" type="button" onClick={run}>
+                                    <TextIcon text="Run Individual" iconName="fa-angle-down" />
+                                </button>
+                            }
                         </div>
-                    } {/* if editable and not the new input box - allow deleting the item */}
-                </div>
+                    </div>
+
+                    <div className="level-right">
+                        <div className="level-item control">
+                            {editable
+                                ? <button data-testid={getTestId("done")} className="button is-success" type="submit" disabled={urlError || argsError}>
+                                    <TextIcon text="Done" iconName="fa-check" />
+                                </button>
+                                : <button data-testid={getTestId("edit")} className="button is-warning" type="button" onClick={startEditing}>
+                                    <TextIcon text="Edit" iconName="fa-edit" />
+                                </button>
+                            } {/* if editable - present submit button, if not - show the edit button */}
+                        </div>
+                        {(editable && !newInput) &&
+                            <div className="level-item control">
+                                <button data-testid={getTestId("delete")} className="button is-danger" type="button" onClick={onDelete}>
+                                    <TextIcon text="Delete" iconName="fa-trash-alt" />
+                                </button>
+                            </div>
+                        } {/* if editable and not the new input box - allow deleting the item */}
+                    </div>
+                </nav>
             </form>
         </div>
     );

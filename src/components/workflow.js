@@ -143,6 +143,16 @@ function Workflow() {
         });
     };
 
+    /**
+     * Run an individual request
+     * @param {number} index the index of the request to be run
+     */
+     const runIndividual = (index) => {
+        let temp = requests[index];
+
+        runRequest(temp, index);
+    };
+
     return (
         <div className="workflow">
             {requests.length > 0 && requests.map((value, index) => {
@@ -152,10 +162,11 @@ function Workflow() {
                         handleSubmit={handleSubmit}
                         handleEdit={handleEdit}
                         handleDelete={handleDelete}
+                        runIndividual={runIndividual}
                         url={value.url}
                         method={value.method}
                         args={value.arguments}
-                        response={Object.keys(responses).length > 0 ? responses[index] : {}}
+                        response={responses[index] ? responses[index] : {}}
                         idx={index}
                     />
                 );
