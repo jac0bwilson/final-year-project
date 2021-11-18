@@ -248,7 +248,7 @@ describe("Running Requests", () => {
 
         await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
     });
-    
+
     test("Successful DELETE Request", async () => {
         const { getByTestId } = render(<Workflow />);
         const METHOD = "post";
@@ -303,5 +303,31 @@ describe("Running Requests", () => {
 
         await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
         await waitFor(() => expect(screen.queryByTestId("response-data-1")).not.toBeInTheDocument()); // JSON response not present
+    });
+
+    test("Run from Point Onwards", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-1")).toBeInTheDocument(); // new cell present
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-2")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run-onwards-1")); // click run individual
+
+        await waitFor(() => expect(screen.queryByTestId("response-data-0")).not.toBeInTheDocument()); // JSON response not present
+        await waitFor(() => expect(getByTestId("response-data-1")).toBeInTheDocument()); // JSON response present
+        await waitFor(() => expect(getByTestId("response-data-2")).toBeInTheDocument()); // JSON response present
     });
 });

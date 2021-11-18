@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { TextIcon } from "./icon";
+import { TextIcon, Icon } from "./icon";
 
 import "./request.css";
 
@@ -9,7 +9,7 @@ import "./request.css";
  * @param {*} handleSubmit the function to pass the data back to the workflow
  * @param {*} handleEdit the function to update the saved data in the workflow
  * @param {*} handleDelete the function to delete the request in the workflow
- * @param {*} runIndividual the function to run the individual request
+ * @param {*} runSomeRequests the function to run the individual request
  * @param {string} url the URL to be displayed - "" by default
  * @param {string} method the HTTP method to be displayed - "GET" by default
  * @param {string} args the arguments to be sent to the endpoint - "" by default
@@ -17,7 +17,7 @@ import "./request.css";
  * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, handleDelete, runIndividual, url = "", method = "get", args = "", response = {}, newInput = false, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url = "", method = "get", args = "", response = {}, newInput = false, idx }) {
     const [urlError, setUrlError] = useState(false);
     const [argsError, setArgsError] = useState(false);
     const [editable, setEditable] = useState(newInput);
@@ -131,13 +131,23 @@ function Request({ handleSubmit, handleEdit, handleDelete, runIndividual, url = 
     };
 
     /**
-     * Handles the action when the run button is pressed
+     * Handles the action when the run individual button is pressed
      * @param {*} event the event caused by the run button being pressed
      */
-    const run = (event) => {
+    const runRequest = (event) => {
         event.preventDefault();
 
-        runIndividual(idx);
+        runSomeRequests(idx, false);
+    };
+
+    /**
+     * Handles the action when the run from here onwards button is pressed
+     * @param {*} event the event caused by the run button being pressed
+     */
+    const runRequestOnwards = (event) => {
+        event.preventDefault();
+
+        runSomeRequests(idx, true);
     };
 
     const httpMethods = ["get", "post", "put", "delete"];
@@ -238,13 +248,26 @@ function Request({ handleSubmit, handleEdit, handleDelete, runIndividual, url = 
                 {/* Buttons */}
                 <nav className="level">
                     <div className="level-left">
-                        <div className="level-item">
-                            {!editable &&
-                                <button data-testid={getTestId("run-individual")} className="button is-success" type="button" onClick={run}>
-                                    <TextIcon text="Run Individual" iconName="fa-angle-down" />
+                        {!editable &&
+                            <div className="level-item">
+                                <button data-testid={getTestId("run-individual")} className="button is-primary" type="button" onClick={runRequest}>
+                                    {idx === 0
+                                        ? <TextIcon text="Run Individual" iconName="fa-angle-down" />
+                                        : <Icon iconName="fa-angle-down" />
+                                    }
                                 </button>
-                            }
-                        </div>
+                            </div>
+                        }
+                        {!editable &&
+                            <div className="level-item">
+                                <button data-testid={getTestId("run-onwards")} className="button is-primary" type="button" onClick={runRequestOnwards}>
+                                    {idx === 0
+                                        ? <TextIcon text="Run from Here Onwards" iconName="fa-angle-double-down" />
+                                        : <Icon iconName="fa-angle-double-down" />
+                                    }
+                                </button>
+                            </div>
+                        }
                     </div>
 
                     <div className="level-right">

@@ -145,12 +145,19 @@ function Workflow() {
 
     /**
      * Run an individual request
-     * @param {number} index the index of the request to be run
+     * @param {number} startIndex the index of the request to be run
+     * @param {boolean} onwards whether or not to run all after this point
      */
-     const runIndividual = (index) => {
-        let temp = requests[index];
+    const runSomeRequests = (startIndex, onwards) => {
+        let temp = requests;
 
-        runRequest(temp, index);
+        if (onwards) {
+            for (let i = 0; i < temp.length; i++) {
+                runRequest(temp[i], i);
+            }
+        } else {
+            runRequest(temp[startIndex], startIndex);
+        }
     };
 
     return (
@@ -162,7 +169,7 @@ function Workflow() {
                         handleSubmit={handleSubmit}
                         handleEdit={handleEdit}
                         handleDelete={handleDelete}
-                        runIndividual={runIndividual}
+                        runSomeRequests={runSomeRequests}
                         url={value.url}
                         method={value.method}
                         args={value.arguments}
