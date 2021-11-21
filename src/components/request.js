@@ -72,7 +72,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
      * @param {*} event the event caused by the field being edited
      */
     const validateArgs = (event) => {
-        // TODO: when it comes to using saved values, perform the replacement, the do the validation on that
+        // TODO: when it comes to using saved values, perform the replacement, then do the validation on that
         let toCheck = event.target.value;
 
         if (toCheck.length > 0) {
@@ -280,7 +280,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
                         }
                         {(!editable) && // TODO: condition for display
                             <div className="level-item">
-                                <button data-testid={getTestId("save-value")} className="button is-info" type="button" onClick={toggleSaving}>
+                                <button data-testid={getTestId("open-value-saving")} className="button is-info" type="button" onClick={toggleSaving}>
                                     <TextIcon text="Save Values" iconName="fa-save" />
                                 </button>
                             </div>
@@ -318,6 +318,47 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
                             <h1 className="title">
                                 Save Values
                             </h1>
+
+                            <form> {/* TODO: add onSubmit logic */}
+                                <div class="field is-horizontal">
+                                    <div class="field-label is-normal">
+                                        <label class="label">Value to Save:</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field">
+                                            <div class="control select is-fullwidth">
+                                                {/* TODO: iterate over keys in response, also through sub levels */}
+                                                <select>
+                                                    <option>Test</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="field is-horizontal">
+                                    <div class="field-label is-normal">
+                                        <label class="label">Assigned Name:</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field">
+                                            <div class="control">
+                                                <input className="input" type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <nav className="level">
+                                    <div className="level-left" />
+                                    <div className="level-right">
+                                        <button data-testid={getTestId("save-value")} className="button is-success" type="submit">
+                                            <TextIcon text="Done" iconName="fa-check" />
+                                        </button>
+                                    </div>
+                                </nav>
+
+                            </form>
                         </div>
                     </div>
                     <button className="modal-close is-large" type="button" aria-label="close" onClick={toggleSaving}></button>
