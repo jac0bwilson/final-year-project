@@ -23,6 +23,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
     const [editable, setEditable] = useState(newInput);
     const [selectedMethod, setMethod] = useState(method);
     const [savedArgs, setArgs] = useState(args);
+    const [displaySaving, setDisplaySaving] = useState(false);
 
     /**
      * Update method when component receives new values
@@ -129,6 +130,15 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
 
         handleDelete(idx);
     };
+
+    /**
+     * Toggle the value saving modal
+     */
+    const toggleSaving = () => {
+        setDisplaySaving(previous => {
+            return !previous;
+        });
+    }
 
     /**
      * Handles the action when the run individual button is pressed
@@ -268,6 +278,13 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
                                 </button>
                             </div>
                         }
+                        {(!editable) && // TODO: condition for display
+                            <div className="level-item">
+                                <button data-testid={getTestId("save-value")} className="button is-info" type="button" onClick={toggleSaving}>
+                                    <TextIcon text="Save Values" iconName="fa-save" />
+                                </button>
+                            </div>
+                        }
                     </div>
 
                     <div className="level-right">
@@ -291,6 +308,21 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
                     </div>
                 </nav>
             </form>
+
+            {/* Saving Values Interface */}
+            {displaySaving &&
+                <div className={"modal" + (displaySaving ? " is-active" : "")}>
+                    <div className="modal-background" onClick={toggleSaving} />
+                    <div className="modal-content">
+                        <div className="box">
+                            <h1 className="title">
+                                Save Values
+                            </h1>
+                        </div>
+                    </div>
+                    <button className="modal-close is-large" type="button" aria-label="close" onClick={toggleSaving}></button>
+                </div>
+            }
         </div>
     );
 }
