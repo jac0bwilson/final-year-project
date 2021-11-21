@@ -29,6 +29,58 @@ describe("Workflow Instantiation", () => {
         expect(getByTestId("done-main")).toBeInTheDocument(); // done button present
         expect(screen.getByText("Done")).toBeInTheDocument(); // done button says "Done"
     });
+
+    test("Edit Button", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("edit-0")).toBeInTheDocument(); // edit button present
+    });
+
+    test("Run Workflow Button", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("run")).toBeInTheDocument(); // run button present
+    });
+
+    test("Run Individual Button", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("run-individual-0")).toBeInTheDocument(); // run individual button present
+    });
+
+    test("Run From Point Button", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("run-onwards-0")).toBeInTheDocument(); // run onwards button present
+    });
+
+    test("Save Values Button", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("open-value-saving-0")).toBeInTheDocument(); // save values button present
+    });
+
+    test("Save Values Modal", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("open-value-saving-0")); // click save values
+
+        expect(getByTestId("value-saving-0")).toBeInTheDocument(); // save values modal present
+        expect(getByTestId("save-value-select-0")).toBeInTheDocument(); // save values selection present
+        expect(getByTestId("save-value-name-0")).toBeInTheDocument(); // save values naming present
+        expect(getByTestId("save-value-0")).toBeInTheDocument(); // save values button present
+    });
 });
 
 describe("Data Validation", () => {

@@ -311,7 +311,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
 
             {/* Saving Values Interface */}
             {displaySaving &&
-                <div className={"modal" + (displaySaving ? " is-active" : "")}>
+                <div data-testid={getTestId("value-saving")} className={"modal" + (displaySaving ? " is-active" : "")}>
                     <div className="modal-background" onClick={toggleSaving} />
                     <div className="modal-content">
                         <div className="box">
@@ -320,15 +320,15 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
                             </h1>
 
                             <form> {/* TODO: add onSubmit logic */}
-                                <div class="field is-horizontal">
-                                    <div class="field-label is-normal">
-                                        <label class="label">Value to Save:</label>
+                                <div className="field is-horizontal">
+                                    <div className="field-label is-normal">
+                                        <label className="label">Value to Save:</label>
                                     </div>
-                                    <div class="field-body">
-                                        <div class="field">
-                                            <div class="control select is-fullwidth">
+                                    <div className="field-body">
+                                        <div className="field">
+                                            <div className="control select is-fullwidth">
                                                 {/* TODO: iterate over keys in response, also through sub levels */}
-                                                <select>
+                                                <select data-testid={getTestId("save-value-select")}>
                                                     <option>Test</option>
                                                 </select>
                                             </div>
@@ -336,14 +336,14 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
                                     </div>
                                 </div>
 
-                                <div class="field is-horizontal">
-                                    <div class="field-label is-normal">
-                                        <label class="label">Assigned Name:</label>
+                                <div className="field is-horizontal">
+                                    <div className="field-label is-normal">
+                                        <label className="label">Assigned Name:</label>
                                     </div>
-                                    <div class="field-body">
-                                        <div class="field">
-                                            <div class="control">
-                                                <input className="input" type="text" />
+                                    <div className="field-body">
+                                        <div className="field">
+                                            <div className="control">
+                                                <input data-testid={getTestId("save-value-name")} className="input" type="text" />
                                             </div>
                                         </div>
                                     </div>
