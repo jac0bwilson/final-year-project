@@ -12,6 +12,7 @@ import "./workflow.css";
 function Workflow() {
     const [requests, editRequests] = useState([]);
     const [responses, editResponses] = useState({});
+    const [savedValues, editSavedValues] = useState({});
 
     /**
      * Handles new submissions of information
@@ -83,6 +84,24 @@ function Workflow() {
 
             return newResponses;
         });
+
+        // TODO: bubble up the indexes of saved values, and delete any which should no longer exist
+    };
+
+    /**
+     * Saves a specific value from an executed request
+     * @param {*} config the information about the value to be saved 
+     */
+    const handleSave = (config) => {
+        editSavedValues(previous => {
+            let newValues = { ...previous };
+            newValues[config.name] = {
+                data: config.data,
+                availableFrom: config.availableFrom
+            };
+
+            return newValues;
+        });
     };
 
     /**
@@ -91,6 +110,8 @@ function Workflow() {
      * @param {number} index the index of the request being run
      */
     const runRequest = (request, index) => {
+        // TODO: need to do replacement for saved values before sending request data
+        // TODO: need to update saved values on each run through
         let config = {
             url: request.url,
             method: request.method
@@ -169,6 +190,7 @@ function Workflow() {
                         handleSubmit={handleSubmit}
                         handleEdit={handleEdit}
                         handleDelete={handleDelete}
+                        handleSave={handleSave}
                         runSomeRequests={runSomeRequests}
                         url={value.url}
                         method={value.method}

@@ -5,10 +5,11 @@ import { TextIcon, Icon } from "./icon";
 import "./request.css";
 
 /**
- * Creates a form to allow the user to provide the details for the request
+ * Creates the input and also the containers for submitted data, as well as associated actions
  * @param {*} handleSubmit the function to pass the data back to the workflow
  * @param {*} handleEdit the function to update the saved data in the workflow
  * @param {*} handleDelete the function to delete the request in the workflow
+ * @param {*} handleSave the function to save a value out of an executed request
  * @param {*} runSomeRequests the function to run the individual request
  * @param {string} url the URL to be displayed - "" by default
  * @param {string} method the HTTP method to be displayed - "GET" by default
@@ -17,7 +18,7 @@ import "./request.css";
  * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url = "", method = "get", args = "", response = {}, newInput = false, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRequests, url = "", method = "get", args = "", response = {}, newInput = false, idx }) {
     const [urlError, setUrlError] = useState(false);
     const [argsError, setArgsError] = useState(false);
     const [editable, setEditable] = useState(newInput);
@@ -138,7 +139,22 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
         setDisplaySaving(previous => {
             return !previous;
         });
-    }
+    };
+
+    const onValueSave = (event) => {
+        event.preventDefault();
+
+        // TODO: extract data from nested responses
+        const config = {
+            name: event.target.elements.name.value,
+            data: response[event.target.elements.target.value],
+            availableFrom: idx
+        };
+
+        handleSave(config);
+
+        toggleSaving();
+    };
 
     /**
      * Handles the action when the run individual button is pressed
@@ -319,7 +335,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
                                 Save Values
                             </h1>
 
-                            <form> {/* TODO: add onSubmit logic */}
+                            <form onSubmit={onValueSave}>
                                 <div className="field is-horizontal">
                                     <div className="field-label is-normal">
                                         <label className="label">Value to Save:</label>
@@ -328,7 +344,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
                                         <div className="field">
                                             <div className="control select is-fullwidth">
                                                 {/* TODO: iterate over keys in response, also through sub levels */}
-                                                <select data-testid={getTestId("save-value-select")}>
+                                                <select name="target" data-testid={getTestId("save-value-select")}>
                                                     <option>Test</option>
                                                 </select>
                                             </div>
@@ -343,7 +359,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, runSomeRequests, url 
                                     <div className="field-body">
                                         <div className="field">
                                             <div className="control">
-                                                <input data-testid={getTestId("save-value-name")} className="input" type="text" />
+                                                <input name="name" data-testid={getTestId("save-value-name")} className="input" type="text" />
                                             </div>
                                         </div>
                                     </div>
