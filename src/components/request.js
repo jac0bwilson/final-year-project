@@ -34,11 +34,40 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
     }, [method]);
 
     /**
-     * Update arguments when component received new values
+     * Update arguments when component receives new values
      */
     useEffect(() => {
         setArgs(args);
     }, [args]);
+
+    /**
+     * Flatten an object and get the list of it's keys
+     * @param {Object} object the object to obtain the keys for
+     * @param {string} stub the base of the key to construct
+     */
+    const getResponseKeys = (object, stub = "") => {
+        let keys = [];
+
+        for (let key in object) { // iterate through response data
+            if (typeof object[key] === "object") { // if key holds an object, recurse
+                let these = getResponseKeys(object[key], key);
+
+                keys = keys.concat(these);
+            } else {
+                let next;
+
+                if (stub === "") {
+                    next = key;
+                } else {
+                    next = stub + "." + key;
+                }
+
+                keys.push(next);
+            }
+        }
+
+        return keys;
+    };
 
     /**
      * Create the test ID for the HTML feature in order to run unit tests
@@ -147,7 +176,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         // TODO: extract data from nested responses
         const config = {
             name: event.target.elements.name.value,
-            data: response[event.target.elements.target.value],
+            data: response.data[event.target.elements.target.value],
             availableFrom: idx
         };
 
@@ -294,7 +323,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                                 </button>
                             </div>
                         }
-                        {(!editable) && // TODO: condition for display
+                        {(!editable && response.data) &&
                             <div className="level-item">
                                 <button data-testid={getTestId("open-value-saving")} className="button is-info" type="button" onClick={toggleSaving}>
                                     <TextIcon text="Save Values" iconName="fa-save" />
@@ -343,9 +372,12 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                                     <div className="field-body">
                                         <div className="field">
                                             <div className="control select is-fullwidth">
-                                                {/* TODO: iterate over keys in response, also through sub levels */}
                                                 <select name="target" data-testid={getTestId("save-value-select")}>
-                                                    <option>Test</option>
+                                                    {getResponseKeys(response.data).map((value) => {
+                                                        return (
+                                                            <option value={value} key={value}>{value}</option>
+                                                        )
+                                                    })}
                                                 </select>
                                             </div>
                                         </div>

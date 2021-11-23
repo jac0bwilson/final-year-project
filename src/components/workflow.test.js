@@ -62,18 +62,27 @@ describe("Workflow Instantiation", () => {
         expect(getByTestId("run-onwards-0")).toBeInTheDocument(); // run onwards button present
     });
 
-    test("Save Values Button", () => {
+    test("Save Values Button", async () => {
         const { getByTestId } = render(<Workflow />);
 
-        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.type(getByTestId("url-main"), "https://httpbin.org/get"); // type URL
 
-        expect(getByTestId("open-value-saving-0")).toBeInTheDocument(); // save values button present
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")) // click run
+
+        await waitFor(() => expect(getByTestId("open-value-saving-0")).toBeInTheDocument()); // save values button present
     });
 
-    test("Save Values Modal", () => {
+    test("Save Values Modal", async () => {
         const { getByTestId } = render(<Workflow />);
 
+        userEvent.type(getByTestId("url-main"), "https://httpbin.org/get"); // type URL
+
         userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")) // click run
+
+        await waitFor(() => expect(getByTestId("open-value-saving-0")).toBeInTheDocument()); // save values button present
+
         userEvent.click(getByTestId("open-value-saving-0")); // click save values
 
         expect(getByTestId("value-saving-0")).toBeInTheDocument(); // save values modal present
