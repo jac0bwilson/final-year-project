@@ -170,13 +170,39 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         });
     };
 
+    /**
+     * Extract response data that is defined by a multi-level key
+     * @param {string} key 
+     */
+    const extractNestedResponseData = (key) => {
+        let levels = key.split(".");
+
+        if (response.data) {
+            let data = response.data;
+
+            while (levels.length > 0) {
+                let key = levels.shift();
+    
+                data = data[key];
+            }
+
+            return data;
+        }
+
+        return null;
+    };
+
+    /**
+     * Handles the saving of values from a response
+     * @param {*} event the event caused by the user saving the value
+     */
     const onValueSave = (event) => {
         event.preventDefault();
 
         // TODO: extract data from nested responses
         const config = {
             name: event.target.elements.name.value,
-            data: response.data[event.target.elements.target.value],
+            data: extractNestedResponseData(event.target.elements.target.value),
             availableFrom: idx
         };
 
