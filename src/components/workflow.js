@@ -181,6 +181,25 @@ function Workflow() {
         }
     };
 
+    /**
+     * Finds the available saved values for a request
+     * @param {number} index the index of the request
+     * @returns the reduced object containing available saved values
+     */
+    const filterSavedValues = (index) => {
+        let available = {};
+
+        for (const [key, value] of Object.entries(savedValues)) {
+            let comp = value.availableFrom;
+
+            if (index > comp) { // if value is available after the index of the item, allow it
+                available[key] = value;
+            }
+        }
+
+        return available;
+    }
+
     return (
         <div className="workflow">
             {requests.length > 0 && requests.map((value, index) => {
@@ -196,6 +215,7 @@ function Workflow() {
                         method={value.method}
                         args={value.arguments}
                         response={responses[index] ? responses[index] : {}}
+                        saved={filterSavedValues(index)}
                         idx={index}
                     />
                 );

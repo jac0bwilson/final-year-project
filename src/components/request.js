@@ -15,10 +15,11 @@ import "./request.css";
  * @param {string} method the HTTP method to be displayed - "GET" by default
  * @param {string} args the arguments to be sent to the endpoint - "" by default
  * @param {Object} response the response to the request if run from outside
+ * @param {Object} saved the available saved values for this request
  * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRequests, url = "", method = "get", args = "", response = {}, newInput = false, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRequests, url = "", method = "get", args = "", response = {}, saved, newInput = false, idx }) {
     const [urlError, setUrlError] = useState(false);
     const [argsError, setArgsError] = useState(false);
     const [editable, setEditable] = useState(newInput);
@@ -427,7 +428,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                                 <nav className="level">
                                     <div className="level-left" />
                                     <div className="level-right">
-                                        {/* TODO: disable button if name is left as blank */}
+                                        {/* TODO: disable button if name is left as blank, or conflicting names */}
                                         <button data-testid={getTestId("save-value")} className="button is-success" type="submit">
                                             <TextIcon text="Done" iconName="fa-check" />
                                         </button>
