@@ -44,25 +44,26 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
      * Flatten an object and get the list of it's keys
      * @param {Object} object the object to obtain the keys for
      * @param {string} stub the base of the key to construct
+     * @returns the list of keys at all levels of the object
      */
     const getResponseKeys = (object, stub = "") => {
         let keys = [];
 
         for (let key in object) { // iterate through response data
+            let next;
+
+            if (stub === "") {
+                next = key;
+            } else {
+                next = stub + "/" + key;
+            }
+
+            keys.push(next);
+
             if (typeof object[key] === "object") { // if key holds an object, recurse
-                let these = getResponseKeys(object[key], key);
+                let these = getResponseKeys(object[key], next);
 
                 keys = keys.concat(these);
-            } else {
-                let next;
-
-                if (stub === "") {
-                    next = key;
-                } else {
-                    next = stub + "." + key;
-                }
-
-                keys.push(next);
             }
         }
 
@@ -172,17 +173,18 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
 
     /**
      * Extract response data that is defined by a multi-level key
-     * @param {string} key 
+     * @param {string} key the multi-level key to be decomposed and processed
+     * @returns the extracted data, or null if no data is available
      */
     const extractNestedResponseData = (key) => {
-        let levels = key.split(".");
+        let levels = key.split("/");
 
         if (response.data) {
             let data = response.data;
 
-            while (levels.length > 0) {
+            while (levels.length > 0) { // repeatedly remove first element, narrowing down data
                 let key = levels.shift();
-    
+
                 data = data[key];
             }
 
@@ -199,7 +201,6 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
     const onValueSave = (event) => {
         event.preventDefault();
 
-        // TODO: extract data from nested responses
         const config = {
             name: event.target.elements.name.value,
             data: extractNestedResponseData(event.target.elements.target.value),
@@ -355,7 +356,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                                     <TextIcon text="Save Values" iconName="fa-save" />
                                 </button>
                             </div>
-                        }
+                        } {/* only show if not editing and response.data is present - indicating a successful request */}
                     </div>
 
                     <div className="level-right">
@@ -426,6 +427,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                                 <nav className="level">
                                     <div className="level-left" />
                                     <div className="level-right">
+                                        {/* TODO: disable button if name is left as blank */}
                                         <button data-testid={getTestId("save-value")} className="button is-success" type="submit">
                                             <TextIcon text="Done" iconName="fa-check" />
                                         </button>
