@@ -4,6 +4,8 @@ import axios from "axios";
 import { Request } from "./request";
 import { TextIcon } from "./icon";
 
+import { processSavedValues } from "../utilities";
+
 import "./workflow.css";
 
 /**
@@ -118,7 +120,7 @@ function Workflow() {
         };
 
         if (request.method !== "get") {
-            config["data"] = request.arguments;
+            config["data"] = processSavedValues(request.arguments, filterSavedValues(index));
         }
 
         axios(
@@ -229,7 +231,7 @@ function Workflow() {
                 </div>
             } {/* displays when any request details have been provided */}
 
-            <Request handleSubmit={handleSubmit} newInput={true} />
+            <Request handleSubmit={handleSubmit} saved={savedValues} newInput={true} />
         </div>
     );
 }

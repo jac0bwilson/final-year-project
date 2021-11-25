@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import { TextIcon, Icon } from "./icon";
 
+import { processSavedValues, customFormatJSON } from "../utilities";
+
 import "./request.css";
 
 /**
@@ -104,8 +106,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
      * @param {*} event the event caused by the field being edited
      */
     const validateArgs = (event) => {
-        // TODO: when it comes to using saved values, perform the replacement, then do the validation on that
-        let toCheck = event.target.value;
+        let toCheck = processSavedValues(event.target.value, saved); // apply the saved values and then do the validation
 
         if (toCheck.length > 0) {
             try {
@@ -129,7 +130,8 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         if (!urlError && !argsError) {
             // if the arguments are a valid JSON string, replace it with a formatted version
             let tempArgs = event.target.elements.arguments.value;
-            event.target.elements.arguments.value = tempArgs.length > 0 ? JSON.stringify(JSON.parse(tempArgs), null, 2) : "";
+            event.target.elements.arguments.value = tempArgs.length > 0 ? customFormatJSON(tempArgs) : "";
+            // TODO: deal with issues from custom variables, maybe try/catch, and then replace all ! prefixed strings?
 
             if (newInput) { // if the item has just been created
                 handleSubmit(event);
@@ -429,6 +431,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                                     <div className="level-left" />
                                     <div className="level-right">
                                         {/* TODO: disable button if name is left as blank, or conflicting names */}
+                                        {/* TODO: validate that only contains alphanumeric characters */}
                                         <button data-testid={getTestId("save-value")} className="button is-success" type="submit">
                                             <TextIcon text="Done" iconName="fa-check" />
                                         </button>
