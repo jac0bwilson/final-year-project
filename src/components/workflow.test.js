@@ -126,6 +126,25 @@ describe("Data Validation", () => {
 
         expect(screen.queryByTestId("arguments-error-main")).toBeInTheDocument(); // should show
     });
+
+    test("Referencing Saved Value", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+
+        userEvent.click(getByTestId("open-value-saving-0")); // open value saving modal
+        userEvent.selectOptions(getByTestId("save-value-select-0"), "url"); // select "url" value
+        userEvent.type(getByTestId("save-value-name-0"), "url"); // give name as "url"
+        userEvent.click(getByTestId("save-value-0")); // click save value
+
+        userEvent.type(getByTestId("arguments-main"), "{\"url\": !url}"); // type arguments
+        expect(screen.queryByTestId("arguments-error-main")).not.toBeInTheDocument(); // should not show
+    });
 });
 
 describe("Interaction", () => {
@@ -282,7 +301,7 @@ describe("Running Requests", () => {
 
     test("Successful GET Request", async () => {
         const { getByTestId } = render(<Workflow />);
-        const URL = "https://yesno.wtf/api";
+        const URL = "https://httpbin.org/get";
 
         userEvent.type(getByTestId("url-main"), URL); // type URL
         userEvent.click(getByTestId("done-main")); // click done
@@ -392,5 +411,31 @@ describe("Running Requests", () => {
         await waitFor(() => expect(screen.queryByTestId("response-data-0")).not.toBeInTheDocument()); // JSON response not present
         await waitFor(() => expect(getByTestId("response-data-1")).toBeInTheDocument()); // JSON response present
         await waitFor(() => expect(getByTestId("response-data-2")).toBeInTheDocument()); // JSON response present
+    });
+
+    test("Using Saved Value", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/";
+        const METHOD = "get";
+        const METHOD_2 = "post";
+
+        userEvent.type(getByTestId("url-main"), URL + METHOD); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+        
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+        
+        userEvent.click(getByTestId("open-value-saving-0")); // open value saving modal
+        userEvent.selectOptions(getByTestId("save-value-select-0"), "url"); // select "url" value
+        userEvent.type(getByTestId("save-value-name-0"), "url"); // give name as "url"
+        userEvent.click(getByTestId("save-value-0")); // click save value
+        
+        userEvent.type(getByTestId("url-main"), URL + METHOD_2); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), METHOD_2); // select method
+        userEvent.type(getByTestId("arguments-main"), "{\"url\": !url}"); // type arguments
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-1")).toBeInTheDocument()); // JSON response present
     });
 });
