@@ -17,7 +17,7 @@ function Workflow() {
     const [savedValues, editSavedValues] = useState({});
 
     /**
-     * Handles new submissions of information
+     * Handles new submissions of information, on submission of the form
      * @param {Object} event the event from the trigger
      */
     const handleSubmit = (event) => {
@@ -31,9 +31,9 @@ function Workflow() {
     };
 
     /**
-     * Handles the updating of existing information
+     * Handles the updating of existing item information
      * @param {*} event the event from the trigger
-     * @param {number} index the index of the request to be updated
+     * @param {number} index the index of the item to be updated
      */
     const handleEdit = (event, index) => {
         const modifiedRequest = {
@@ -58,8 +58,8 @@ function Workflow() {
     };
 
     /**
-     * Removes a specific request from the list
-     * @param {number} index the index of the request to be removed from the list
+     * Removes a specific item from the list
+     * @param {number} index the index of the item to be removed
      */
     const handleDelete = (index) => {
         editRequests(previous => {
@@ -69,17 +69,17 @@ function Workflow() {
             return newRequests;
         });
 
-        editResponses(previous => {
+        editResponses(previous => { // re-index responses to ensure they match to the correct request
             let newResponses = {};
 
             for (const [key, value] of Object.entries(previous)) {
                 let keyInt = parseInt(key);
 
-                if (keyInt > index) {
+                if (keyInt > index) { // if response came after item to be deleted, decrement key
                     newResponses[keyInt - 1] = value;
-                } else if (keyInt === index) {
+                } else if (keyInt === index) { // if item is the one to be deleted, don't include
                     continue;
-                } else {
+                } else { // if item came before one to be deleted, add as normal
                     newResponses[keyInt] = value;
                 }
             }
@@ -112,7 +112,6 @@ function Workflow() {
      * @param {number} index the index of the request being run
      */
     const runRequest = (request, index) => {
-        // TODO: need to do replacement for saved values before sending request data
         // TODO: need to update saved values on each run through
         let config = {
             url: request.url,

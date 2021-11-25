@@ -131,7 +131,6 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
             // if the arguments are a valid JSON string, replace it with a formatted version
             let tempArgs = event.target.elements.arguments.value;
             event.target.elements.arguments.value = tempArgs.length > 0 ? customFormatJSON(tempArgs) : "";
-            // TODO: deal with issues from custom variables, maybe try/catch, and then replace all ! prefixed strings?
 
             if (newInput) { // if the item has just been created
                 handleSubmit(event);

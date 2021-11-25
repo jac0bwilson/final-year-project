@@ -1,9 +1,9 @@
 const matchSavedValues = /![a-zA-Z0-9]+/gm; // TODO: may want to reject if prefixed with quotes
 
 /**
- * Fills in the saved values where they are referenced in a requests arguments
+ * Fills in the saved values where they are referenced in a request's arguments
  * @param {string} args the string containing the request arguments
- * @param {Object} saved the set of saved values from previous responses
+ * @param {Object} saved the set of saved values from earlier responses
  * @returns the processed version of the arguments
  */
 function processSavedValues(args, saved) {
@@ -11,11 +11,12 @@ function processSavedValues(args, saved) {
 
     if (matches) {
         matches.forEach((match) => {
-            let name = match.slice(1); // remove "!"
+            let name = match.slice(1); // remove "!" from value reference
+
             if (name in saved) {
                 let newValue = saved[name]["data"];
 
-                if (typeof newValue === "object") {
+                if (typeof newValue === "object") { // objects need to be handled separately to print properly
                     newValue = JSON.stringify(newValue);
                 } else if (typeof newValue === "string") {
                     newValue = "\"" + String(newValue) + "\"";
@@ -23,7 +24,7 @@ function processSavedValues(args, saved) {
                     newValue = String(newValue);
                 }
 
-                args = args.replace(match, newValue);
+                args = args.replace(match, newValue); // replace reference with string of the value
             }
         });
     }
