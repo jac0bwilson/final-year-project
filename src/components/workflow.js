@@ -87,7 +87,26 @@ function Workflow() {
             return newResponses;
         });
 
-        // TODO: bubble up the indexes of saved values, and delete any which should no longer exist
+        editSavedValues(previous => {
+            let newValues = {};
+
+            for (const [key, value] of Object.entries(previous)) {
+                let comparison = value.availableFrom;
+                
+                if (comparison > index) {
+                    let newValue = { ...value };
+                    newValue.availableFrom = comparison - 1;
+
+                    newValues[key] = newValue;
+                } else if (comparison === index) {
+                    continue;
+                } else {
+                    newValues[key] = value;
+                }
+            }
+
+            return newValues;
+        });
     };
 
     /**
