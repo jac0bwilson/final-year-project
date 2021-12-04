@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { TextIcon, Icon } from "./icon";
 
-import { processSavedValues, customFormatJSON } from "../utilities";
+import { processSavedValues, customFormatJSON, extractNestedResponseData } from "../utilities";
 
 import "./request.css";
 
@@ -174,29 +174,6 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
     };
 
     /**
-     * Extract response data that is defined by a multi-level key
-     * @param {string} key the multi-level key to be decomposed and processed
-     * @returns the extracted data, or null if no data is available
-     */
-    const extractNestedResponseData = (key) => {
-        let levels = key.split("/");
-
-        if (response.data) {
-            let data = response.data;
-
-            while (levels.length > 0) { // repeatedly remove first element, narrowing down data
-                let key = levels.shift();
-
-                data = data[key];
-            }
-
-            return data;
-        }
-
-        return null;
-    };
-
-    /**
      * Handles the saving of values from a response
      * @param {*} event the event caused by the user saving the value
      */
@@ -205,7 +182,8 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
 
         const config = {
             name: event.target.elements.name.value,
-            data: extractNestedResponseData(event.target.elements.target.value),
+            data: extractNestedResponseData(event.target.elements.target.value, response),
+            key: event.target.elements.target.value,
             availableFrom: idx
         };
 
@@ -245,7 +223,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         if (response.status === 200) { // if request worked okay, display the data that was returned
             return (
                 <pre data-testid={getTestId("response-data")}>
-                    <code>
+                    <code data-testid={getTestId("response-data-text")}>
                         {JSON.stringify(response.data, null, 2)}
                     </code>
                 </pre>

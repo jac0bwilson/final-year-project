@@ -1,9 +1,9 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Workflow } from "./workflow";
 
-import { formatJSON } from "../utilities";
+import { formatJSON, extractNestedResponseData } from "../utilities";
 
 describe("Workflow Instantiation", () => {
     test("URL", () => {
@@ -437,5 +437,47 @@ describe("Running Requests", () => {
         userEvent.click(getByTestId("run")); // click run
 
         await waitFor(() => expect(getByTestId("response-data-1")).toBeInTheDocument()); // JSON response present
+    });
+
+    test("Updating Saved Value", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/";
+        const METHOD = "get";
+        const METHOD_2 = "post";
+        const KEY = "headers/X-Amzn-Trace-Id";
+        
+        userEvent.type(getByTestId("url-main"), URL + METHOD); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+        
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+        
+        userEvent.click(getByTestId("open-value-saving-0")); // open value saving modal
+        userEvent.selectOptions(getByTestId("save-value-select-0"), KEY); // select value
+        userEvent.type(getByTestId("save-value-name-0"), "trace"); // give name
+        userEvent.click(getByTestId("save-value-0")); // click save value
+        
+        let trace1 = extractNestedResponseData(KEY, {"data": JSON.parse(getByTestId("response-data-text-0").innerHTML)}); // save the value for comparison
+        
+        userEvent.click(getByTestId("run"));
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+        
+        let trace2 = extractNestedResponseData(KEY, {"data": JSON.parse(getByTestId("response-data-text-0").innerHTML)}); // save the value for comparison
+
+        trace1 = trace1.split("=")[1];
+        trace2 = trace2.split("=")[1];
+        
+        userEvent.type(getByTestId("url-main"), URL + METHOD_2); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), METHOD_2); // select method
+        userEvent.type(getByTestId("arguments-main"), "{\"check\": !trace}"); // type arguments
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run-individual-1")); // click run
+        
+        await waitFor(() => expect(getByTestId("response-data-1")).toBeInTheDocument()); // JSON response present
+        
+        const { queryByText, getByText } = within(getByTestId("response-data-text-1"));
+
+        expect(queryByText(trace1, {exact: false})).not.toBeInTheDocument();
+        expect(getByText(trace2, {exact: false})).toBeInTheDocument();
     });
 });

@@ -75,4 +75,32 @@ function customFormatJSON(toFormat) {
     return output;
 }
 
-export { processSavedValues, formatJSON, customFormatJSON }
+/**
+ * Extract response data that is defined by a multi-level key
+ * @param {string} key the multi-level key to be decomposed and processed
+ * @param {Object} response the response object to extract the data from
+ * @returns the extracted data, or null if no data is available
+ */
+function extractNestedResponseData(key, response) {
+    let levels = key.split("/");
+
+    if (response.data) {
+        let data = response.data;
+
+        while (levels.length > 0) { // repeatedly remove first element, narrowing down data
+            let key = levels.shift();
+
+            if (key in data) {
+                data = data[key];
+            } else {
+                return null;
+            }
+        }
+
+        return data;
+    }
+
+    return null;
+};
+
+export { processSavedValues, formatJSON, customFormatJSON, extractNestedResponseData }

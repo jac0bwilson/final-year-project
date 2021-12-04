@@ -4,7 +4,7 @@ import axios from "axios";
 import { Request } from "./request";
 import { TextIcon } from "./icon";
 
-import { processSavedValues } from "../utilities";
+import { processSavedValues, extractNestedResponseData } from "../utilities";
 
 import "./workflow.css";
 
@@ -118,6 +118,7 @@ function Workflow() {
             let newValues = { ...previous };
             newValues[config.name] = {
                 data: config.data,
+                key: config.key,
                 availableFrom: config.availableFrom
             };
 
@@ -131,7 +132,6 @@ function Workflow() {
      * @param {number} index the index of the request being run
      */
     const runRequest = (request, index) => {
-        // TODO: need to update saved values on each run through
         let config = {
             url: request.url,
             method: request.method
@@ -164,6 +164,24 @@ function Workflow() {
                 newResponses[index] = values;
 
                 return newResponses;
+            });
+
+            editSavedValues(previous => {
+                let newValues = { ...previous };
+
+                if ("data" in values) { // check if request went well
+                    for (const [key, value] of Object.entries(previous)) { // iterate through saved values
+                        if (value.availableFrom === index) { // if value defined in this request
+                            let updatedValue = extractNestedResponseData(value.key, values); // extract new value
+
+                            if (updatedValue !== null) {
+                                newValues[key]["data"] = updatedValue;
+                            }
+                        }
+                    }
+                }
+
+                return newValues;
             });
         });
     };
