@@ -92,7 +92,7 @@ function Workflow() {
 
             for (const [key, value] of Object.entries(previous)) {
                 let comparison = value.availableFrom;
-                
+
                 if (comparison > index) {
                     let newValue = { ...value };
                     newValue.availableFrom = comparison - 1;
@@ -236,7 +236,16 @@ function Workflow() {
         }
 
         return available;
-    }
+    };
+
+    /**
+     * Checks to see if the name of a variable already exists or not
+     * @param {string} name the name of the variable to check
+     * @returns whether the name is already in use or not
+     */
+    const checkForVariableConflicts = (name) => {
+        return name in savedValues;
+    };
 
     return (
         <div className="workflow">
@@ -249,6 +258,7 @@ function Workflow() {
                         handleDelete={handleDelete}
                         handleSave={handleSave}
                         runSomeRequests={runSomeRequests}
+                        checkForVariableConflicts={checkForVariableConflicts}
                         url={value.url}
                         method={value.method}
                         args={value.arguments}

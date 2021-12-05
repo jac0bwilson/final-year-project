@@ -13,6 +13,7 @@ import "./request.css";
  * @param {*} handleDelete the function to delete the request in the workflow
  * @param {*} handleSave the function to save a value out of an executed request
  * @param {*} runSomeRequests the function to run the individual request
+ * @param {*} checkForVariableConflicts the function to check that a variable name is not in use
  * @param {string} url the URL to be displayed - "" by default
  * @param {string} method the HTTP method to be displayed - "GET" by default
  * @param {string} args the arguments to be sent to the endpoint - "" by default
@@ -21,9 +22,10 @@ import "./request.css";
  * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRequests, url = "", method = "get", args = "", response = {}, saved, newInput = false, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRequests, checkForVariableConflicts, url = "", method = "get", args = "", response = {}, saved, newInput = false, idx }) {
     const [urlError, setUrlError] = useState(false);
     const [argsError, setArgsError] = useState(false);
+    const [variableError, setVarError] = useState(false);
     const [editable, setEditable] = useState(newInput);
     const [selectedMethod, setMethod] = useState(method);
     const [savedArgs, setArgs] = useState(args);
@@ -118,6 +120,23 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         }
 
         setArgsError(false);
+    };
+
+    /**
+     * Checks the current value of the name to assign to a saved value and sets the state to indicate if it is valid
+     * @param {*} event the event caused by the field being edited
+     */
+    const validateVariableName = (event) => {
+        let toCheck = event.target.value;
+
+        let matches = toCheck.match(/^[A-Za-z0-9]+$/);
+
+        if (!matches || checkForVariableConflicts(toCheck)) {
+            setVarError(true);
+            return;
+        }
+
+        setVarError(false);
     };
 
     /**
@@ -259,12 +278,17 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                         <input
                             name="url"
                             data-testid={getTestId("url")}
-                            className="input is-link"
+                            className={"input" + (urlError ? " is-danger" : " is-link")}
                             defaultValue={url}
                             placeholder="https://google.com/test"
                             disabled={!editable}
                             onChange={validateURL}
                         />
+                        {(urlError && editable) &&
+                            <p data-testid={getTestId("url-error")} className="help is-danger">
+                                The provided URL is not valid, please correct it.
+                            </p>
+                        } {/* only shown when state indicates an error in the URL */}
                     </div>
 
                     <div className="control select is-link">
@@ -278,28 +302,22 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                     </div>
                 </div>
 
-                {(urlError && editable) &&
-                    <div data-testid={getTestId("url-error")} className="notification is-danger">
-                        The provided URL is not valid, please correct it.
-                    </div>
-                } {/* only shown when state indicates an error in the URL */}
-
                 {/* Arguments and response (if applicable) */}
                 <div className="columns field">
                     <div className="column box">
                         <textarea
                             name="arguments"
                             data-testid={getTestId("arguments")}
-                            className="textarea has-fixed-size"
+                            className={"textarea has-fixed-size" + (argsError ? " is-danger" : "")}
                             defaultValue={savedArgs}
                             placeholder="{ ... }"
                             disabled={!editable}
                             onChange={validateArgs}
                         />
                         {(argsError && editable) &&
-                            <div data-testid={getTestId("arguments-error")} className="notification is-danger">
+                            <p data-testid={getTestId("arguments-error")} className="help is-danger">
                                 The provided arguments are not valid, please correct them.
-                            </div>
+                            </p>
                         }
                     </div>
                     {!newInput &&
@@ -373,7 +391,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
 
                             <form onSubmit={onValueSave}>
                                 <div className="field is-horizontal">
-                                    <div className="field-label is-normal">
+                                    <div className="field-label">
                                         <label className="label">Value to Save:</label>
                                     </div>
                                     <div className="field-body">
@@ -392,13 +410,18 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                                 </div>
 
                                 <div className="field is-horizontal">
-                                    <div className="field-label is-normal">
+                                    <div className="field-label">
                                         <label className="label">Assigned Name:</label>
                                     </div>
                                     <div className="field-body">
                                         <div className="field">
                                             <div className="control">
-                                                <input name="name" data-testid={getTestId("save-value-name")} className="input" type="text" />
+                                                <input name="name" data-testid={getTestId("save-value-name")} className={"input" + (variableError ? " is-danger" : "")} type="text" onChange={validateVariableName} />
+                                                {variableError &&
+                                                    <p data-testid={getTestId("variable-error")} className="help is-danger">
+                                                        Please enter an unused, alphanumeric variable name.
+                                                    </p>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -407,9 +430,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                                 <nav className="level">
                                     <div className="level-left" />
                                     <div className="level-right">
-                                        {/* TODO: disable button if name is left as blank, or conflicting names */}
-                                        {/* TODO: validate that only contains alphanumeric characters */}
-                                        <button data-testid={getTestId("save-value")} className="button is-success" type="submit">
+                                        <button data-testid={getTestId("save-value")} className="button is-success" type="submit" disabled={variableError}>
                                             <TextIcon text="Done" iconName="fa-check" />
                                         </button>
                                     </div>
