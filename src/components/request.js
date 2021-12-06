@@ -262,9 +262,16 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
             );
         } else {
             return (
-                <p>
-                    No response yet, try running the workflow!
-                </p>
+                <section className="hero">
+                    <div className="hero-body">
+                        <p className="title">
+                            No response yet
+                        </p>
+                        <p className="subtitle">
+                            Try running the workflow
+                        </p>
+                    </div>
+                </section>
             )
         }
     };
@@ -304,14 +311,14 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
 
                 {/* Arguments and response (if applicable) */}
                 <div className="columns field">
-                    <div className="column box">
+                    <div className={"arguments-container column box" + (!newInput ? " is-half" : "")}>
                         <textarea
                             name="arguments"
                             data-testid={getTestId("arguments")}
-                            className={"textarea has-fixed-size" + (argsError ? " is-danger" : "")}
+                            className={"arguments textarea has-fixed-size" + (argsError ? " is-danger" : "")}
                             defaultValue={savedArgs}
                             placeholder="{ ... }"
-                            disabled={!editable}
+                            readOnly={!editable}
                             onChange={validateArgs}
                         />
                         {(argsError && editable) &&
@@ -321,7 +328,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                         }
                     </div>
                     {!newInput &&
-                        <div data-testid={getTestId("response")} className="column box">{renderResponse()}</div>
+                        <div data-testid={getTestId("response")} className="column is-half box">{renderResponse()}</div>
                     }
                 </div>
 

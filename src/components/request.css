@@ -8,3 +8,12 @@
 .request-inputs {
     padding-right: 10px;
 }
+
+.arguments {
+    height: 100% !important;
+    font-family: monospace;
+}
+
+.arguments-container {
+    margin-bottom: 0px !important;
+}
