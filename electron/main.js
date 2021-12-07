@@ -1,4 +1,6 @@
 const { app, BrowserWindow, screen } = require("electron");
+const isDev = require("electron-is-dev");
+const path = require("path");
 
 function mainWindow() {
     let window = new BrowserWindow({
@@ -8,7 +10,7 @@ function mainWindow() {
         backgroundColor: "white"
     });
 
-    const startUrl = "http://localhost:3000";
+    const startUrl = isDev ? "http://localhost:3000": `file://${path.join(__dirname, "../build/index.html")}`;
 
     window.loadURL(startUrl);
 
