@@ -24,7 +24,8 @@ function Workflow() {
         const newRequest = {
             url: event.target.elements.url.value,
             method: event.target.elements.method.value,
-            arguments: event.target.elements.arguments.value
+            arguments: event.target.elements.arguments.value,
+            headers: event.target.elements.headers.value
         };
 
         editRequests(requests.concat([newRequest])); // adds the new data to the list in state
@@ -39,7 +40,8 @@ function Workflow() {
         const modifiedRequest = {
             url: event.target.elements.url.value,
             method: event.target.elements.method.value,
-            arguments: event.target.elements.arguments.value
+            arguments: event.target.elements.arguments.value,
+            headers: event.target.elements.headers.value
         };
 
         editRequests(previous => {
@@ -147,7 +149,8 @@ function Workflow() {
             return {
                 data: response.data,
                 status: response.status,
-                statusText: response.statusText
+                statusText: response.statusText,
+                headers: response.headers
             };
         }).catch((error) => { // if an error was thrown, save the status code and description
             // console.log(error.response);
@@ -262,6 +265,7 @@ function Workflow() {
                         url={value.url}
                         method={value.method}
                         args={value.arguments}
+                        headers={value.headers}
                         response={responses[index] ? responses[index] : {}}
                         saved={filterSavedValues(index)}
                         idx={index}

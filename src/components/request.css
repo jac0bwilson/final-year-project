@@ -5,15 +5,23 @@
     margin-bottom: 15px;
 }
 
-.request-inputs {
-    padding-right: 10px;
-}
-
-.arguments {
+.json-input {
     height: 100% !important;
     font-family: monospace;
 }
 
-.arguments-container {
+.json-input-container {
     margin-bottom: 0px !important;
+}
+
+.toggle:disabled {
+    opacity: 1 !important;
+}
+
+.columns {
+    margin-top: 0 !important;
+}
+
+.hidden {
+    display: none !important;
 }

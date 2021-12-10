@@ -17,19 +17,22 @@ import "./request.css";
  * @param {string} url the URL to be displayed - "" by default
  * @param {string} method the HTTP method to be displayed - "GET" by default
  * @param {string} args the arguments to be sent to the endpoint - "" by default
+ * @param {string} headers the headers to use in the request - "" by default
  * @param {Object} response the response to the request if run from outside
  * @param {Object} saved the available saved values for this request
  * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRequests, checkForVariableConflicts, url = "", method = "get", args = "", response = {}, saved, newInput = false, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRequests, checkForVariableConflicts, url = "", method = "get", args = "", headers = "", response = {}, saved, newInput = false, idx }) {
     const [urlError, setUrlError] = useState(false);
     const [argsError, setArgsError] = useState(false);
     const [variableError, setVarError] = useState(false);
     const [editable, setEditable] = useState(newInput);
     const [selectedMethod, setMethod] = useState(method);
     const [savedArgs, setArgs] = useState(args);
+    const [savedHeaders, setHeaders] = useState(headers);
     const [displaySaving, setDisplaySaving] = useState(false);
+    const [displayPayload, setDisplayPayload] = useState(true);
 
     /**
      * Update method when component receives new values
@@ -44,6 +47,13 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
     useEffect(() => {
         setArgs(args);
     }, [args]);
+
+    /**
+     * Update headers when component receives new values
+     */
+     useEffect(() => {
+        setHeaders(headers);
+    }, [headers]);
 
     /**
      * Flatten an object and get the list of it's keys
@@ -155,6 +165,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                 handleSubmit(event);
                 setMethod("get");
                 setArgs("");
+                setHeaders("");
             } else { // if an existing item has been rendered
                 handleEdit(event, idx);
                 setEditable(false);
@@ -188,6 +199,15 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
      */
     const toggleSaving = () => {
         setDisplaySaving(previous => {
+            return !previous;
+        });
+    };
+
+    /**
+     * Toggle the display of payloads and headers
+     */
+    const toggleTabs = () => {
+        setDisplayPayload(previous => {
             return !previous;
         });
     };
@@ -243,7 +263,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
             return (
                 <pre data-testid={getTestId("response-data")}>
                     <code data-testid={getTestId("response-data-text")}>
-                        {JSON.stringify(response.data, null, 2)}
+                        {JSON.stringify(displayPayload ? response.data : response.headers, null, 2)}
                     </code>
                 </pre>
             );
@@ -280,7 +300,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         <div data-testid={getTestId("request")} className="request-container">
             <form onSubmit={onSubmit}>
                 {/* URL and method */}
-                <div className="field has-addons request-inputs">
+                <div className="field has-addons">
                     <div className="control is-expanded" key={url}>
                         <input
                             name="url"
@@ -309,18 +329,47 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                     </div>
                 </div>
 
+                <div className="field has-addons has-addons-centered">
+                    <div className="control">
+                        <button className={"toggle button" + (displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-payload")} type="button" disabled={displayPayload && !editable} onClick={toggleTabs}>
+                            Payload
+                        </button>
+                    </div>
+                    <div className="control">
+                        <button className={"toggle button" + (!displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-headers")} type="button" disabled={!displayPayload && !editable} onClick={toggleTabs}>
+                            Headers
+                        </button>
+                    </div>
+                </div>
+                {/* 
+                // TODO: add toggle between showing headers and body - DONE
+                // TODO: add collection and presentation of headers
+                // TODO: only show body option and data if request method needs it
+                // TODO: add more exotic HTTP methods
+                */}
+
                 {/* Arguments and response (if applicable) */}
                 <div className="columns field">
-                    <div className={"arguments-container column box" + (!newInput ? " is-half" : "")}>
+                    <div className={"json-input-container column box" + (!newInput ? " is-half" : "")}>
                         <textarea
                             name="arguments"
                             data-testid={getTestId("arguments")}
-                            className={"arguments textarea has-fixed-size" + (argsError ? " is-danger" : "")}
+                            className={"json-input textarea has-fixed-size" + (argsError ? " is-danger" : "") + (!displayPayload ? " hidden" : "")}
                             defaultValue={savedArgs}
                             placeholder="{ ... }"
                             readOnly={!editable}
                             onChange={validateArgs}
                         />
+                        <textarea
+                            name="headers"
+                            data-testid={getTestId("headers")}
+                            className={"json-input textarea has-fixed-size" + (argsError ? " is-danger" : "") + (displayPayload ? " hidden" : "")}
+                            defaultValue={savedHeaders}
+                            placeholder="{ ... }"
+                            readOnly={!editable}
+                            onChange={validateArgs}
+                        />
+
                         {(argsError && editable) &&
                             <p data-testid={getTestId("arguments-error")} className="help is-danger">
                                 The provided arguments are not valid, please correct them.
