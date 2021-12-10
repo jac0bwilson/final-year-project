@@ -136,7 +136,8 @@ function Workflow() {
     const runRequest = (request, index) => {
         let config = {
             url: request.url,
-            method: request.method
+            method: request.method,
+            headers: request.headers.length > 0 ? JSON.parse(request.headers) : {}
         };
 
         if (request.method !== "get") {

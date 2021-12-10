@@ -159,7 +159,9 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         if (!urlError && !argsError) {
             // if the arguments are a valid JSON string, replace it with a formatted version
             let tempArgs = event.target.elements.arguments.value;
+            let tempHeaders = event.target.elements.headers.value;
             event.target.elements.arguments.value = tempArgs.length > 0 ? customFormatJSON(tempArgs) : "";
+            event.target.elements.headers.value = tempHeaders.length > 0 ? customFormatJSON(tempHeaders) : "";
 
             if (newInput) { // if the item has just been created
                 handleSubmit(event);
@@ -343,7 +345,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                 </div>
                 {/* 
                 // TODO: add toggle between showing headers and body - DONE
-                // TODO: add collection and presentation of headers
+                // TODO: add collection and presentation of headers - DONE
                 // TODO: only show body option and data if request method needs it
                 // TODO: add more exotic HTTP methods
                 */}

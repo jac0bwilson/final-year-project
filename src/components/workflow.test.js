@@ -92,6 +92,13 @@ describe("Workflow Instantiation", () => {
         expect(getByTestId("save-value-name-0")).toBeInTheDocument(); // save values naming present
         expect(getByTestId("save-value-0")).toBeInTheDocument(); // save values button present
     });
+
+    test("Payload/Header Toggle", () => {
+        const {getByTestId} = render(<Workflow />);
+
+        expect(getByTestId("toggle-payload-main")).toBeInTheDocument(); // payload toggle present
+        expect(getByTestId("toggle-headers-main")).toBeInTheDocument(); // headers toggle present
+    });
 });
 
 describe("Data Validation", () => {
