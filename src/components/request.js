@@ -51,7 +51,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
     /**
      * Update headers when component receives new values
      */
-     useEffect(() => {
+    useEffect(() => {
         setHeaders(headers);
     }, [headers]);
 
@@ -253,7 +253,37 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         runSomeRequests(idx, true);
     };
 
-    const httpMethods = ["get", "post", "put", "delete"];
+    const httpMethods = {
+        get: {
+            requestHasBody: false,
+            responseHasBody: true,
+        },
+        head: {
+            requestHasBody: false,
+            responseHasBody: false
+        },
+        post: {
+            requestHasBody: true,
+            responseHasBody: true,
+        },
+        put: {
+            requestHasBody: true,
+            responseHasBody: false
+        },
+        delete: {
+            requestHasBody: true,
+            responseHasBody: true,
+        },
+        options: {
+            requestHasBody: false,
+            responseHasBody: false
+        },
+        patch: {
+            requestHasBody: true,
+            responseHasBody: true,
+        }
+        // "connect" & "trace" are not implemented in axios
+    };
 
     /**
      * Creates the appropriate output based on the response to the request, either a formatted JSON,
@@ -322,7 +352,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
 
                     <div className="control select is-link">
                         <select name="method" data-testid={getTestId("method")} className="select" value={selectedMethod} disabled={!editable} onChange={(e) => setMethod(e.target.value)}>
-                            {httpMethods.map((value) => {
+                            {Object.keys(httpMethods).map((value) => {
                                 return (
                                     <option value={value} key={value}>{value.toUpperCase()}</option>
                                 );
@@ -333,12 +363,12 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
 
                 <div className="field has-addons has-addons-centered">
                     <div className="control">
-                        <button className={"toggle button" + (displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-payload")} type="button" disabled={displayPayload && !editable} onClick={toggleTabs}>
+                        <button className={"toggle button" + (displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-payload")} type="button" disabled={displayPayload} onClick={toggleTabs}>
                             Payload
                         </button>
                     </div>
                     <div className="control">
-                        <button className={"toggle button" + (!displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-headers")} type="button" disabled={!displayPayload && !editable} onClick={toggleTabs}>
+                        <button className={"toggle button" + (!displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-headers")} type="button" disabled={!displayPayload} onClick={toggleTabs}>
                             Headers
                         </button>
                     </div>
@@ -346,8 +376,8 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                 {/* 
                 // TODO: add toggle between showing headers and body - DONE
                 // TODO: add collection and presentation of headers - DONE
-                // TODO: only show body option and data if request method needs it
-                // TODO: add more exotic HTTP methods
+                // TODO: only show body option and data if request method needs it - PARTIAL
+                // TODO: add more exotic HTTP methods - DONE
                 */}
 
                 {/* Arguments and response (if applicable) */}
@@ -359,7 +389,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                             className={"json-input textarea has-fixed-size" + (argsError ? " is-danger" : "") + (!displayPayload ? " hidden" : "")}
                             defaultValue={savedArgs}
                             placeholder="{ ... }"
-                            readOnly={!editable}
+                            readOnly={!editable || !httpMethods[selectedMethod].requestHasBody}
                             onChange={validateArgs}
                         />
                         <textarea

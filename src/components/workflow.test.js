@@ -94,7 +94,7 @@ describe("Workflow Instantiation", () => {
     });
 
     test("Payload/Header Toggle", () => {
-        const {getByTestId} = render(<Workflow />);
+        const { getByTestId } = render(<Workflow />);
 
         expect(getByTestId("toggle-payload-main")).toBeInTheDocument(); // payload toggle present
         expect(getByTestId("toggle-headers-main")).toBeInTheDocument(); // headers toggle present
@@ -129,6 +129,7 @@ describe("Data Validation", () => {
     test("Invalid Arguments", () => {
         const { getByTestId } = render(<Workflow />);
 
+        userEvent.selectOptions(getByTestId("method-main"), "post"); // select post
         userEvent.type(getByTestId("arguments-main"), "{\"abc\"}"); // type incomplete arguments
 
         expect(screen.queryByTestId("arguments-error-main")).toBeInTheDocument(); // should show
@@ -193,6 +194,7 @@ describe("Interaction", () => {
         const ARGS = "{\"a\":\"abc\"}";
 
         userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), "post"); // select post
         userEvent.type(getByTestId("arguments-main"), ARGS); // type arguments
         userEvent.click(getByTestId("done-main")); // click done
 
@@ -248,6 +250,7 @@ describe("Interaction", () => {
         const ARGS_2 = "{\"a\":\"def\"}";
 
         userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), "post"); // select post
         userEvent.type(getByTestId("arguments-main"), ARGS_1); // type arguments
         userEvent.click(getByTestId("done-main")); // click done
 
@@ -301,10 +304,29 @@ describe("Interaction", () => {
         expect(screen.queryByTestId("method-1")).not.toBeInTheDocument(); // 0 removed, 1 set to 0
         expect(screen.queryByDisplayValue(URL_1)).not.toBeInTheDocument(); // first URL removed
 
-        expect(screen.queryByTestId("url-0")).toBeInTheDocument(); // 0 removed, 1 set to 0
-        expect(screen.queryByTestId("method-0")).toBeInTheDocument(); // 0 removed, 1 set to 0
-        expect(screen.queryByDisplayValue(URL_2)).toBeInTheDocument(); // second URL present
+        expect(screen.getByTestId("url-0")).toBeInTheDocument(); // 0 removed, 1 set to 0
+        expect(screen.getByTestId("method-0")).toBeInTheDocument(); // 0 removed, 1 set to 0
+        expect(screen.getByDisplayValue(URL_2)).toBeInTheDocument(); // second URL present
         expect(getByTestId("method-0")).toHaveDisplayValue(METHOD_2.toUpperCase()); // method present
+    });
+
+    test("Toggle to Headers", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+
+        userEvent.click(getByTestId("toggle-headers-0")); // click headers switch
+
+        const { getByText } = within(getByTestId("response-data-text-0"));
+        expect(getByText("\"content-type\": \"application/json\"", { exact: false })).toBeInTheDocument(); // header string present
     });
 });
 
@@ -390,6 +412,26 @@ describe("Running Requests", () => {
 
         await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
     });
+
+    test("Successful PATCH Request", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const METHOD = "patch";
+        const URL = "https://httpbin.org/" + METHOD;
+        const DATA = "{\"abc\":\"def\"}";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), METHOD); // select method
+        userEvent.type(getByTestId("arguments-main"), DATA); // type arguments
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+    });
+
+    // TODO: tests for HEAD, OPTIONS
 
     test("Run Individual Request", async () => {
         const { getByTestId } = render(<Workflow />);
