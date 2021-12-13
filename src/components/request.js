@@ -26,6 +26,7 @@ import "./request.css";
 function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRequests, checkForVariableConflicts, url = "", method = "get", args = "", headers = "", response = {}, saved, newInput = false, idx }) {
     const [urlError, setUrlError] = useState(false);
     const [argsError, setArgsError] = useState(false);
+    const [headerError, setHeaderError] = useState(false);
     const [variableError, setVarError] = useState(false);
     const [editable, setEditable] = useState(newInput);
     const [selectedMethod, setMethod] = useState(method);
@@ -119,17 +120,28 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
      */
     const validateArgs = (event) => {
         let toCheck = processSavedValues(event.target.value, saved); // apply the saved values and then do the validation
+        let name = event.target.name;
 
         if (toCheck.length > 0) {
             try {
                 JSON.parse(toCheck);
             } catch (e) {
-                setArgsError(true);
+
+                if (name === "arguments") {
+                    setArgsError(true);
+                } else if (name === "headers") {
+                    setHeaderError(true);
+                }
+
                 return;
             }
         }
 
-        setArgsError(false);
+        if (name === "arguments") {
+            setArgsError(false);
+        } else if (name === "headers") {
+            setHeaderError(false);
+        }
     };
 
     /**
@@ -287,7 +299,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
 
     /**
      * Creates the appropriate output based on the response to the request, either a formatted JSON,
-     * a Bulma Hero card for an error, or a simple message if there is no response yet
+     * or a Bulma Hero card
      * @returns HTML output
      */
     const renderResponse = () => {
@@ -313,7 +325,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                 </section>
             );
         } else {
-            return (
+            return ( // if not run yet, use Bulma hero card to say so
                 <section className="hero">
                     <div className="hero-body">
                         <p className="title">
@@ -395,7 +407,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                         <textarea
                             name="headers"
                             data-testid={getTestId("headers")}
-                            className={"json-input textarea has-fixed-size" + (argsError ? " is-danger" : "") + (displayPayload ? " hidden" : "")}
+                            className={"json-input textarea has-fixed-size" + (headerError ? " is-danger" : "") + (displayPayload ? " hidden" : "")}
                             defaultValue={savedHeaders}
                             placeholder="{ ... }"
                             readOnly={!editable}
@@ -404,7 +416,13 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
 
                         {(argsError && editable) &&
                             <p data-testid={getTestId("arguments-error")} className="help is-danger">
-                                The provided arguments are not valid, please correct them.
+                                The provided arguments are invalid, please correct them.
+                            </p>
+                        }
+                        
+                        {(headerError && editable) &&
+                            <p data-testid={getTestId("arguments-error")} className="help is-danger">
+                                The provided headers are invalid, please correct them.
                             </p>
                         }
                     </div>
