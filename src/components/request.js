@@ -385,12 +385,6 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                         </button>
                     </div>
                 </div>
-                {/* 
-                // TODO: add toggle between showing headers and body - DONE
-                // TODO: add collection and presentation of headers - DONE
-                // TODO: only show body option and data if request method needs it - PARTIAL
-                // TODO: add more exotic HTTP methods - DONE
-                */}
 
                 {/* Arguments and response (if applicable) */}
                 <div className="columns field">
@@ -419,7 +413,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                                 The provided arguments are invalid, please correct them.
                             </p>
                         }
-                        
+
                         {(headerError && editable) &&
                             <p data-testid={getTestId("arguments-error")} className="help is-danger">
                                 The provided headers are invalid, please correct them.

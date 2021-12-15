@@ -431,7 +431,35 @@ describe("Running Requests", () => {
         await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
     });
 
-    // TODO: tests for HEAD, OPTIONS
+    test("Successful HEAD Request", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), "head"); // select method
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+    });
+
+    test("Successful OPTIONS Request", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), "options"); // select method
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // new cell present
+
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+    });
 
     test("Run Individual Request", async () => {
         const { getByTestId } = render(<Workflow />);
