@@ -333,7 +333,7 @@ describe("Interaction", () => {
 describe("Running Requests", () => {
     test("404 Error", async () => {
         const { getByTestId } = render(<Workflow />);
-        const URL = "http://httpstat.us/404";
+        const URL = "http://httpbin.org/status/404";
 
         userEvent.type(getByTestId("url-main"), URL); // type URL
         userEvent.click(getByTestId("done-main")); // click done
