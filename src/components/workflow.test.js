@@ -106,8 +106,16 @@ describe("Data Validation", () => {
         const { getByTestId } = render(<Workflow />);
 
         userEvent.type(getByTestId("url-main"), "https://google.com"); // type URL
-
         expect(screen.queryByTestId("url-error-main")).not.toBeInTheDocument(); // should not show
+        userEvent.clear(getByTestId("url-main"));
+
+        userEvent.type(getByTestId("url-main"), "https://localhost:5000"); // type localhost URL 
+        expect(screen.queryByTestId("url-error-main")).not.toBeInTheDocument(); // should not show
+        userEvent.clear(getByTestId("url-main"));
+
+        userEvent.type(getByTestId("url-main"), "http://localhost:5000"); // type localhost URL 
+        expect(screen.queryByTestId("url-error-main")).not.toBeInTheDocument(); // should not show
+        userEvent.clear(getByTestId("url-main"));
     });
 
     test("Valid Arguments", () => {
@@ -122,8 +130,12 @@ describe("Data Validation", () => {
         const { getByTestId } = render(<Workflow />);
 
         userEvent.type(getByTestId("url-main"), "https://google"); // type incomplete URL
-
         expect(screen.queryByTestId("url-error-main")).toBeInTheDocument(); // should show
+        userEvent.clear(getByTestId("url-main"));
+
+        userEvent.type(getByTestId("url-main"), "www.google.com"); // type URL with no protocol
+        expect(screen.queryByTestId("url-error-main")).toBeInTheDocument(); // should show
+        userEvent.clear(getByTestId("url-main"));
     });
 
     test("Invalid Arguments", () => {

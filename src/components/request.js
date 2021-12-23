@@ -105,8 +105,20 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         let toCheck = event.target.value;
 
         if (toCheck.length > 0) { // prevents error being shown on empty strings
-            let options = {protocols: ["http", "https"], require_protocol: true};
+            let options = { protocols: ["http", "https"], require_protocol: true };
             let valid = isURL(toCheck, options);
+
+            if (!valid) { // special case handling for localhost
+                try {
+                    let tester = new URL(toCheck);
+
+                    if (["http", "https"].includes(tester.protocol.slice(0, -1)) && tester.hostname === "localhost") {
+                        valid = true;
+                    }
+                } catch (e) {
+                    valid = false;
+                }
+            }
 
             setUrlError(!valid);
             return;
