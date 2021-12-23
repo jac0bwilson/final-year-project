@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import isURL from "validator/lib/isURL";
+
 import { TextIcon, Icon } from "./icon";
 
 import { processSavedValues, customFormatJSON, extractNestedResponseData } from "../utilities";
@@ -103,13 +105,13 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         let toCheck = event.target.value;
 
         if (toCheck.length > 0) { // prevents error being shown on empty strings
-            try {
-                new URL(toCheck);
-            } catch (e) {
-                setUrlError(true);
-                return; // needs to be done to prevent falling to default case
-            }
+            let options = {protocols: ["http", "https"], require_protocol: true};
+            let valid = isURL(toCheck, options);
+
+            setUrlError(!valid);
+            return;
         }
+
 
         setUrlError(false);
     };
