@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { Request } from "./request";
 import { TextIcon } from "./icon";
+import { Sidebar } from "./sidebar";
 
 import { processSavedValues, extractNestedResponseData } from "../utilities";
 
@@ -254,37 +255,42 @@ function Workflow() {
     };
 
     return (
-        <div className="workflow">
-            {requests.length > 0 && requests.map((value, index) => {
-                return (
-                    <Request
-                        key={index}
-                        handleSubmit={handleSubmit}
-                        handleEdit={handleEdit}
-                        handleDelete={handleDelete}
-                        handleSave={handleSave}
-                        runSomeRequests={runSomeRequests}
-                        checkForVariableConflicts={checkForVariableConflicts}
-                        url={value.url}
-                        method={value.method}
-                        args={value.arguments}
-                        headers={value.headers}
-                        response={responses[index] ? responses[index] : {}}
-                        saved={filterSavedValues(index)}
-                        idx={index}
-                    />
-                );
-            })} {/* displays when any request details have been provided */}
+        <div className="content columns is-fullheight">
+            <aside className="sidebar column is-2 is-narrow-mobile is-fullheight is-hidden-mobile">
+                <Sidebar savedValues={savedValues} />
+            </aside>
+            <div className="workflow column is-10">
+                {requests.length > 0 && requests.map((value, index) => {
+                    return (
+                        <Request
+                            key={index}
+                            handleSubmit={handleSubmit}
+                            handleEdit={handleEdit}
+                            handleDelete={handleDelete}
+                            handleSave={handleSave}
+                            runSomeRequests={runSomeRequests}
+                            checkForVariableConflicts={checkForVariableConflicts}
+                            url={value.url}
+                            method={value.method}
+                            args={value.arguments}
+                            headers={value.headers}
+                            response={responses[index] ? responses[index] : {}}
+                            saved={filterSavedValues(index)}
+                            idx={index}
+                        />
+                    );
+                })} {/* displays when any request details have been provided */}
 
-            {requests.length > 0 &&
-                <div className="has-text-centered">
-                    <button data-testid="run" className="button is-primary is-rounded is-medium run-button" onClick={runAllRequests}>
-                        <TextIcon text="Run Workflow" iconName="fa-play" />
-                    </button>
-                </div>
-            } {/* displays when any request details have been provided */}
+                {requests.length > 0 &&
+                    <div className="has-text-centered">
+                        <button data-testid="run" className="button is-primary is-rounded is-medium run-button" onClick={runAllRequests}>
+                            <TextIcon text="Run Workflow" iconName="fa-play" />
+                        </button>
+                    </div>
+                } {/* displays when any request details have been provided */}
 
-            <Request handleSubmit={handleSubmit} saved={savedValues} newInput={true} />
+                <Request handleSubmit={handleSubmit} saved={savedValues} newInput={true} />
+            </div>
         </div>
     );
 }
