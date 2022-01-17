@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 import { Request } from "./request";
-import { TextIcon } from "./icon";
+import { Icon, TextIcon } from "./icon";
 import { Sidebar } from "./sidebar";
 
 import { processSavedValues, extractNestedResponseData } from "../utilities";
@@ -16,6 +16,13 @@ function Workflow() {
     const [requests, editRequests] = useState([]);
     const [responses, editResponses] = useState({});
     const [savedValues, editSavedValues] = useState({});
+    const [sidebar, setSidebar] = useState(false);
+
+    const toggleSidebar = () => {
+        setSidebar(previous => {
+            return !previous;
+        });
+    };
 
     /**
      * Handles new submissions of information, on submission of the form
@@ -256,10 +263,12 @@ function Workflow() {
 
     return (
         <div className="content columns is-fullheight">
-            <aside className="sidebar column is-2 is-narrow-mobile is-fullheight is-hidden-mobile">
-                <Sidebar savedValues={savedValues} />
-            </aside>
-            <div className="workflow column is-10">
+            {sidebar && 
+                <aside className="sidebar column is-2 is-fullheight">
+                    <Sidebar savedValues={savedValues} />
+                </aside>
+            }
+            <div className={"workflow column" + (sidebar ? " is-10 blurred" : "")}>
                 {requests.length > 0 && requests.map((value, index) => {
                     return (
                         <Request
@@ -290,7 +299,11 @@ function Workflow() {
                 } {/* displays when any request details have been provided */}
 
                 <Request handleSubmit={handleSubmit} saved={savedValues} newInput={true} />
+
             </div>
+            <button className="show-sidebar has-background-primary" onClick={toggleSidebar}>
+                <Icon iconName="fa-info" />
+            </button>
         </div>
     );
 }

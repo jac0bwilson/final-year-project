@@ -6,3 +6,7 @@ table {
 td {
     word-wrap: break-word;
 }
+
+.sidebar {
+    position: sticky;
+}

@@ -16,8 +16,8 @@ function Sidebar({ savedValues }) {
                 <tr>
                     <th>Name</th>
                     <th>Value</th>
-                    <th>Type</th>
-                    <th>Defined</th>
+                    {/* <th>Type</th> */}
+                    {/* <th>Defined</th> */}
                 </tr>
             </thead>
             <tbody>
@@ -29,8 +29,8 @@ function Sidebar({ savedValues }) {
                             <tr key={value}>
                                 <td>{item.key}</td>
                                 <td>{item.data}</td>
-                                <td>{typeof item.data}</td>
-                                <td>{item.availableFrom}</td>
+                                {/* <td>{typeof item.data}</td> */}
+                                {/* <td>{item.availableFrom}</td> */}
                             </tr>
                         )
                     })
@@ -41,4 +41,4 @@ function Sidebar({ savedValues }) {
     );
 }
 
-export { Sidebar }
+export { Sidebar };

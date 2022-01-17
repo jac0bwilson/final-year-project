@@ -3,6 +3,11 @@
     max-width: inherit;
 }
 
+.blurred {
+    filter: blur(2px);
+    pointer-events: none;
+}
+
 .workflow {
     max-width: inherit;
 }
@@ -13,4 +18,24 @@
 
 .run-button {
     margin-bottom: 15px;
+}
+
+.show-sidebar {
+    border: none;
+    border-radius: 50%;
+    bottom: 40px;
+    color: white;
+    height: 60px;
+    position: fixed;
+    left: 40px;
+    text-align: center;
+    width: 60px;
+}
+
+.show-sidebar:focus {
+    outline: none;
+}
+
+.show-sidebar:hover {
+    filter: brightness(110%);
 }
