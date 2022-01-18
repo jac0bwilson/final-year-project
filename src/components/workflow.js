@@ -18,6 +18,11 @@ function Workflow() {
     const [savedValues, editSavedValues] = useState({});
     const [sidebar, setSidebar] = useState(false);
 
+    const sidebarWidth = 4;
+
+    /**
+     * Toggles the visibility of the sidebar element
+     */
     const toggleSidebar = () => {
         setSidebar(previous => {
             return !previous;
@@ -263,12 +268,12 @@ function Workflow() {
 
     return (
         <div className="content columns is-fullheight">
-            {sidebar && 
-                <aside className="sidebar column is-2 is-fullheight">
+            {sidebar &&
+                <aside className={`sidebar column is-${sidebarWidth} is-fullheight`}>
                     <Sidebar savedValues={savedValues} />
                 </aside>
             }
-            <div className={"workflow column" + (sidebar ? " is-10 blurred" : "")}>
+            <div className={"workflow column" + (sidebar ? ` is-${12 - sidebarWidth} blurred` : "")}>
                 {requests.length > 0 && requests.map((value, index) => {
                     return (
                         <Request
