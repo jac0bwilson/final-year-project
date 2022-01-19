@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import isURL from "validator/lib/isURL";
 
 import { TextIcon, Icon } from "./icon";
+import { Modal } from "./modal";
 
 import { processSavedValues, customFormatJSON, extractNestedResponseData } from "../utilities";
 
@@ -494,68 +495,55 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
             </form>
 
             {/* Saving Values Interface */}
-            {displaySaving &&
-                <div data-testid={getTestId("value-saving")} className={"modal" + (displaySaving ? " is-active" : "")}>
-                    <div className="modal-background" onClick={toggleSaving} />
-                    <div className="modal-content">
-                        <div className="box">
-                            <h1 className="title">
-                                Save Values
-                            </h1>
-
-                            <form onSubmit={onValueSave}>
-                                <div className="field is-horizontal">
-                                    <div className="field-label">
-                                        <label className="label">Value to Save:</label>
-                                    </div>
-                                    <div className="field-body">
-                                        <div className="field">
-                                            <div className="control select is-fullwidth">
-                                                <select name="target" data-testid={getTestId("save-value-select")}>
-                                                    {getResponseKeys(response.data).map((value) => {
-                                                        return (
-                                                            <option value={value} key={value}>{value}</option>
-                                                        )
-                                                    })}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
+            <Modal testId={getTestId("value-saving")} active={displaySaving} title="Save Values" close={toggleSaving}>
+                <form onSubmit={onValueSave}>
+                    <div className="field is-horizontal">
+                        <div className="field-label">
+                            <label className="label">Value to Save:</label>
+                        </div>
+                        <div className="field-body">
+                            <div className="field">
+                                <div className="control select is-fullwidth">
+                                    <select name="target" data-testid={getTestId("save-value-select")}>
+                                        {getResponseKeys(response.data).map((value) => {
+                                            return (
+                                                <option value={value} key={value}>{value}</option>
+                                            )
+                                        })}
+                                    </select>
                                 </div>
-
-                                <div className="field is-horizontal">
-                                    <div className="field-label">
-                                        <label className="label">Assigned Name:</label>
-                                    </div>
-                                    <div className="field-body">
-                                        <div className="field">
-                                            <div className="control">
-                                                <input name="name" data-testid={getTestId("save-value-name")} className={"input" + (variableError ? " is-danger" : "")} type="text" onChange={validateVariableName} />
-                                                {variableError &&
-                                                    <p data-testid={getTestId("variable-error")} className="help is-danger">
-                                                        Please enter an unused, alphanumeric variable name.
-                                                    </p>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <nav className="level">
-                                    <div className="level-left" />
-                                    <div className="level-right">
-                                        <button data-testid={getTestId("save-value")} className="button is-success" type="submit" disabled={variableError}>
-                                            <TextIcon text="Done" iconName="fa-check" />
-                                        </button>
-                                    </div>
-                                </nav>
-
-                            </form>
+                            </div>
                         </div>
                     </div>
-                    <button className="modal-close is-large" type="button" aria-label="close" onClick={toggleSaving}></button>
-                </div>
-            }
+
+                    <div className="field is-horizontal">
+                        <div className="field-label">
+                            <label className="label">Assigned Name:</label>
+                        </div>
+                        <div className="field-body">
+                            <div className="field">
+                                <div className="control">
+                                    <input name="name" data-testid={getTestId("save-value-name")} className={"input" + (variableError ? " is-danger" : "")} type="text" onChange={validateVariableName} />
+                                    {variableError &&
+                                        <p data-testid={getTestId("variable-error")} className="help is-danger">
+                                            Please enter an unused, alphanumeric variable name.
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav className="level">
+                        <div className="level-left" />
+                        <div className="level-right">
+                            <button data-testid={getTestId("save-value")} className="button is-success" type="submit" disabled={variableError}>
+                                <TextIcon text="Done" iconName="fa-check" />
+                            </button>
+                        </div>
+                    </nav>
+                </form>
+            </Modal>
         </div>
     );
 }

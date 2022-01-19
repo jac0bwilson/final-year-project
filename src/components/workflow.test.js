@@ -29,7 +29,6 @@ describe("Workflow Instantiation", () => {
         const { getByTestId } = render(<Workflow />);
 
         expect(getByTestId("done-main")).toBeInTheDocument(); // done button present
-        expect(screen.getByText("Done")).toBeInTheDocument(); // done button says "Done"
     });
 
     test("Edit Button", () => {
