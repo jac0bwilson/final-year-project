@@ -269,7 +269,7 @@ function Workflow() {
     return (
         <div className="content columns is-fullheight">
             {sidebar &&
-                <aside className={`sidebar column is-${sidebarWidth} is-fullheight`}>
+                <aside data-testid="sidebar" className={`sidebar column is-${sidebarWidth} is-fullheight`}>
                     <Sidebar savedValues={savedValues} />
                 </aside>
             }
@@ -306,7 +306,7 @@ function Workflow() {
                 <Request handleSubmit={handleSubmit} saved={savedValues} newInput={true} />
 
             </div>
-            <button className="show-sidebar has-background-primary" onClick={toggleSidebar}>
+            <button data-testid="show-sidebar" className="show-sidebar has-background-primary" onClick={toggleSidebar}>
                 <Icon iconName="fa-info" />
             </button>
         </div>

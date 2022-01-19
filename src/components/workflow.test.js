@@ -99,6 +99,24 @@ describe("Workflow Instantiation", () => {
         expect(getByTestId("toggle-payload-main")).toBeInTheDocument(); // payload toggle present
         expect(getByTestId("toggle-headers-main")).toBeInTheDocument(); // headers toggle present
     });
+
+    test("Sidebar Toggle Button", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        expect(getByTestId("show-sidebar")).toBeInTheDocument(); // sidebar toggle present
+    });
+
+    test("Sidebar", async () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.click(getByTestId("show-sidebar")); // show the sidebar
+
+        await waitFor(() => expect(getByTestId("sidebar")).toBeInTheDocument()); // sidebar present
+
+        userEvent.click(getByTestId("show-sidebar")); // hide the sidebar
+
+        await waitFor(() => expect(screen.queryByTestId("sidebar")).not.toBeInTheDocument()); // sidebar not present
+    });
 });
 
 describe("Data Validation", () => {
