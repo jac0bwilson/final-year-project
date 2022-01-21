@@ -173,8 +173,6 @@ function Workflow() {
                 status: error.response.status,
                 statusText: error.response.statusText
             };
-        }).catch(() => { // likely a CORS error
-            console.log("Likely CORS error");
         }).then((values) => {
             // add responses to an object with the index of the request used as the key for the responses
             // this prevents the order being corrupted due to any asynchronous weirdness 
@@ -202,6 +200,8 @@ function Workflow() {
 
                 return newValues;
             });
+        }).catch(() => { // likely a CORS error
+            console.log("Likely CORS error");
         });
     };
 

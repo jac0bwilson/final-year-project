@@ -391,12 +391,12 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                 {/* Toggle between payload and headers */}
                 <div className="field has-addons has-addons-centered">
                     <div className="control">
-                        <button className={"toggle button" + (displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-payload")} type="button" disabled={displayPayload} onClick={toggleTabs}>
+                        <button className={"toggle button is-family-monospace" + (displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-payload")} type="button" disabled={displayPayload} onClick={toggleTabs}>
                             Payload
                         </button>
                     </div>
                     <div className="control">
-                        <button className={"toggle button" + (!displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-headers")} type="button" disabled={!displayPayload} onClick={toggleTabs}>
+                        <button className={"toggle button is-family-monospace" + (!displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-headers")} type="button" disabled={!displayPayload} onClick={toggleTabs}>
                             Headers
                         </button>
                     </div>
