@@ -51,7 +51,7 @@ function Sidebar({ savedValues }) {
 
                             return (
                                 <tr key={value}>
-                                    <td>{item.key}</td>
+                                    <td>{value}</td>
                                     <td>{stringify(item.data)}</td>
                                     <td>{typeof item.data}</td>
                                     {/* <td>{item.availableFrom}</td> */}
