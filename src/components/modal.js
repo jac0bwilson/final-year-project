@@ -7,7 +7,6 @@ import React from "react";
  * @param {boolean} active whether or not to display the modal
  * @param {string} title the header for the modal
  * @param {*} close the function needed to close the modal using the button or background
- * @returns 
  */
 function Modal({ children, testId, active, title, close }) {
     return (

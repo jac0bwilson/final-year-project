@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 import { Request } from "./request";
-import { Icon, TextIcon } from "./icon";
+import { Icon, TextIconButton } from "./icon";
 import { Sidebar } from "./sidebar";
 
 import { processSavedValues, extractNestedResponseData } from "../utilities";
@@ -297,9 +297,7 @@ function Workflow() {
 
                 {requests.length > 0 &&
                     <div className="has-text-centered">
-                        <button data-testid="run" className="button is-primary is-rounded is-medium run-button" onClick={runAllRequests}>
-                            <TextIcon text="Run Workflow" iconName="fa-play" />
-                        </button>
+                        <TextIconButton testId="run" buttonClass="is-primary is-rounded is-medium run-button" onClick={runAllRequests} text="Run Workflow" icon="fa-play" />
                     </div>
                 } {/* displays when any request details have been provided */}
 

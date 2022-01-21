@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import isURL from "validator/lib/isURL";
 
-import { TextIcon, Icon } from "./icon";
+import { TextIcon, Icon, TextIconButton } from "./icon";
 import { Modal } from "./modal";
 
 import { processSavedValues, customFormatJSON, extractNestedResponseData } from "../utilities";
@@ -387,7 +387,8 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                         </select>
                     </div>
                 </div>
-
+                
+                {/* Toggle between payload and headers */}
                 <div className="field has-addons has-addons-centered">
                     <div className="control">
                         <button className={"toggle button" + (displayPayload ? " is-link" : "")} data-testid={getTestId("toggle-payload")} type="button" disabled={displayPayload} onClick={toggleTabs}>
@@ -465,9 +466,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                         }
                         {(!editable && response.data) &&
                             <div className="level-item">
-                                <button data-testid={getTestId("open-value-saving")} className="button is-info" type="button" onClick={toggleSaving}>
-                                    <TextIcon text="Save Values" iconName="fa-save" />
-                                </button>
+                                <TextIconButton testId={getTestId("open-value-saving")} buttonClass="is-info" onClick={toggleSaving} text="Save Values" icon="fa-save" />
                             </div>
                         } {/* only show if not editing and response.data is present - indicating a successful request */}
                     </div>
@@ -475,19 +474,13 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                     <div className="level-right">
                         <div className="level-item control">
                             {editable
-                                ? <button data-testid={getTestId("done")} className="button is-success" type="submit" disabled={urlError || argsError}>
-                                    <TextIcon text="Done" iconName="fa-check" />
-                                </button>
-                                : <button data-testid={getTestId("edit")} className="button is-warning" type="button" onClick={startEditing}>
-                                    <TextIcon text="Edit" iconName="fa-edit" />
-                                </button>
+                                ? <TextIconButton testId={getTestId("done")} buttonClass="is-success" type="submit" disabled={urlError || argsError} text="Done" icon="fa-check" />
+                                : <TextIconButton testId={getTestId("edit")} buttonClass="is-warning" onClick={startEditing} text="Edit" icon="fa-edit" />
                             } {/* if editable - present submit button, if not - show the edit button */}
                         </div>
                         {(editable && !newInput) &&
                             <div className="level-item control">
-                                <button data-testid={getTestId("delete")} className="button is-danger" type="button" onClick={onDelete}>
-                                    <TextIcon text="Delete" iconName="fa-trash-alt" />
-                                </button>
+                                <TextIconButton testId={getTestId("delete")} buttonClass="is-danger" onClick={onDelete} text="Delete" icon="fa-trash-alt" />
                             </div>
                         } {/* if editable and not the new input box - allow deleting the item */}
                     </div>
@@ -537,9 +530,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                     <nav className="level">
                         <div className="level-left" />
                         <div className="level-right">
-                            <button data-testid={getTestId("save-value")} className="button is-success" type="submit" disabled={variableError}>
-                                <TextIcon text="Done" iconName="fa-check" />
-                            </button>
+                            <TextIconButton testId={getTestId("save-value")} buttonClass="is-success" type="submit" disabled={variableError} text="Done" icon="fa-check" />
                         </div>
                     </nav>
                 </form>
