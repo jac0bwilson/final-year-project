@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import { Request } from "./request";
@@ -17,8 +17,30 @@ function Workflow() {
     const [responses, editResponses] = useState({});
     const [savedValues, editSavedValues] = useState({});
     const [sidebar, setSidebar] = useState(false);
+    const [fileUrl, setFileUrl] = useState("");
 
     const sidebarWidth = 4;
+
+    /**
+     * When any of the data that comprises the workflow changes, a new downloadable file is required to be generated
+     */
+    useEffect(() => {
+        if (requests.length > 0 || Object.keys(responses).length > 0 || Object.keys(savedValues).length > 0) { // won't happen if all empty 
+            let output = {};
+    
+            output["requests"] = requests;
+            output["responses"] = responses;
+            output["saved"] = savedValues;
+    
+            const outString = JSON.stringify(output, null, 2); // turn object into string
+            const blob = new Blob([outString]);
+            const downloadUrl = URL.createObjectURL(blob); // create a URL where the file can be downloaded from
+    
+            setFileUrl(downloadUrl);
+        } else {
+            setFileUrl(""); // will remove the URL if the workflow is cleared
+        }
+    }, [requests, responses, savedValues]);
 
     /**
      * Toggles the visibility of the sidebar element
@@ -303,6 +325,9 @@ function Workflow() {
 
                 <Request handleSubmit={handleSubmit} saved={savedValues} newInput={true} />
 
+                {fileUrl !== "" && 
+                    <a href={fileUrl} className="button" download="workflow.json">Download Workflow</a>
+                }
             </div>
             <button data-testid="show-sidebar" className="show-sidebar has-background-primary" onClick={toggleSidebar}>
                 <Icon iconName="fa-info" />

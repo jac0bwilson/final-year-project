@@ -6,6 +6,17 @@ import { Workflow } from "./workflow";
 import { formatJSON, extractNestedResponseData } from "../utilities";
 
 describe("Workflow Instantiation", () => {
+    /**
+     * The URL.createObjectURL() function is not available in the testing implementation.
+     * The function must be 'mocked' to provide an implementation for use.
+     * https://stackoverflow.com/questions/52968969/jest-url-createobjecturl-is-not-a-function
+     */
+    window.URL.createObjectURL = jest.fn();
+
+    afterEach(() => {
+        window.URL.createObjectURL.mockReset();
+    });
+
     test("URL", () => {
         const { getByTestId } = render(<Workflow />);
 
