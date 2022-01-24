@@ -42,6 +42,34 @@ function Workflow() {
         }
     }, [requests, responses, savedValues]);
 
+    const uploadWorkflow = (event) => {
+        console.log("Upload");
+
+        if (window.confirm("Opening a workflow will overwrite the current workflow. Do you wish to continue?")) {
+            // reset the workflow
+            editRequests([]);
+            editResponses({});
+            editSavedValues({});
+
+            const file = event.target.files[0];
+
+            let reader = new FileReader();
+            reader.readAsText(file);
+
+            reader.onload = () => {
+                try {
+                    const data = JSON.parse(reader.result);
+
+                    editRequests(data["requests"]);
+                    editResponses(data["responses"]);
+                    editSavedValues(data["saved"]);
+                } catch (e) {
+                    window.alert("This file does not seem to be a valid workflow.")
+                }
+            };
+        }
+    };
+
     /**
      * Toggles the visibility of the sidebar element
      */
@@ -326,8 +354,22 @@ function Workflow() {
                 <Request handleSubmit={handleSubmit} saved={savedValues} newInput={true} />
 
                 {fileUrl !== "" && 
-                    <a href={fileUrl} className="button" download="workflow.json">Download Workflow</a>
+                    <a data-testid="download" href={fileUrl} className="button" download="workflow.json">Download Workflow</a>
                 }
+
+                <div className="file">
+                    <label className="file-label">
+                        <input data-testid="upload" className="file-input" type="file" multiple={false} accept=".json,application/json" onInput={uploadWorkflow} />
+                        <span className="file-cta">
+                            <span className="file-icon">
+                                <i className="fas fa-upload" />
+                            </span>
+                            <span className="file-label">
+                                Choose a file...
+                            </span>
+                        </span>
+                    </label>
+                </div>
             </div>
             <button data-testid="show-sidebar" className="show-sidebar has-background-primary" onClick={toggleSidebar}>
                 <Icon iconName="fa-info" />
