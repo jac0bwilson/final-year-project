@@ -65,7 +65,7 @@ function Workflow() {
                     editResponses(data["responses"]);
                     editSavedValues(data["saved"]);
                 } catch (e) {
-                    window.alert("This file does not seem to be a valid workflow.")
+                    window.alert("This file does not seem to be a valid workflow.");
                 }
             };
 

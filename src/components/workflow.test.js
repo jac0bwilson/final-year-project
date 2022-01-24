@@ -127,6 +127,22 @@ describe("Workflow Instantiation", () => {
 
         await waitFor(() => expect(screen.queryByTestId("sidebar")).not.toBeInTheDocument()); // sidebar not present
     });
+
+    test("Workflow Download Button", () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("download")).toBeInTheDocument(); // download button
+    });
+
+    test("Workflow Upload Button", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        expect(getByTestId("upload")).toBeInTheDocument(); // upload button
+    });
 });
 
 describe("Data Validation", () => {
@@ -613,5 +629,32 @@ describe("Running Requests", () => {
 
         expect(queryByText(trace1, { exact: false })).not.toBeInTheDocument();
         expect(getByText(trace2, { exact: false })).toBeInTheDocument();
+    });
+
+    test("Workflow Uploading", async () => {
+        window.confirm = jest.fn().mockReturnValue(true);
+        window.alert = jest.fn();
+
+        const { getByTestId } = render(<Workflow />);
+        const file = new File([`
+        {
+            "requests": [
+                {
+                  "url": "https://httpbin.org/get",
+                  "method": "get",
+                  "arguments": "",
+                  "headers": ""
+                }
+            ],
+            "responses": {},
+            "saved": {}
+        }`], "basic.json", { type: "application/json" }); // create JSON file
+
+        userEvent.upload(getByTestId("upload"), file); // upload JSON file
+
+        expect(getByTestId("upload").files).toHaveLength(1); // one file present
+        expect(window.confirm).toHaveBeenCalledTimes(1); // confirmation asked for once
+
+        await waitFor(() => expect(getByTestId("request-0")).toBeInTheDocument()); // request present
     });
 });
