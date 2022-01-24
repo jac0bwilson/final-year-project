@@ -27,39 +27,40 @@ function Workflow() {
     useEffect(() => {
         if (requests.length > 0 || Object.keys(responses).length > 0 || Object.keys(savedValues).length > 0) { // won't happen if all empty 
             let output = {};
-    
+
             output["requests"] = requests;
             output["responses"] = responses;
             output["saved"] = savedValues;
-    
+
             const outString = JSON.stringify(output, null, 2); // turn object into string
             const blob = new Blob([outString]);
             const downloadUrl = URL.createObjectURL(blob); // create a URL where the file can be downloaded from
-    
+
             setFileUrl(downloadUrl);
         } else {
             setFileUrl(""); // will remove the URL if the workflow is cleared
         }
     }, [requests, responses, savedValues]);
 
+    /**
+     * Takes an uploaded file and parses it to overwrite the currently open workflow
+     * @param {Object} event the event from the trigger
+     */
     const uploadWorkflow = (event) => {
-        console.log("Upload");
-
         if (window.confirm("Opening a workflow will overwrite the current workflow. Do you wish to continue?")) {
             // reset the workflow
             editRequests([]);
             editResponses({});
             editSavedValues({});
 
-            const file = event.target.files[0];
-
+            const file = event.target.files[0]; // get the file from the input
             let reader = new FileReader();
-            reader.readAsText(file);
 
             reader.onload = () => {
                 try {
-                    const data = JSON.parse(reader.result);
+                    const data = JSON.parse(reader.result); // parse file
 
+                    // set all needed components
                     editRequests(data["requests"]);
                     editResponses(data["responses"]);
                     editSavedValues(data["saved"]);
@@ -67,6 +68,8 @@ function Workflow() {
                     window.alert("This file does not seem to be a valid workflow.")
                 }
             };
+
+            reader.readAsText(file);
         }
     };
 
@@ -353,7 +356,8 @@ function Workflow() {
 
                 <Request handleSubmit={handleSubmit} saved={savedValues} newInput={true} />
 
-                {fileUrl !== "" && 
+                {/* File download and upload controls */}
+                {fileUrl !== "" &&
                     <a data-testid="download" href={fileUrl} className="button" download="workflow.json">Download Workflow</a>
                 }
 
