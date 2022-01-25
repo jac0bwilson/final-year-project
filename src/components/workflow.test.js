@@ -631,6 +631,17 @@ describe("Running Requests", () => {
         expect(getByText(trace2, { exact: false })).toBeInTheDocument();
     });
 
+    test("Workflow Downloading", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("download")).not.toHaveAttribute("href", ""); // link present
+        expect(window.URL.createObjectURL).toHaveBeenCalledTimes(1); // file turned into URL once
+    });
+
     test("Workflow Uploading", async () => {
         window.confirm = jest.fn().mockReturnValue(true);
         window.alert = jest.fn();
