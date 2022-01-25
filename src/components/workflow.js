@@ -4,6 +4,7 @@ import axios from "axios";
 import { Request } from "./request";
 import { Icon, TextIconButton } from "./icon";
 import { Sidebar } from "./sidebar";
+import { Navbar } from "./navbar";
 
 import { processSavedValues, extractNestedResponseData } from "../utilities";
 
@@ -320,64 +321,51 @@ function Workflow() {
     };
 
     return (
-        <div className="content columns is-fullheight">
-            {sidebar &&
-                <aside data-testid="sidebar" className={`sidebar column is-${sidebarWidth} is-fullheight`}>
-                    <Sidebar savedValues={savedValues} />
-                </aside>
-            }
-            <div className={"workflow column" + (sidebar ? ` is-${12 - sidebarWidth} blurred` : "")}>
-                {requests.length > 0 && requests.map((value, index) => {
-                    return (
-                        <Request
-                            key={index}
-                            handleSubmit={handleSubmit}
-                            handleEdit={handleEdit}
-                            handleDelete={handleDelete}
-                            handleSave={handleSave}
-                            runSomeRequests={runSomeRequests}
-                            checkForVariableConflicts={checkForVariableConflicts}
-                            url={value.url}
-                            method={value.method}
-                            args={value.arguments}
-                            headers={value.headers}
-                            response={responses[index] ? responses[index] : {}}
-                            saved={filterSavedValues(index)}
-                            idx={index}
-                        />
-                    );
-                })} {/* displays when any request details have been provided */}
+        <div>
+            <Navbar upload={uploadWorkflow} downloadUrl={fileUrl} />
 
-                {requests.length > 0 &&
-                    <div className="has-text-centered">
-                        <TextIconButton testId="run" buttonClass="is-primary is-rounded is-medium run-button" onClick={runAllRequests} text="Run Workflow" icon="fa-play" />
-                    </div>
-                } {/* displays when any request details have been provided */}
-
-                <Request handleSubmit={handleSubmit} saved={savedValues} newInput={true} />
-
-                {/* File download and upload controls */}
-                {fileUrl !== "" &&
-                    <a data-testid="download" href={fileUrl} className="button" download="workflow.json">Download Workflow</a>
+            <div className="content columns is-fullheight">
+                {sidebar &&
+                    <aside data-testid="sidebar" className={`sidebar column is-${sidebarWidth} is-fullheight`}>
+                        <Sidebar savedValues={savedValues} />
+                    </aside>
                 }
 
-                <div className="file">
-                    <label className="file-label">
-                        <input data-testid="upload" className="file-input" type="file" multiple={false} accept=".json,application/json" onInput={uploadWorkflow} />
-                        <span className="file-cta">
-                            <span className="file-icon">
-                                <i className="fas fa-upload" />
-                            </span>
-                            <span className="file-label">
-                                Choose a file...
-                            </span>
-                        </span>
-                    </label>
+                <div className={"workflow column" + (sidebar ? ` is-${12 - sidebarWidth} blurred` : "")}>
+                    {requests.length > 0 && requests.map((value, index) => {
+                        return (
+                            <Request
+                                key={index}
+                                handleSubmit={handleSubmit}
+                                handleEdit={handleEdit}
+                                handleDelete={handleDelete}
+                                handleSave={handleSave}
+                                runSomeRequests={runSomeRequests}
+                                checkForVariableConflicts={checkForVariableConflicts}
+                                url={value.url}
+                                method={value.method}
+                                args={value.arguments}
+                                headers={value.headers}
+                                response={responses[index] ? responses[index] : {}}
+                                saved={filterSavedValues(index)}
+                                idx={index}
+                            />
+                        );
+                    })} {/* displays when any request details have been provided */}
+
+                    {requests.length > 0 &&
+                        <div className="has-text-centered">
+                            <TextIconButton testId="run" buttonClass="is-primary is-rounded is-medium run-button" onClick={runAllRequests} text="Run Workflow" icon="fa-play" />
+                        </div>
+                    } {/* displays when any request details have been provided */}
+
+                    <Request handleSubmit={handleSubmit} saved={savedValues} newInput={true} />
                 </div>
+
+                <button data-testid="show-sidebar" className="show-sidebar has-background-primary" onClick={toggleSidebar}>
+                    <Icon iconName="fa-info" />
+                </button>
             </div>
-            <button data-testid="show-sidebar" className="show-sidebar has-background-primary" onClick={toggleSidebar}>
-                <Icon iconName="fa-info" />
-            </button>
         </div>
     );
 }
