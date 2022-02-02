@@ -1,15 +1,16 @@
 import React from "react";
 
-import { TextIcon } from "./icon";
+import { TextIcon, TextIconButton } from "./icon";
 
 import "./navbar.css";
 
 /**
  * Generates the navigation bar that displays at the top of the screen
  * @param {*} upload the function to upload a workflow file
- * @param {*} downloadUrl the URL to visit to get the workflow file
+ * @param {string} downloadUrl the URL to visit to get the workflow file
+ * @param {*} reset the function to reset the current workflow
  */
-function Navbar({ upload, downloadUrl }) {
+function Navbar({ upload, downloadUrl, reset }) {
     return (
         <nav className="navbar is-fixed-top" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
@@ -37,6 +38,12 @@ function Navbar({ upload, downloadUrl }) {
                         <a data-testid="download" href={downloadUrl} className="button is-info" download="workflow.json">
                             <TextIcon text="Save" iconName="fa-file-download" />
                         </a>
+                    </div>
+                }
+
+                {downloadUrl !== "" &&
+                    <div className="navbar-item">
+                        <TextIconButton testId="reset" buttonClass="is-info" onClick={reset} text="Reset" icon="fa-redo" />
                     </div>
                 }
             </div>

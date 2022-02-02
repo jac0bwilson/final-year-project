@@ -44,6 +44,17 @@ function Workflow() {
     }, [requests, responses, savedValues]);
 
     /**
+     * Prompts the user for confirmation that they wish to clear the workflow, then does it
+     */
+    const resetWorkflow = () => {
+        if (window.confirm("Resetting the workflow will cause any unsaved work to be lost. Do you wish to continue?")) {
+            editRequests([]);
+            editResponses({});
+            editSavedValues({});
+        }
+    };
+
+    /**
      * Takes an uploaded file and parses it to overwrite the currently open workflow
      * @param {Object} event the event from the trigger
      */
@@ -322,7 +333,7 @@ function Workflow() {
 
     return (
         <div>
-            <Navbar upload={uploadWorkflow} downloadUrl={fileUrl} />
+            <Navbar upload={uploadWorkflow} downloadUrl={fileUrl} reset={resetWorkflow} />
 
             <div className="content columns is-fullheight">
                 {sidebar &&

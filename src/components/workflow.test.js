@@ -128,6 +128,12 @@ describe("Workflow Instantiation", () => {
         await waitFor(() => expect(screen.queryByTestId("sidebar")).not.toBeInTheDocument()); // sidebar not present
     });
 
+    test("Workflow Upload Button", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        expect(getByTestId("upload")).toBeInTheDocument(); // upload button
+    });
+
     test("Workflow Download Button", () => {
         const { getByTestId } = render(<Workflow />);
         const URL = "https://httpbin.org/get";
@@ -138,11 +144,16 @@ describe("Workflow Instantiation", () => {
         expect(getByTestId("download")).toBeInTheDocument(); // download button
     });
 
-    test("Workflow Upload Button", () => {
+    test("Workflow Reset Button", () => {
         const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
 
-        expect(getByTestId("upload")).toBeInTheDocument(); // upload button
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("reset")).toBeInTheDocument(); // reset button present
     });
+
 });
 
 describe("Data Validation", () => {
@@ -630,6 +641,33 @@ describe("Running Requests", () => {
         expect(queryByText(trace1, { exact: false })).not.toBeInTheDocument();
         expect(getByText(trace2, { exact: false })).toBeInTheDocument();
     });
+    
+    test("Workflow Uploading", async () => {
+        window.confirm = jest.fn().mockReturnValue(true);
+        window.alert = jest.fn();
+        
+        const { getByTestId } = render(<Workflow />);
+        const file = new File([`
+        {
+            "requests": [
+                {
+                    "url": "https://httpbin.org/get",
+                    "method": "get",
+                    "arguments": "",
+                    "headers": ""
+                }
+            ],
+            "responses": {},
+            "saved": {}
+        }`], "basic.json", { type: "application/json" }); // create JSON file
+        
+        userEvent.upload(getByTestId("upload"), file); // upload JSON file
+        
+        expect(getByTestId("upload").files).toHaveLength(1); // one file present
+        expect(window.confirm).toHaveBeenCalledTimes(1); // confirmation asked for once
+        
+        await waitFor(() => expect(getByTestId("request-0")).toBeInTheDocument()); // request present
+    });
 
     test("Workflow Downloading", async () => {
         const { getByTestId } = render(<Workflow />);
@@ -642,30 +680,19 @@ describe("Running Requests", () => {
         expect(window.URL.createObjectURL).toHaveBeenCalledTimes(1); // file turned into URL once
     });
 
-    test("Workflow Uploading", async () => {
+    test("Workflow Reset", async () => {
         window.confirm = jest.fn().mockReturnValue(true);
-        window.alert = jest.fn();
-
+        
         const { getByTestId } = render(<Workflow />);
-        const file = new File([`
-        {
-            "requests": [
-                {
-                  "url": "https://httpbin.org/get",
-                  "method": "get",
-                  "arguments": "",
-                  "headers": ""
-                }
-            ],
-            "responses": {},
-            "saved": {}
-        }`], "basic.json", { type: "application/json" }); // create JSON file
+        const URL = "https://httpbin.org/get";
 
-        userEvent.upload(getByTestId("upload"), file); // upload JSON file
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
 
-        expect(getByTestId("upload").files).toHaveLength(1); // one file present
-        expect(window.confirm).toHaveBeenCalledTimes(1); // confirmation asked for once
+        expect(getByTestId("request-0")).toBeInTheDocument(); // request submitted
 
-        await waitFor(() => expect(getByTestId("request-0")).toBeInTheDocument()); // request present
+        userEvent.click(getByTestId("reset")); // click reset
+
+        await waitFor(() => expect(screen.queryByTestId("request-0")).not.toBeInTheDocument()); // workflow cleared
     });
 });
