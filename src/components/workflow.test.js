@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { queryByTestId, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Workflow } from "./workflow";
@@ -131,7 +131,7 @@ describe("Workflow Instantiation", () => {
     test("Workflow Upload Button", () => {
         const { getByTestId } = render(<Workflow />);
 
-        expect(getByTestId("upload")).toBeInTheDocument(); // upload button
+        expect(getByTestId("upload")).toBeInTheDocument(); // upload button present
     });
 
     test("Workflow Download Button", () => {
@@ -141,7 +141,7 @@ describe("Workflow Instantiation", () => {
         userEvent.type(getByTestId("url-main"), URL); // type URL
         userEvent.click(getByTestId("done-main")); // click done
 
-        expect(getByTestId("download")).toBeInTheDocument(); // download button
+        expect(getByTestId("download")).toBeInTheDocument(); // download button present
     });
 
     test("Workflow Reset Button", () => {
@@ -152,6 +152,12 @@ describe("Workflow Instantiation", () => {
         userEvent.click(getByTestId("done-main")); // click done
 
         expect(getByTestId("reset")).toBeInTheDocument(); // reset button present
+    });
+
+    test("Help Button", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        expect(getByTestId("help-toggle")).toBeInTheDocument(); // help button present
     });
 
 });
@@ -641,11 +647,11 @@ describe("Running Requests", () => {
         expect(queryByText(trace1, { exact: false })).not.toBeInTheDocument();
         expect(getByText(trace2, { exact: false })).toBeInTheDocument();
     });
-    
+
     test("Workflow Uploading", async () => {
         window.confirm = jest.fn().mockReturnValue(true);
         window.alert = jest.fn();
-        
+
         const { getByTestId } = render(<Workflow />);
         const file = new File([`
         {
@@ -660,12 +666,12 @@ describe("Running Requests", () => {
             "responses": {},
             "saved": {}
         }`], "basic.json", { type: "application/json" }); // create JSON file
-        
+
         userEvent.upload(getByTestId("upload"), file); // upload JSON file
-        
+
         expect(getByTestId("upload").files).toHaveLength(1); // one file present
         expect(window.confirm).toHaveBeenCalledTimes(1); // confirmation asked for once
-        
+
         await waitFor(() => expect(getByTestId("request-0")).toBeInTheDocument()); // request present
     });
 
@@ -682,7 +688,7 @@ describe("Running Requests", () => {
 
     test("Workflow Reset", async () => {
         window.confirm = jest.fn().mockReturnValue(true);
-        
+
         const { getByTestId } = render(<Workflow />);
         const URL = "https://httpbin.org/get";
 
@@ -694,5 +700,15 @@ describe("Running Requests", () => {
         userEvent.click(getByTestId("reset")); // click reset
 
         await waitFor(() => expect(screen.queryByTestId("request-0")).not.toBeInTheDocument()); // workflow cleared
+    });
+
+    test("Help Screen", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        expect(getByTestId("help")).not.toHaveClass("is-active"); // not showing help screen
+
+        userEvent.click(getByTestId("help-toggle")); // click help button
+
+        expect(getByTestId("help")).toHaveClass("is-active"); // showing help screen
     });
 });

@@ -5,6 +5,7 @@ import { Request } from "./request";
 import { Icon, TextIconButton } from "./icon";
 import { Sidebar } from "./sidebar";
 import { Navbar } from "./navbar";
+import { Modal } from "./modal";
 
 import { processSavedValues, extractNestedResponseData } from "../utilities";
 
@@ -18,6 +19,7 @@ function Workflow() {
     const [responses, editResponses] = useState({});
     const [savedValues, editSavedValues] = useState({});
     const [sidebar, setSidebar] = useState(false);
+    const [help, setHelp] = useState(false);
     const [fileUrl, setFileUrl] = useState("");
 
     const sidebarWidth = 4;
@@ -83,6 +85,15 @@ function Workflow() {
 
             reader.readAsText(file);
         }
+    };
+
+    /**
+     * Toggles the visibility of the help modal
+     */
+    const toggleHelp = () => {
+        setHelp(previous => {
+            return !previous;
+        });
     };
 
     /**
@@ -333,7 +344,73 @@ function Workflow() {
 
     return (
         <div>
-            <Navbar upload={uploadWorkflow} downloadUrl={fileUrl} reset={resetWorkflow} />
+            <Navbar upload={uploadWorkflow} downloadUrl={fileUrl} reset={resetWorkflow} help={toggleHelp} />
+
+            <Modal testId="help" active={help} title="Help" close={toggleHelp}>
+                <div className="content">
+                    <h3>Making Requests</h3>
+                    <h4>Providing Information</h4>
+                    <p>
+                        To make a request, at a minimum you must supply a URL and a HTTP method to use.
+                        Some methods will allow a JSON payload to be provided, which can be entered into
+                        the input box on the left, when in editing mode. You can reach editing mode either
+                        by typing into a new request input, or by pressing the 'Edit' button on an existing
+                        request.
+                    </p>
+                    <h4>Running Requests</h4>
+                    <p>
+                        There are a number of different options available for running requests. You can
+                        execute the entire workflow, by pressing the 'Run Workflow' button after the final
+                        request. Alternatively you may use the buttons on the left of the control bar at
+                        the bottom of each request, and either run the individual request or that one and
+                        all others after it.
+                    </p>
+                    <h3>Saving & Using Values</h3>
+                    <h4>Saving Values</h4>
+                    <p>
+                        When a request (or the whole workflow) has been run, you are able to extract values
+                        from the returned payload. This can be done by pressing the 'Save Values' button,
+                        then selecting a value to save and assigning it a name.
+                    </p>
+                    <h4>Seeing Saved Values</h4>
+                    <p>
+                        To see the values that have been saved, use the button in the bottom left of the
+                        screen to open the sidebar.
+                    </p>
+                    <h4>Using Saved Values</h4>
+                    <p>
+                        When editing the payload of a request, you can reference a saved value by providing
+                        the name of the value, preceded by an exclamation mark. An example is shown below.
+                    </p>
+                    <pre>
+                        <code>
+                            &#123;
+                            "example": !exampleData
+                            &#125;
+                        </code>
+                    </pre>
+                    <h3>Managing Workflows</h3>
+                    <h4>Saving Workflows</h4>
+                    <p>
+                        To save a workflow as a file, press the 'Save' button in the menu bar of the
+                        application. This will trigger a file download of the workflow.
+                    </p>
+                    <h4>Opening a Saved Workflow</h4>
+                    <p>
+                        To open a saved workflow file, press the 'Open' button in the menu bar of the
+                        application. Then select the workflow file you wish to upload. If prompted to confirm
+                        overwriting the current workflow, make your decision. If you choose to proceed the
+                        current workflow will be cleared, and the one from the file will be loaded to the
+                        state it was in when it was saved.
+                    </p>
+                    <h4>Resetting the Current Workflow</h4>
+                    <p>
+                        To clear all data in the current workflow, press the 'Reset' button in the menu bar
+                        of the application. You will be asked to confirm that you understand the workflow will
+                        be completely overwritten.
+                    </p>
+                </div>
+            </Modal>
 
             <div className="content columns is-fullheight">
                 {sidebar &&
