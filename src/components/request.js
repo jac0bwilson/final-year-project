@@ -30,7 +30,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
     const [urlError, setUrlError] = useState(false);
     const [argsError, setArgsError] = useState(false);
     const [headerError, setHeaderError] = useState(false);
-    const [variableError, setVarError] = useState(false);
+    const [variableError, setVarError] = useState(true);
     const [editable, setEditable] = useState(newInput);
     const [selectedMethod, setMethod] = useState(method);
     const [savedArgs, setArgs] = useState(args);
@@ -258,6 +258,8 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         handleSave(config);
 
         toggleSaving();
+        setVarError(true);
+        event.target.reset();
     };
 
     /**
@@ -516,7 +518,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                         <div className="field-body">
                             <div className="field">
                                 <div className="control">
-                                    <input name="name" data-testid={getTestId("save-value-name")} className={"input" + (variableError ? " is-danger" : "")} type="text" onChange={validateVariableName} />
+                                    <input name="name" required data-testid={getTestId("save-value-name")} className={"input" + (variableError ? " is-danger" : "")} type="text" onChange={validateVariableName} />
                                     {variableError &&
                                         <p data-testid={getTestId("variable-error")} className="help is-danger">
                                             Please enter an unused, alphanumeric variable name.

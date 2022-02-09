@@ -116,18 +116,6 @@ describe("Workflow Instantiation", () => {
         expect(getByTestId("show-sidebar")).toBeInTheDocument(); // sidebar toggle present
     });
 
-    test("Sidebar", async () => {
-        const { getByTestId } = render(<Workflow />);
-
-        userEvent.click(getByTestId("show-sidebar")); // show the sidebar
-
-        await waitFor(() => expect(getByTestId("sidebar")).toBeInTheDocument()); // sidebar present
-
-        userEvent.click(getByTestId("show-sidebar")); // hide the sidebar
-
-        await waitFor(() => expect(screen.queryByTestId("sidebar")).not.toBeInTheDocument()); // sidebar not present
-    });
-
     test("Workflow Upload Button", () => {
         const { getByTestId } = render(<Workflow />);
 
@@ -205,7 +193,7 @@ describe("Data Validation", () => {
         userEvent.selectOptions(getByTestId("method-main"), "post"); // select post
         userEvent.type(getByTestId("arguments-main"), "{\"abc\"}"); // type incomplete arguments
 
-        expect(screen.queryByTestId("arguments-error-main")).toBeInTheDocument(); // should show
+        expect(getByTestId("arguments-error-main")).toBeInTheDocument(); // should show
     });
 
     test("Invalid Variable Name", async () => {
@@ -222,7 +210,28 @@ describe("Data Validation", () => {
         userEvent.selectOptions(getByTestId("save-value-select-0"), "url"); // select "url" value
         userEvent.type(getByTestId("save-value-name-0"), "_url"); // give name as "_url"
 
-        expect(screen.queryByTestId("variable-error-0")).toBeInTheDocument(); // should show
+        expect(getByTestId("variable-error-0")).toBeInTheDocument(); // should show
+    });
+
+    test("Empty Variable Name", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+
+        userEvent.click(getByTestId("open-value-saving-0")); // open value saving modal
+
+        expect(getByTestId("variable-error-0")).toBeInTheDocument(); // should show
+
+        userEvent.selectOptions(getByTestId("save-value-select-0"), "url"); // select "url" value
+
+        userEvent.type(getByTestId("save-value-name-0"), "url"); // give name as "_url"
+
+        expect(screen.queryByTestId("variable-error-0")).not.toBeInTheDocument(); // should show
     });
 
     test("Referencing Saved Value", async () => {
@@ -400,6 +409,82 @@ describe("Interaction", () => {
 
         const { getByText } = within(getByTestId("response-data-text-0"));
         expect(getByText("\"content-type\": \"application/json\"", { exact: false })).toBeInTheDocument(); // header string present
+    });
+
+    test("Workflow Uploading", async () => {
+        window.confirm = jest.fn().mockReturnValue(true);
+        window.alert = jest.fn();
+
+        const { getByTestId } = render(<Workflow />);
+        const file = new File([`
+        {
+            "requests": [
+                {
+                    "url": "https://httpbin.org/get",
+                    "method": "get",
+                    "arguments": "",
+                    "headers": ""
+                }
+            ],
+            "responses": {},
+            "saved": {}
+        }`], "basic.json", { type: "application/json" }); // create JSON file
+
+        userEvent.upload(getByTestId("upload"), file); // upload JSON file
+
+        expect(getByTestId("upload").files).toHaveLength(1); // one file present
+        expect(window.confirm).toHaveBeenCalledTimes(1); // confirmation asked for once
+
+        await waitFor(() => expect(getByTestId("request-0")).toBeInTheDocument()); // request present
+    });
+
+    test("Workflow Downloading", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("download")).not.toHaveAttribute("href", ""); // link present
+        expect(window.URL.createObjectURL).toHaveBeenCalledTimes(1); // file turned into URL once
+    });
+
+    test("Workflow Reset", async () => {
+        window.confirm = jest.fn().mockReturnValue(true);
+
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("request-0")).toBeInTheDocument(); // request submitted
+
+        userEvent.click(getByTestId("reset")); // click reset
+
+        await waitFor(() => expect(screen.queryByTestId("request-0")).not.toBeInTheDocument()); // workflow cleared
+    });
+
+    test("Opening Sidebar", async () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.click(getByTestId("show-sidebar")); // show the sidebar
+
+        await waitFor(() => expect(getByTestId("sidebar")).toBeInTheDocument()); // sidebar present
+
+        userEvent.click(getByTestId("show-sidebar")); // hide the sidebar
+
+        await waitFor(() => expect(screen.queryByTestId("sidebar")).not.toBeInTheDocument()); // sidebar not present
+    });
+
+    test("Help Screen", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        expect(getByTestId("help")).not.toHaveClass("is-active"); // not showing help screen
+
+        userEvent.click(getByTestId("help-toggle")); // click help button
+
+        expect(getByTestId("help")).toHaveClass("is-active"); // showing help screen
     });
 });
 
@@ -646,69 +731,5 @@ describe("Running Requests", () => {
 
         expect(queryByText(trace1, { exact: false })).not.toBeInTheDocument();
         expect(getByText(trace2, { exact: false })).toBeInTheDocument();
-    });
-
-    test("Workflow Uploading", async () => {
-        window.confirm = jest.fn().mockReturnValue(true);
-        window.alert = jest.fn();
-
-        const { getByTestId } = render(<Workflow />);
-        const file = new File([`
-        {
-            "requests": [
-                {
-                    "url": "https://httpbin.org/get",
-                    "method": "get",
-                    "arguments": "",
-                    "headers": ""
-                }
-            ],
-            "responses": {},
-            "saved": {}
-        }`], "basic.json", { type: "application/json" }); // create JSON file
-
-        userEvent.upload(getByTestId("upload"), file); // upload JSON file
-
-        expect(getByTestId("upload").files).toHaveLength(1); // one file present
-        expect(window.confirm).toHaveBeenCalledTimes(1); // confirmation asked for once
-
-        await waitFor(() => expect(getByTestId("request-0")).toBeInTheDocument()); // request present
-    });
-
-    test("Workflow Downloading", async () => {
-        const { getByTestId } = render(<Workflow />);
-        const URL = "https://httpbin.org/get";
-
-        userEvent.type(getByTestId("url-main"), URL); // type URL
-        userEvent.click(getByTestId("done-main")); // click done
-
-        expect(getByTestId("download")).not.toHaveAttribute("href", ""); // link present
-        expect(window.URL.createObjectURL).toHaveBeenCalledTimes(1); // file turned into URL once
-    });
-
-    test("Workflow Reset", async () => {
-        window.confirm = jest.fn().mockReturnValue(true);
-
-        const { getByTestId } = render(<Workflow />);
-        const URL = "https://httpbin.org/get";
-
-        userEvent.type(getByTestId("url-main"), URL); // type URL
-        userEvent.click(getByTestId("done-main")); // click done
-
-        expect(getByTestId("request-0")).toBeInTheDocument(); // request submitted
-
-        userEvent.click(getByTestId("reset")); // click reset
-
-        await waitFor(() => expect(screen.queryByTestId("request-0")).not.toBeInTheDocument()); // workflow cleared
-    });
-
-    test("Help Screen", () => {
-        const { getByTestId } = render(<Workflow />);
-
-        expect(getByTestId("help")).not.toHaveClass("is-active"); // not showing help screen
-
-        userEvent.click(getByTestId("help-toggle")); // click help button
-
-        expect(getByTestId("help")).toHaveClass("is-active"); // showing help screen
     });
 });
