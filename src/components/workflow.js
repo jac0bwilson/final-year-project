@@ -402,6 +402,18 @@ function Workflow() {
                             https://example.com/!dataReference!
                         </code>
                     </pre>
+                    <p>
+                        You may wish to extract a URL from a request and then make requests to this URL,
+                        in which case you should indicate this when referencing the value by adding the
+                        option ':raw' after the variable name. This will prevent the contents from being
+                        encoded in such a way that they can be used after the domain name in a URL. An
+                        example of this in use is shown below.
+                    </p>
+                    <pre>
+                        <code>
+                            !previouslySavedURL:raw!
+                        </code>
+                    </pre>
                     <h3>Managing Workflows</h3>
                     <h4>Saving Workflows</h4>
                     <p>

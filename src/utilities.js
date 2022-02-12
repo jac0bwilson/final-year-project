@@ -1,5 +1,5 @@
 const matchSavedValuesJSON = /![a-zA-Z0-9]+/gm; // TODO: may want to reject if prefixed with quotes
-const matchSavedValuesURL = /![a-zA-Z0-9]+!/gm;
+const matchSavedValuesURL = /![a-zA-Z0-9]+(:raw)?!/gm;
 
 /**
  * Fills in the saved values where they are referenced in a request's arguments
@@ -44,12 +44,17 @@ function processSavedValuesURL(url, saved) {
 
     if (matches) {
         matches.forEach((match) => {
-            const name = match.slice(1, -1);
+            const components = match.slice(1, -1).split(":");
 
-            if (name in saved) {
-                const newValue = saved[name]["data"];
+            if (components[0] in saved) {
+                const newValue = saved[components[0]]["data"];
 
-                url = url.replace(match, encodeURIComponent(newValue));
+                if (components.length > 1 && components[1] === "raw") { // option present
+                    url = url.replace(match, newValue); // don't URL encode characters
+                } else {
+                    url = url.replace(match, encodeURIComponent(newValue));
+                }
+
             }
         });
     }

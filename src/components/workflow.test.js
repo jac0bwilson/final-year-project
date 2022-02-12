@@ -268,7 +268,7 @@ describe("Data Validation", () => {
         userEvent.type(getByTestId("save-value-name-0"), "url"); // give name as "url"
         userEvent.click(getByTestId("save-value-0")); // click save value
 
-        userEvent.type(getByTestId("url-main"), URL + "anything/!url!"); // type arguments
+        userEvent.type(getByTestId("url-main"), URL + "anything/!url!"); // type URL
         expect(screen.queryByTestId("url-error-main")).not.toBeInTheDocument(); // should not show
     });
 });
@@ -777,5 +777,29 @@ describe("Running Requests", () => {
 
         const { getByText } = within(getByTestId("response-data-text-1"));
         expect(getByText(URL + METHOD, { exact: false })).toBeInTheDocument();
+    });
+
+    test("Requesting Previously Saved URL", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/get";
+
+        userEvent.type(getByTestId("url-main"), URL); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+
+        userEvent.click(getByTestId("open-value-saving-0")); // open value saving modal
+        userEvent.selectOptions(getByTestId("save-value-select-0"), "url"); // select "url" value
+        userEvent.type(getByTestId("save-value-name-0"), "url"); // give name as "url"
+        userEvent.click(getByTestId("save-value-0")); // click save value
+
+        userEvent.type(getByTestId("url-main"), "!url:raw!"); // reference URL
+        expect(screen.queryByTestId("url-error-main")).not.toBeInTheDocument(); // should not show
+
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-1")).toBeInTheDocument()); // JSON response present
     });
 });
