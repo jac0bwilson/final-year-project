@@ -380,6 +380,7 @@ function Workflow() {
                         screen to open the sidebar.
                     </p>
                     <h4>Using Saved Values</h4>
+                    <h5>In Arguments</h5>
                     <p>
                         When editing the payload of a request, you can reference a saved value by providing
                         the name of the value, preceded by an exclamation mark. An example is shown below.
@@ -389,6 +390,16 @@ function Workflow() {
                             &#123;
                             "example": !exampleData
                             &#125;
+                        </code>
+                    </pre>
+                    <h5>In URLs</h5>
+                    <p>
+                        When editing a URL, you can reference a saved value by providing the name of the
+                        value, preceded and followed by an exclamation mark. An example is shown below.
+                    </p>
+                    <pre>
+                        <code>
+                            https://example.com/!dataReference!
                         </code>
                     </pre>
                     <h3>Managing Workflows</h3>

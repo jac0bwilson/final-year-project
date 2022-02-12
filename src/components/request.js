@@ -5,7 +5,7 @@ import isURL from "validator/lib/isURL";
 import { TextIcon, Icon, TextIconButton } from "./icon";
 import { Modal } from "./modal";
 
-import { processSavedValuesJSON, customFormatJSON, extractNestedResponseData } from "../utilities";
+import { processSavedValuesJSON, processSavedValuesURL, customFormatJSON, extractNestedResponseData } from "../utilities";
 
 import "./request.css";
 
@@ -103,7 +103,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
      * @param {*} event the event caused by the field being edited
      */
     const validateURL = (event) => {
-        let toCheck = event.target.value;
+        let toCheck = processSavedValuesURL(event.target.value, saved);
 
         if (toCheck.length > 0) { // prevents error being shown on empty strings
             let options = { protocols: ["http", "https"], require_protocol: true };
