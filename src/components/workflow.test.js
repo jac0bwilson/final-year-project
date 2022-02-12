@@ -732,4 +732,31 @@ describe("Running Requests", () => {
         expect(queryByText(trace1, { exact: false })).not.toBeInTheDocument();
         expect(getByText(trace2, { exact: false })).toBeInTheDocument();
     });
+
+    test("Using Saved Value in URL", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/";
+        const METHOD = "get";
+
+        userEvent.type(getByTestId("url-main"), URL + METHOD); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+
+        userEvent.click(getByTestId("open-value-saving-0")); // open value saving modal
+        userEvent.selectOptions(getByTestId("save-value-select-0"), "url"); // select "url" value
+        userEvent.type(getByTestId("save-value-name-0"), "url"); // give name as "url"
+        userEvent.click(getByTestId("save-value-0")); // click save value
+
+        userEvent.type(getByTestId("url-main"), URL + "anything/!url!"); // type URL
+        userEvent.selectOptions(getByTestId("method-main"), METHOD); // select method
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-1")).toBeInTheDocument()); // JSON response present
+
+        const { getByText } = within(getByTestId("response-data-text-1"));
+        expect(getByText(URL + METHOD, { exact: false })).toBeInTheDocument();
+    });
 });

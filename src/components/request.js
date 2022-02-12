@@ -5,7 +5,7 @@ import isURL from "validator/lib/isURL";
 import { TextIcon, Icon, TextIconButton } from "./icon";
 import { Modal } from "./modal";
 
-import { processSavedValues, customFormatJSON, extractNestedResponseData } from "../utilities";
+import { processSavedValuesJSON, customFormatJSON, extractNestedResponseData } from "../utilities";
 
 import "./request.css";
 
@@ -134,7 +134,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
      * @param {*} event the event caused by the field being edited
      */
     const validateArgs = (event) => {
-        let toCheck = processSavedValues(event.target.value, saved); // apply the saved values and then do the validation
+        let toCheck = processSavedValuesJSON(event.target.value, saved); // apply the saved values and then do the validation
         let name = event.target.name;
 
         if (toCheck.length > 0) {
@@ -371,6 +371,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                             placeholder="https://google.com/test"
                             disabled={!editable}
                             onChange={validateURL}
+                            spellCheck="false"
                         />
                         {(urlError && editable) &&
                             <p data-testid={getTestId("url-error")} className="help is-danger">

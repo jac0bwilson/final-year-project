@@ -7,7 +7,7 @@ import { Sidebar } from "./sidebar";
 import { Navbar } from "./navbar";
 import { Modal } from "./modal";
 
-import { processSavedValues, extractNestedResponseData } from "../utilities";
+import { processSavedValuesJSON, processSavedValuesURL, extractNestedResponseData } from "../utilities";
 
 import "./workflow.css";
 
@@ -223,14 +223,16 @@ function Workflow() {
      * @param {number} index the index of the request being run
      */
     const runRequest = (request, index) => {
+        const availableSaved = filterSavedValues(index);
+
         let config = {
-            url: request.url,
+            url: processSavedValuesURL(request.url, availableSaved),
             method: request.method,
             headers: request.headers.length > 0 ? JSON.parse(request.headers) : {}
         };
 
-        if (request.method !== "get") {
-            config["data"] = processSavedValues(request.arguments, filterSavedValues(index));
+        if (!["get", "head", "options"].includes(config.method)) {
+            config["data"] = processSavedValuesJSON(request.arguments, availableSaved);
         }
 
         axios(

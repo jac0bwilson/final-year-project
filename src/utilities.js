@@ -1,4 +1,5 @@
-const matchSavedValues = /![a-zA-Z0-9]+/gm; // TODO: may want to reject if prefixed with quotes
+const matchSavedValuesJSON = /![a-zA-Z0-9]+/gm; // TODO: may want to reject if prefixed with quotes
+const matchSavedValuesURL = /![a-zA-Z0-9]+!/gm;
 
 /**
  * Fills in the saved values where they are referenced in a request's arguments
@@ -6,12 +7,12 @@ const matchSavedValues = /![a-zA-Z0-9]+/gm; // TODO: may want to reject if prefi
  * @param {Object} saved the set of saved values from earlier responses
  * @returns the processed version of the arguments
  */
-function processSavedValues(args, saved) {
-    let matches = args.match(matchSavedValues);
+function processSavedValuesJSON(args, saved) {
+    const matches = args.match(matchSavedValuesJSON);
 
     if (matches) {
         matches.forEach((match) => {
-            let name = match.slice(1); // remove "!" from value reference
+            const name = match.slice(1); // remove "!" from value reference
 
             if (name in saved) {
                 let newValue = saved[name]["data"];
@@ -30,6 +31,30 @@ function processSavedValues(args, saved) {
     }
 
     return args;
+}
+
+/**
+ * Fills in the saved values where they are referenced in a request's URL
+ * @param {string} url the string containing the request URL
+ * @param {Object} saved the set of saved values from earlier responses
+ * @returns the processed version of the string
+ */
+function processSavedValuesURL(url, saved) {
+    const matches = url.match(matchSavedValuesURL);
+
+    if (matches) {
+        matches.forEach((match) => {
+            const name = match.slice(1, -1);
+
+            if (name in saved) {
+                const newValue = saved[name]["data"];
+
+                url = url.replace(match, encodeURIComponent(newValue));
+            }
+        });
+    }
+
+    return url;
 }
 
 /**
@@ -55,7 +80,7 @@ function customFormatJSON(toFormat) {
         output = formatJSON(toFormat);
     } catch (e) { // if input is using additional saved values
         const placeholder = "\"SAVED_VALUE_PLACEHOLDER_123\"";
-        let matches = toFormat.match(matchSavedValues);
+        let matches = toFormat.match(matchSavedValuesJSON);
 
         let saved = [];
 
@@ -103,4 +128,4 @@ function extractNestedResponseData(key, response) {
     return null;
 };
 
-export { processSavedValues, formatJSON, customFormatJSON, extractNestedResponseData }
+export { processSavedValuesJSON, processSavedValuesURL, formatJSON, customFormatJSON, extractNestedResponseData }
