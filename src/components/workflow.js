@@ -149,6 +149,61 @@ function Workflow() {
     };
 
     /**
+     * Recompute the indexes of responses when inserting a request or deleting one
+     * @param {Object} previous the previous set of responses 
+     * @param {boolean} inserting true if inserting a new item, false if deleting 
+     * @param {number} index the index of the item to change indexes around 
+     * @returns the new set of responses
+     */
+    const reIndexResponses = (previous, inserting, index) => {
+        let newResponses = {};
+        const modifier = inserting ? 1 : -1;
+
+        for (const [key, value] of Object.entries(previous)) {
+            let keyInt = parseInt(key);
+
+            if (keyInt > index) { // if response came after target, increment/decrement key
+                newResponses[keyInt + modifier] = value;
+            } else if (!inserting && keyInt === index) { // if item is to be deleted, don't include
+                continue;
+            } else { // if item came before target, add as normal
+                newResponses[keyInt] = value;
+            }
+        }
+
+        return newResponses;
+    };
+
+    /**
+     * Recompute the indexes of saved values when inserting a request or deleting one
+     * @param {Object} previous the previous set of saved values 
+     * @param {boolean} inserting true if inserting a new item, false if deleting 
+     * @param {number} index the index of the item to change indexes around 
+     * @returns the new set of saved values
+     */
+    const reIndexSaved = (previous, inserting, index) => {
+        let newValues = {};
+        const modifier = inserting ? 1 : -1;
+
+        for (const [key, value] of Object.entries(previous)) {
+            let comparison = value.availableFrom;
+
+            if (comparison > index) {
+                let newValue = { ...value };
+                newValue.availableFrom = comparison + modifier;
+
+                newValues[key] = newValue;
+            } else if (!inserting && comparison === index) {
+                continue;
+            } else {
+                newValues[key] = value;
+            }
+        }
+
+        return newValues;
+    };
+
+    /**
      * Removes a specific item from the list
      * @param {number} index the index of the item to be removed
      */
@@ -161,42 +216,11 @@ function Workflow() {
         });
 
         editResponses(previous => { // re-index responses to ensure they match to the correct request
-            let newResponses = {};
-
-            for (const [key, value] of Object.entries(previous)) {
-                let keyInt = parseInt(key);
-
-                if (keyInt > index) { // if response came after item to be deleted, decrement key
-                    newResponses[keyInt - 1] = value;
-                } else if (keyInt === index) { // if item is the one to be deleted, don't include
-                    continue;
-                } else { // if item came before one to be deleted, add as normal
-                    newResponses[keyInt] = value;
-                }
-            }
-
-            return newResponses;
+            return reIndexResponses(previous, false, index);
         });
 
         editSavedValues(previous => {
-            let newValues = {};
-
-            for (const [key, value] of Object.entries(previous)) {
-                let comparison = value.availableFrom;
-
-                if (comparison > index) {
-                    let newValue = { ...value };
-                    newValue.availableFrom = comparison - 1;
-
-                    newValues[key] = newValue;
-                } else if (comparison === index) {
-                    continue;
-                } else {
-                    newValues[key] = value;
-                }
-            }
-
-            return newValues;
+            return reIndexSaved(previous, false, index);
         });
     };
 
@@ -214,6 +238,34 @@ function Workflow() {
             };
 
             return newValues;
+        });
+    };
+
+    /**
+     * Inserts a new request into the workflow in a location other than just the end
+     * @param {number} index the index of the item to be followed by a new request 
+     */
+    const handleInsert = (index) => {
+        const newIndex = index + 1;
+
+        editRequests(previous => {
+            let newRequests = [...previous];
+            newRequests.splice(newIndex, 0, {
+                "url": "",
+                "method": "get",
+                "arguments": "",
+                "headers": ""
+            });
+
+            return newRequests;
+        });
+
+        editResponses(previous => {
+            return reIndexResponses(previous, true, index);
+        });
+
+        editSavedValues(previous => {
+            return reIndexSaved(previous, true, index);
         });
     };
 
@@ -453,6 +505,7 @@ function Workflow() {
                                 handleEdit={handleEdit}
                                 handleDelete={handleDelete}
                                 handleSave={handleSave}
+                                handleInsert={handleInsert}
                                 runSomeRequests={runSomeRequests}
                                 checkForVariableConflicts={checkForVariableConflicts}
                                 url={value.url}

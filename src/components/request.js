@@ -15,6 +15,7 @@ import "./request.css";
  * @param {*} handleEdit the function to update the saved data in the workflow
  * @param {*} handleDelete the function to delete the request in the workflow
  * @param {*} handleSave the function to save a value out of an executed request
+ * @param {*} handleInsert the function to insert a new request after the current one
  * @param {*} runSomeRequests the function to run the individual request
  * @param {*} checkForVariableConflicts the function to check that a variable name is not in use
  * @param {string} url the URL to be displayed - "" by default
@@ -26,7 +27,7 @@ import "./request.css";
  * @param {boolean} newInput whether the information should initialise in an editable state
  * @param {number} idx the index of the saved information in the list of requests (if saved)
  */
-function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRequests, checkForVariableConflicts, url = "", method = "get", args = "", headers = "", response = {}, saved, newInput = false, idx }) {
+function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleInsert, runSomeRequests, checkForVariableConflicts, url = "", method = "get", args = "", headers = "", response = {}, saved, newInput = false, idx }) {
     const [urlError, setUrlError] = useState(false);
     const [argsError, setArgsError] = useState(false);
     const [headerError, setHeaderError] = useState(false);
@@ -221,6 +222,13 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
         setEditable(false);
 
         handleDelete(idx);
+    };
+
+    /**
+     * Inserts a request below the current one
+     */
+    const onInsert = () => {
+        handleInsert(idx);
     };
 
     /**
@@ -447,6 +455,11 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, runSomeRe
                 {/* Buttons */}
                 <nav className="level">
                     <div className="level-left">
+                        {(!editable && idx != null) &&
+                            <div className="level-item">
+                                <TextIconButton testId={getTestId("insert")} buttonClass="is-primary" type="button" onClick={onInsert} text="Insert Request Below" icon="fa-plus" />
+                            </div>
+                        }
                         {!editable &&
                             <div className="level-item">
                                 <button data-testid={getTestId("run-individual")} className="button is-primary" type="button" onClick={runRequest}>
