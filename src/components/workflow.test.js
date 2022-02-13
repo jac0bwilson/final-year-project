@@ -58,6 +58,14 @@ describe("Workflow Instantiation", () => {
         expect(getByTestId("run")).toBeInTheDocument(); // run button present
     });
 
+    test("Insert Below Button", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.click(getByTestId("done-main")); // click done
+
+        expect(getByTestId("insert-0")).toBeInTheDocument(); // run button present
+    });
+
     test("Run Individual Button", () => {
         const { getByTestId } = render(<Workflow />);
 
@@ -409,6 +417,22 @@ describe("Interaction", () => {
         expect(screen.getByTestId("method-0")).toBeInTheDocument(); // 0 removed, 1 set to 0
         expect(screen.getByDisplayValue(URL_2)).toBeInTheDocument(); // second URL present
         expect(getByTestId("method-0")).toHaveDisplayValue(METHOD_2.toUpperCase()); // method present
+    });
+
+    test("Insert New Request", () => {
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.click(getByTestId("done-main")); // add blank request
+        userEvent.click(getByTestId("done-main")); // add another blank request
+
+        expect(getByTestId("request-0")).toBeInTheDocument();
+        expect(getByTestId("request-1")).toBeInTheDocument();
+
+        userEvent.click(getByTestId("insert-0")); // insert new request in the middle
+
+        expect(getByTestId("request-0")).toBeInTheDocument();
+        expect(getByTestId("request-1")).toBeInTheDocument();
+        expect(getByTestId("request-2")).toBeInTheDocument();
     });
 
     test("Toggle to Headers", async () => {
