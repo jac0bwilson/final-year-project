@@ -376,7 +376,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                             data-testid={getTestId("url")}
                             className={"input" + (urlError ? " is-danger" : " is-link")}
                             defaultValue={url}
-                            placeholder="https://google.com/test"
+                            placeholder="Enter a URL to make a request to"
                             disabled={!editable}
                             onChange={validateURL}
                             spellCheck="false"
@@ -457,7 +457,12 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                     <div className="level-left">
                         {(!editable && idx != null) &&
                             <div className="level-item">
-                                <TextIconButton testId={getTestId("insert")} buttonClass="is-primary" type="button" onClick={onInsert} text="Insert Request Below" icon="fa-plus" />
+                                <button data-testid={getTestId("insert")} className="button is-primary" type="button" onClick={onInsert}>
+                                    {idx === 0
+                                        ? <TextIcon text="Insert Request Below" iconName="fa-plus" />
+                                        : <Icon iconName="fa-plus" />
+                                    }
+                                </button>
                             </div>
                         }
                         {!editable &&
@@ -532,7 +537,13 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                         <div className="field-body">
                             <div className="field">
                                 <div className="control">
-                                    <input name="name" required data-testid={getTestId("save-value-name")} className={"input" + (variableError ? " is-danger" : "")} type="text" onChange={validateVariableName} />
+                                    <input name="name"
+                                        data-testid={getTestId("save-value-name")}
+                                        className={"input" + (variableError ? " is-danger" : "")}
+                                        type="text"
+                                        placeholder="Enter a name to reference this value by"
+                                        onChange={validateVariableName}
+                                    />
                                     {variableError &&
                                         <p data-testid={getTestId("variable-error")} className="help is-danger">
                                             Please enter an unused, alphanumeric variable name.

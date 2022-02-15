@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { TextIcon, TextIconButton } from "./icon";
 
@@ -12,14 +12,30 @@ import "./navbar.css";
  * @param {*} help the function to toggle the help screen
  */
 function Navbar({ upload, downloadUrl, reset, help }) {
+    const [mobileNavOpen, setMobileNav] = useState(false);
+
+    /**
+     * Toggle the navbar in small display sizes
+     */
+    const toggleMobileNav = () => {
+        setMobileNav(previous => {
+            return !previous;
+        });
+    };
+
     return (
         <nav className="navbar is-fixed-top" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
                 <div className="navbar-item">
                     <h1 className="title">APEX</h1>
                 </div>
+                <button className="navbar-burger" aria-label="menu" aria-expanded="false" onClick={toggleMobileNav}>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </button>
             </div>
-            <div className="navbar-menu">
+            <div className={"navbar-menu" + (mobileNavOpen ? " is-active" : "")}>
                 <div className="navbar-start">
                     <div className="navbar-item">
                         <div className="file is-info">
