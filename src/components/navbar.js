@@ -13,6 +13,37 @@ import "./navbar.css";
  */
 function Navbar({ upload, downloadUrl, reset, help }) {
     const [mobileNavOpen, setMobileNav] = useState(false);
+    const [uploadingFile, setUploading] = useState(false);
+
+    /**
+     * When focus returns to the window, file input has been cancelled, so animation should be stopped
+     */
+    const windowFocus = () => {
+        setUploading(false);
+
+        window.removeEventListener("focus", windowFocus);
+    };
+
+    /**
+     * When the upload button is clicked, start the animation while file picker is open
+     */
+    const onUpload = () => {
+        window.addEventListener("focus", windowFocus);
+
+        setUploading(true);
+    };
+
+    /**
+     * When input completes, upload the file and stop the animation
+     * @param {Object} event the event from the trigger
+     */
+    const uploadWrapper = (event) => {
+        upload(event);
+
+        setUploading(false);
+
+        window.removeEventListener("focus", windowFocus);
+    };
 
     /**
      * Toggle the navbar in small display sizes
@@ -37,10 +68,10 @@ function Navbar({ upload, downloadUrl, reset, help }) {
             </div>
             <div className={"navbar-menu" + (mobileNavOpen ? " is-active" : "")}>
                 <div className="navbar-start">
-                    <div className="navbar-item">
+                    <div className={"navbar-item" + (uploadingFile ? " hidden" : "")}>
                         <div className="file is-info">
                             <label className="file-label">
-                                <input data-testid="upload" className="file-input" type="file" multiple={false} accept=".json,application/json" onInput={upload} />
+                                <input data-testid="upload" className="file-input" type="file" multiple={false} accept=".json,application/json" onClick={onUpload} onInput={uploadWrapper} />
                                 <span className="file-cta">
                                     <span className="file-icon">
                                         <i className="fas fa-file-upload" />
@@ -52,6 +83,12 @@ function Navbar({ upload, downloadUrl, reset, help }) {
                             </label>
                         </div>
                     </div>
+
+                    {uploadingFile &&
+                        <div className="navbar-item">
+                            <TextIconButton buttonClass="is-info is-loading" text="Open" icon="fa-file-upload" />
+                        </div>    
+                    }
 
                     {downloadUrl !== "" &&
                         <div className="navbar-item">
