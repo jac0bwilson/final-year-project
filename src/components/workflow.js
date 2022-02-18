@@ -397,7 +397,7 @@ function Workflow() {
     };
 
     return (
-        <div>
+        <div className="full-height">
             <Navbar upload={uploadWorkflow} downloadUrl={fileUrl} reset={resetWorkflow} help={toggleHelp} />
 
             <Modal testId="help" active={help} title="Help" close={toggleHelp}>
@@ -489,7 +489,7 @@ function Workflow() {
                 </div>
             </Modal>
 
-            <div className="content columns is-fullheight">
+            <div className="content columns full-height">
                 {sidebar &&
                     <aside data-testid="sidebar" className={`sidebar column is-${sidebarWidth} is-fullheight`}>
                         <Sidebar savedValues={savedValues} />

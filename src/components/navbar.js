@@ -87,7 +87,7 @@ function Navbar({ upload, downloadUrl, reset, help }) {
                     {uploadingFile &&
                         <div className="navbar-item">
                             <TextIconButton buttonClass="is-info is-loading" text="Open" icon="fa-file-upload" />
-                        </div>    
+                        </div>
                     }
 
                     {downloadUrl !== "" &&

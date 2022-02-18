@@ -398,7 +398,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                         </select>
                     </div>
                 </div>
-                
+
                 {/* Toggle between payload and headers */}
                 <div className="field has-addons has-addons-centered">
                     <div className="control">
