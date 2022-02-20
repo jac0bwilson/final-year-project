@@ -40,3 +40,7 @@
 .show-sidebar:hover {
     filter: brightness(110%);
 }
+
+.stop-scrolling {
+    overflow: hidden;
+}

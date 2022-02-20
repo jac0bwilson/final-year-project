@@ -487,7 +487,12 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                         }
                         {(!editable && response.data) &&
                             <div className="level-item">
-                                <TextIconButton testId={getTestId("open-value-saving")} buttonClass="is-info" onClick={toggleSaving} text="Save Values" icon="fa-save" />
+                                <button data-testid={getTestId("open-value-saving")} className="button is-info" type="button" onClick={toggleSaving}>
+                                    {idx === 0
+                                        ? <TextIcon text="Save Values" iconName="fa-save" />
+                                        : <Icon iconName="fa-save" />
+                                    }
+                                </button>
                             </div>
                         } {/* only show if not editing and response.data is present - indicating a successful request */}
                     </div>

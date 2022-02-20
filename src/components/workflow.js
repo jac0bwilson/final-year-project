@@ -496,7 +496,7 @@ function Workflow() {
                     </aside>
                 }
 
-                <div className={"workflow column" + (sidebar ? ` is-${12 - sidebarWidth} blurred` : "")}>
+                <div className={"workflow column" + (sidebar ? ` is-${12 - sidebarWidth} blurred stop-scrolling` : "") + (help ? " stop-scrolling" : "")}>
                     {requests.length > 0 && requests.map((value, index) => {
                         return (
                             <Request
