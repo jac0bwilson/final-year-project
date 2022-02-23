@@ -38,5 +38,3 @@ jobs:
 
       - name: Build for current platform and add to GitHub releases
         run: npm run electron-build-release
-
-      - 
