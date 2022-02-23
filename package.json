@@ -4,6 +4,14 @@
   "private": true,
   "main": "electron/main.js",
   "homepage": "./",
+  "description": "A tool for creating repeatable workflows of requests to APIs.",
+  "author": {
+    "name": "Jacob Wilson"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jac0bwilson/final-year-project"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
@@ -24,7 +32,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "concurrently \"react-scripts start\" \"wait-on http://localhost:3000 && electron .\"",
-    "electron-build": "npm run build-electron && electron-builder build --publish never"
+    "electron-build": "npm run build-electron && electron-builder build --publish never",
+    "electron-build-release": "npm run build-electron && electron-builder build --publish always"
   },
   "eslintConfig": {
     "extends": [
@@ -58,6 +67,17 @@
       "electron/main.js",
       "package.json"
     ],
-    "extends": null
+    "extends": null,
+    "linux": {
+      "category": "Utility",
+      "target": "AppImage"
+    },
+    "mac": {
+      "category": "public.app-category-developer-tools",
+      "target": "dmg"
+    },
+    "win": {
+      "target": "portable"
+    }
   }
 }

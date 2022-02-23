@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  push:
+    # branches:
+    #   - main
+
+jobs:
+  initialise:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Delete current release
+        uses: andreaswilli/delete-release-assets-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    needs: initialise
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+    
+    steps:
+      - name: Checkout Git repo
+        uses: actions/checkout@v2
+
+      - name: Install Node & NPM
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      
+      - name: Setup to build
+        run: npm install
+
+      - name: Build for current platform and add to GitHub releases
+        run: npm run electron-build-release
+
+      - 
