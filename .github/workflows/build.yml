@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Delete current release
-        uses: andreaswilli/delete-release-assets-action@v1
+        uses: andreaswilli/delete-release-assets-action@v2.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
