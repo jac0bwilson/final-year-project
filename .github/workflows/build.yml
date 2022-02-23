@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout Git repo
         uses: actions/checkout@v2
-        
+
       - name: Delete current release
         uses: andreaswilli/delete-release-assets-action@v2.0.0
         with:
@@ -41,3 +41,5 @@ jobs:
 
       - name: Build for current platform and add to GitHub releases
         run: npm run electron-build-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
