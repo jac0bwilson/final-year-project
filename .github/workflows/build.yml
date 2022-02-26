@@ -17,6 +17,8 @@ jobs:
         uses: andreaswilli/delete-release-assets-action@v2.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          tagPrefix: v
+          deleteOnlyFromDrafts: false
 
   build:
     needs: initialise
