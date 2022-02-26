@@ -25,3 +25,7 @@
 .hidden {
     display: none !important;
 }
+
+input.is-warning {
+    outline: hsl(48, 100%, 29%) !important;
+}

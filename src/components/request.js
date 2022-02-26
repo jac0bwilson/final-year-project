@@ -29,6 +29,7 @@ import "./request.css";
  */
 function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleInsert, runSomeRequests, checkForVariableConflicts, url = "", method = "get", args = "", headers = "", response = {}, saved, newInput = false, idx }) {
     const [urlError, setUrlError] = useState(false);
+    const [insecureURL, setInsecure] = useState(url.length > 0 ? !url.startsWith("https") : false);
     const [argsError, setArgsError] = useState(false);
     const [headerError, setHeaderError] = useState(false);
     const [variableError, setVarError] = useState(true);
@@ -107,6 +108,8 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
         let toCheck = processSavedValuesURL(event.target.value, saved);
 
         if (toCheck.length > 0) { // prevents error being shown on empty strings
+            setInsecure(!toCheck.startsWith("https"));
+
             let options = { protocols: ["http", "https"], require_protocol: true };
             let valid = isURL(toCheck, options);
 
@@ -196,6 +199,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                 setMethod("get");
                 setArgs("");
                 setHeaders("");
+                setInsecure(false);
             } else { // if an existing item has been rendered
                 handleEdit(event, idx);
                 setEditable(false);
@@ -374,7 +378,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                         <input
                             name="url"
                             data-testid={getTestId("url")}
-                            className={"input" + (urlError ? " is-danger" : " is-link")}
+                            className={"input" + (urlError ? " is-danger" : " " + (insecureURL ? "is-warning" : "is-link"))}
                             defaultValue={url}
                             placeholder="Enter a URL to make a request to"
                             disabled={!editable}
@@ -386,6 +390,11 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                                 The provided URL is not valid, please correct it.
                             </p>
                         } {/* only shown when state indicates an error in the URL */}
+                        {(insecureURL && !urlError) &&
+                            <p data-testid={getTestId("url-insecure")} className="help has-text-warning-dark">
+                                This URL is insecure, data sent to it is not encrypted in transit.
+                            </p>
+                        }
                     </div>
 
                     <div className="control select is-link">
