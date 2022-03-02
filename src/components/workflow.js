@@ -435,7 +435,8 @@ function Workflow() {
                     <h5>In Arguments</h5>
                     <p>
                         When editing the payload of a request, you can reference a saved value by providing
-                        the name of the value, preceded by an exclamation mark. An example is shown below.
+                        the name of the value, preceded and followed by an exclamation mark. An example is
+                        shown below.
                     </p>
                     <pre>
                         <code>

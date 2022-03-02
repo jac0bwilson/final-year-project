@@ -1,4 +1,4 @@
-const matchSavedValuesJSON = /![a-zA-Z0-9]+/gm; // TODO: may want to reject if prefixed with quotes
+const matchSavedValuesJSON = /![a-zA-Z0-9]+(:.+:(.+)?)?!/gm; // TODO: may want to reject if prefixed with quotes
 const matchSavedValuesURL = /![a-zA-Z0-9]+(:raw)?!/gm;
 
 /**
@@ -12,11 +12,11 @@ function processSavedValuesJSON(args, saved) {
 
     if (matches) {
         matches.forEach((match) => {
-            const name = match.slice(1); // remove "!" from value reference
-
-            if (name in saved) {
-                let newValue = saved[name]["data"];
-
+            const components = match.slice(1, -1).split(":"); // remove "!" from value reference
+            
+            if (components[0] in saved) {
+                let newValue = saved[components[0]]["data"];
+                
                 if (typeof newValue === "object") { // objects need to be handled separately to print properly
                     newValue = JSON.stringify(newValue);
                 } else if (typeof newValue === "string") {
@@ -25,9 +25,14 @@ function processSavedValuesJSON(args, saved) {
                     newValue = String(newValue);
                 }
 
+                if (components.length > 1) { // perform regex replacement
+                    newValue = newValue.replace(new RegExp(components[1]), components[2]);
+                }
+
                 args = args.replace(match, newValue); // replace reference with string of the value
             }
         });
+
     }
 
     return args;
@@ -47,14 +52,19 @@ function processSavedValuesURL(url, saved) {
             const components = match.slice(1, -1).split(":");
 
             if (components[0] in saved) {
-                const newValue = saved[components[0]]["data"];
+                let newValue = saved[components[0]]["data"];
 
-                if (components.length > 1 && components[1] === "raw") { // option present
+                if (typeof newValue === "object") { // objects need to be handled separately to print properly
+                    newValue = JSON.stringify(newValue);
+                } else {
+                    newValue = String(newValue);
+                }
+
+                if (components.length === 2 && components[1] === "raw") { // option present
                     url = url.replace(match, newValue); // don't URL encode characters
                 } else {
                     url = url.replace(match, encodeURIComponent(newValue));
                 }
-
             }
         });
     }
