@@ -1,5 +1,5 @@
 const matchSavedValuesJSON = /![a-zA-Z0-9]+(:.+:(.+)?)?!/gm; // TODO: may want to reject if prefixed with quotes
-const matchSavedValuesURL = /![a-zA-Z0-9]+(:raw)?!/gm;
+const matchSavedValuesURL = /![a-zA-Z0-9]+(:raw)?(:.+:(.+)?)?!/gm;
 
 /**
  * Fills in the saved values where they are referenced in a request's arguments
@@ -25,7 +25,7 @@ function processSavedValuesJSON(args, saved) {
                     newValue = String(newValue);
                 }
 
-                if (components.length > 1) { // perform regex replacement
+                if (components.length === 3) { // perform regex replacement
                     newValue = newValue.replace(new RegExp(components[1]), components[2]);
                 }
 
@@ -60,7 +60,13 @@ function processSavedValuesURL(url, saved) {
                     newValue = String(newValue);
                 }
 
-                if (components.length === 2 && components[1] === "raw") { // option present
+                const length = components.length;
+
+                if (length >= 3) {
+                    newValue = newValue.replace(new RegExp(components[length - 2]), components[length - 1]);
+                }
+
+                if (components.length >= 2 && components[1] === "raw") { // option present
                     url = url.replace(match, newValue); // don't URL encode characters
                 } else {
                     url = url.replace(match, encodeURIComponent(newValue));
