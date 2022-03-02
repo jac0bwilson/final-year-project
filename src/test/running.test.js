@@ -47,7 +47,7 @@ describe("HTTP Methods", () => {
 
     test("DELETE", async () => {
         const { getByTestId } = render(<Workflow />);
-        const METHOD = "post";
+        const METHOD = "delete";
         const URL = "https://httpbin.org/" + METHOD;
         const DATA = "{\"abc\":\"def\"}";
 
@@ -65,7 +65,7 @@ describe("HTTP Methods", () => {
 
     test("PUT", async () => {
         const { getByTestId } = render(<Workflow />);
-        const METHOD = "post";
+        const METHOD = "put";
         const URL = "https://httpbin.org/" + METHOD;
         const DATA = "{\"abc\":\"def\"}";
 

@@ -29,7 +29,7 @@ import "./request.css";
  */
 function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleInsert, runSomeRequests, checkForVariableConflicts, url = "", method = "get", args = "", headers = "", response = {}, saved, newInput = false, idx }) {
     const [urlError, setUrlError] = useState(false);
-    const [insecureURL, setInsecure] = useState(url.length > 0 ? !url.startsWith("https") : false);
+    const [insecureURL, setInsecure] = useState(url.length > 0 ? !processSavedValuesURL(url, saved).startsWith("https") : false);
     const [argsError, setArgsError] = useState(false);
     const [headerError, setHeaderError] = useState(false);
     const [variableError, setVarError] = useState(true);
