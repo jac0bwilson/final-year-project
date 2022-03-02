@@ -441,7 +441,7 @@ function Workflow() {
                     <pre>
                         <code>
                             &#123;
-                            "example": !exampleData
+                            "example": !exampleData!
                             &#125;
                         </code>
                     </pre>
@@ -465,6 +465,31 @@ function Workflow() {
                     <pre>
                         <code>
                             !previouslySavedURL:raw!
+                        </code>
+                    </pre>
+                    <h5>Regular Expression Replacement</h5>
+                    <p>
+                        When you reference a saved value, you are able to use regular expressions to modify
+                        the content that it contains, at the time of use. After your variable name (and the
+                        optional ':raw' tag in URLs), you should type a colon, then the regular expression
+                        to match on. This should be followed by another colon, and then the string to
+                        replace the matched text with. This text can also be blank to remove the matched
+                        text.
+                    </p>
+                    <pre>
+                        <code>
+                            &#123;
+                            "example": !exampleData:toSwap:swapTo!
+                            &#125;
+                        </code>
+                    </pre>
+                    <p>
+                        The same can also be done with URLs, the replacement will occur before URL encoding
+                        is done, if the ':raw' tag is omitted.
+                    </p>
+                    <pre>
+                        <code>
+                            !previouslySavedURL:raw:toSwap:swapTo!
                         </code>
                     </pre>
                     <h3>Managing Workflows</h3>
