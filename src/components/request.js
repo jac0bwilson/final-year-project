@@ -4,8 +4,9 @@ import isURL from "validator/lib/isURL";
 
 import { TextIcon, Icon, TextIconButton } from "./icon";
 import { Modal } from "./modal";
+import { Save } from "./save";
 
-import { processSavedValuesJSON, processSavedValuesURL, customFormatJSON, extractNestedResponseData } from "../utilities";
+import { processSavedValuesJSON, processSavedValuesURL, customFormatJSON } from "../utilities";
 
 import "./request.css";
 
@@ -32,7 +33,6 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
     const [insecureURL, setInsecure] = useState(url.length > 0 ? !processSavedValuesURL(url, saved).startsWith("https") : false);
     const [argsError, setArgsError] = useState(false);
     const [headerError, setHeaderError] = useState(false);
-    const [variableError, setVarError] = useState(true);
     const [editable, setEditable] = useState(newInput);
     const [selectedMethod, setMethod] = useState(method);
     const [savedArgs, setArgs] = useState(args);
@@ -60,36 +60,6 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
     useEffect(() => {
         setHeaders(headers);
     }, [headers]);
-
-    /**
-     * Flatten an object and get the list of it's keys
-     * @param {Object} object the object to obtain the keys for
-     * @param {string} stub the base of the key to construct
-     * @returns the list of keys at all levels of the object
-     */
-    const getResponseKeys = (object, stub = "") => {
-        let keys = [];
-
-        for (let key in object) { // iterate through response data
-            let next;
-
-            if (stub === "") {
-                next = key;
-            } else {
-                next = stub + "/" + key;
-            }
-
-            keys.push(next);
-
-            if (typeof object[key] === "object") { // if key holds an object, recurse
-                let these = getResponseKeys(object[key], next);
-
-                keys = keys.concat(these);
-            }
-        }
-
-        return keys;
-    };
 
     /**
      * Create the test ID for the HTML feature in order to run unit tests
@@ -161,23 +131,6 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
         } else if (name === "headers") {
             setHeaderError(false);
         }
-    };
-
-    /**
-     * Checks the current value of the name to assign to a saved value and sets the state to indicate if it is valid
-     * @param {*} event the event caused by the field being edited
-     */
-    const validateVariableName = (event) => {
-        let toCheck = event.target.value;
-
-        let matches = toCheck.match(/^[A-Za-z0-9]+$/);
-
-        if (!matches || checkForVariableConflicts(toCheck)) {
-            setVarError(true);
-            return;
-        }
-
-        setVarError(false);
     };
 
     /**
@@ -254,27 +207,6 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
     };
 
     /**
-     * Handles the saving of values from a response
-     * @param {*} event the event caused by the user saving the value
-     */
-    const onValueSave = (event) => {
-        event.preventDefault();
-
-        const config = {
-            name: event.target.elements.name.value,
-            data: extractNestedResponseData(event.target.elements.target.value, response),
-            key: event.target.elements.target.value,
-            availableFrom: idx
-        };
-
-        handleSave(config);
-
-        toggleSaving();
-        setVarError(true);
-        event.target.reset();
-    };
-
-    /**
      * Handles the action when the run individual button is pressed
      * @param {*} event the event caused by the run button being pressed
      */
@@ -292,6 +224,16 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
         event.preventDefault();
 
         runSomeRequests(idx, true);
+    };
+
+    /**
+     * Wrapper to pass saving from response functionality and closing of modal
+     * @param {*} config the information to be stored in saved values
+     */
+    const savingWrapper = (config) => {
+        handleSave(config);
+
+        toggleSaving();
     };
 
     const httpMethods = {
@@ -524,57 +466,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
 
             {/* Saving Values Interface */}
             <Modal testId={getTestId("value-saving")} active={displaySaving} title="Save Values" close={toggleSaving}>
-                <form onSubmit={onValueSave}>
-                    <div className="field is-horizontal">
-                        <div className="field-label">
-                            <label className="label">Value to Save:</label>
-                        </div>
-                        <div className="field-body">
-                            <div className="field">
-                                <div className="control select is-fullwidth">
-                                    <select name="target" data-testid={getTestId("save-value-select")}>
-                                        {getResponseKeys(response.data).map((value) => {
-                                            return (
-                                                <option value={value} key={value}>{value}</option>
-                                            )
-                                        })}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="field is-horizontal">
-                        <div className="field-label">
-                            <label className="label">Assigned Name:</label>
-                        </div>
-                        <div className="field-body">
-                            <div className="field">
-                                <div className="control">
-                                    <input name="name"
-                                        data-testid={getTestId("save-value-name")}
-                                        className={"input" + (variableError ? " is-danger" : "")}
-                                        type="text"
-                                        placeholder="Enter a name to reference this value by"
-                                        onChange={validateVariableName}
-                                    />
-                                    {variableError &&
-                                        <p data-testid={getTestId("variable-error")} className="help is-danger">
-                                            Please enter an unused, alphanumeric variable name.
-                                        </p>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <nav className="level">
-                        <div className="level-left" />
-                        <div className="level-right">
-                            <TextIconButton testId={getTestId("save-value")} buttonClass="is-success" type="submit" disabled={variableError} text="Done" icon="fa-check" />
-                        </div>
-                    </nav>
-                </form>
+                <Save handleSave={savingWrapper} checkForVariableConflicts={checkForVariableConflicts} response={response} idx={idx} />
             </Modal>
         </div>
     );
