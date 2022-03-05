@@ -555,7 +555,7 @@ function Workflow() {
                 </div>
 
                 <button data-testid="show-sidebar" className="show-sidebar has-background-primary" onClick={toggleSidebar}>
-                    <Icon iconName="fa-info" />
+                    <Icon iconName="fa-clipboard-list" />
                 </button>
             </div>
         </div>

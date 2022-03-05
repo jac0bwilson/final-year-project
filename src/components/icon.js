@@ -8,9 +8,7 @@ import React from "react";
 function TextIcon({ text, iconName }) {
     return (
         <div className="icon-text">
-            <span className="icon">
-                <i className={"fas " + iconName}></i>
-            </span>
+            <Icon iconName={iconName} />
             <span>{text}</span>
         </div>
     );
@@ -23,7 +21,7 @@ function TextIcon({ text, iconName }) {
 function Icon({ iconName }) {
     return (
         <span className="icon">
-            <i className={"fas " + iconName}></i>
+            <i className={"fa-solid " + iconName}></i>
         </span>
     );
 }
