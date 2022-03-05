@@ -465,9 +465,11 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
             </form>
 
             {/* Saving Values Interface */}
-            <Modal testId={getTestId("value-saving")} active={displaySaving} title="Save Values" close={toggleSaving}>
-                <Save handleSave={savingWrapper} checkForVariableConflicts={checkForVariableConflicts} response={response} idx={idx} />
-            </Modal>
+            {idx != null &&
+                <Modal testId={getTestId("value-saving")} active={displaySaving} title="Save Values" close={toggleSaving}>
+                    <Save handleSave={savingWrapper} checkForVariableConflicts={checkForVariableConflicts} response={response} idx={idx} />
+                </Modal>
+            }
         </div>
     );
 }

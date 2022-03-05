@@ -1,13 +1,17 @@
 import React from "react";
 
+import { Save } from "./save";
+
 import "./sidebar.css";
 
 /**
  * Generates the sidebar that appears to the left of the screen
  * @param {Object} savedValues the values saved from responses
+ * @param {*} handleSave the function to save a value for later use
+ * @param {*} checkForVariableConflicts the function to ensure that variable names can not be duplicates
  * @returns 
  */
-function Sidebar({ savedValues }) {
+function Sidebar({ savedValues, handleSave, checkForVariableConflicts }) {
     const keys = Object.keys(savedValues);
 
     /**
@@ -31,17 +35,22 @@ function Sidebar({ savedValues }) {
                         Saved Values
                     </p>
                     <p className="subtitle">
-                        You can find the values saved from responses here.
+                        You can find the values saved from responses here. You can also save your own text
+                        values for use at any point in the workflow.
                     </p>
                 </div>
             </section>
+
+            <div className="box">
+                <Save handleSave={handleSave} checkForVariableConflicts={checkForVariableConflicts} />
+            </div>
+
             <table className="table is-narrow is-striped is-hoverable">
                 <thead>
                     <tr>
                         <th>Name</th>
                         <th>Value</th>
                         <th>Type</th>
-                        {/* <th>Defined</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +63,6 @@ function Sidebar({ savedValues }) {
                                     <td>{value}</td>
                                     <td>{stringify(item.data)}</td>
                                     <td>{typeof item.data}</td>
-                                    {/* <td>{item.availableFrom}</td> */}
                                 </tr>
                             )
                         })

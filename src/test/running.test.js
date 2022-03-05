@@ -385,12 +385,31 @@ describe("Saved Values", () => {
         const { getByText } = within(getByTestId("response-data-text-1"));
         expect(getByText(URL + "get", { exact: false })).toBeInTheDocument();
     });
+
+    test("Arbitrary Value Saving in Sidebar", async () => {
+        const { getByTestId } = render(<Workflow />);
+    
+        userEvent.click(getByTestId("show-sidebar")); // show the sidebar
+    
+        await waitFor(() => expect(getByTestId("sidebar")).toBeInTheDocument()); // sidebar present
+
+        userEvent.type(getByTestId("save-value-data-main"), "https://httpbin.org/get");
+        userEvent.type(getByTestId("save-value-name-main"), "url");
+        userEvent.click(getByTestId("save-value-main")); // click save value
+
+        userEvent.click(getByTestId("show-sidebar")); // hide the sidebar
+
+        await waitFor(() => expect(screen.queryByTestId("sidebar")).not.toBeInTheDocument()); // sidebar not present
+
+        userEvent.type(getByTestId("url-main"), "!url:raw!"); // reference URL
+        expect(screen.queryByTestId("url-error-main")).not.toBeInTheDocument(); // should not show
+    });
 });
 
 describe("Other", () => {
     test("404 Error", async () => {
         const { getByTestId } = render(<Workflow />);
-        const URL = "http://httpbin.org/status/404";
+        const URL = "https://httpbin.org/status/404";
 
         userEvent.type(getByTestId("url-main"), URL); // type URL
         userEvent.click(getByTestId("done-main")); // click done

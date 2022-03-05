@@ -518,7 +518,7 @@ function Workflow() {
             <div className="content columns full-height">
                 {sidebar &&
                     <aside data-testid="sidebar" className={`sidebar column is-${sidebarWidth} is-fullheight`}>
-                        <Sidebar savedValues={savedValues} handleSave={handleSave} />
+                        <Sidebar savedValues={savedValues} handleSave={handleSave} checkForVariableConflicts={checkForVariableConflicts} />
                     </aside>
                 }
 

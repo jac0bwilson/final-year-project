@@ -4,6 +4,14 @@ import { TextIconButton } from "./icon";
 
 import { extractNestedResponseData } from "../utilities";
 
+/**
+ * A separate component for saving values, from responses or on an impromptu basis
+ * @param {*} handleSave the function passed in to provide custom functionality on saving
+ * @param {*} checkForVariableConflicts the function to ensure that variable names can not be duplicates
+ * @param {Object} response the data source to used for value extraction (if necessary)
+ * @param {number} idx the index of the request (if used in that content) for generating test IDs
+ * @returns 
+ */
 function Save({ handleSave, checkForVariableConflicts, response = {}, idx }) {
     const [variableError, setVarError] = useState(true);
 
@@ -66,11 +74,17 @@ function Save({ handleSave, checkForVariableConflicts, response = {}, idx }) {
     const onValueSave = (event) => {
         event.preventDefault();
 
-        const config = {
+        const config = idx != null ? {
             name: event.target.elements.name.value,
             data: extractNestedResponseData(event.target.elements.target.value, response),
             key: event.target.elements.target.value,
             availableFrom: idx
+        }
+        : {
+            name: event.target.elements.name.value,
+            data: event.target.elements.data.value,
+            key: "",
+            availableFrom: 0
         };
 
         handleSave(config);
@@ -82,32 +96,44 @@ function Save({ handleSave, checkForVariableConflicts, response = {}, idx }) {
     return (
         <form onSubmit={onValueSave}>
             <div className="field is-horizontal">
-                <div className="field-label">
+                <div className={"field-label" + (idx == null ? " is-small" : "")}>
                     <label className="label">Value to Save:</label>
                 </div>
                 <div className="field-body">
                     <div className="field">
-                        <div className="control select is-fullwidth">
-                            <select name="target" data-testid={getTestId("save-value-select")}>
-                                {getResponseKeys(response.data).map((value) => {
-                                    return (
-                                        <option value={value} key={value}>{value}</option>
-                                    )
-                                })}
-                            </select>
-                        </div>
+                        {idx != null
+                            ? <div className="control select is-fullwidth">
+                                <select name="target" data-testid={getTestId("save-value-select")}>
+                                    {getResponseKeys(response.data).map((value) => {
+                                        return (
+                                            <option value={value} key={value}>{value}</option>
+                                        )
+                                    })}
+                                </select>
+                            </div>
+                            : <div className="control is-fullwidth">
+                                <input
+                                    name="data"
+                                    data-testid={getTestId("save-value-data")}
+                                    className="input"
+                                    type="text"
+                                    placeholder="Enter some data to be stored"
+                                />
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
 
             <div className="field is-horizontal">
-                <div className="field-label">
+                <div className={"field-label" + (idx == null ? " is-small" : "")}>
                     <label className="label">Assigned Name:</label>
                 </div>
                 <div className="field-body">
                     <div className="field">
                         <div className="control">
-                            <input name="name"
+                            <input
+                                name="name"
                                 data-testid={getTestId("save-value-name")}
                                 className={"input" + (variableError ? " is-danger" : "")}
                                 type="text"
