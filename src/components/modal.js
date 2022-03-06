@@ -10,7 +10,7 @@ import React from "react";
  */
 function Modal({ children, testId, active, title, close }) {
     return (
-        <div data-testid={testId} className={"modal" + (active ? " is-active" : "")}>
+        <div data-testid={testId} className={"modal modal-fx-normal" + (active ? " is-active" : "")}>
             <div className="modal-background" onClick={close} />
             <div className="modal-content">
                 <div className="box">
