@@ -205,6 +205,30 @@ describe("Saved Values", () => {
         await waitFor(() => expect(getByTestId("response-data-1")).toBeInTheDocument()); // JSON response present
     });
 
+    test("Using Saved Value in Headers", async () => {
+        const { getByTestId } = render(<Workflow />);
+        const URL = "https://httpbin.org/";
+        const METHOD = "get";
+
+        userEvent.type(getByTestId("url-main"), URL + METHOD); // type URL
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-0")).toBeInTheDocument()); // JSON response present
+
+        userEvent.click(getByTestId("open-value-saving-0")); // open value saving modal
+        userEvent.selectOptions(getByTestId("save-value-select-0"), "url"); // select "url" value
+        userEvent.type(getByTestId("save-value-name-0"), "url"); // give name as "url"
+        userEvent.click(getByTestId("save-value-0")); // click save value
+
+        userEvent.type(getByTestId("url-main"), URL + METHOD); // type URL
+        userEvent.type(getByTestId("headers-main"), "{\"url\": !url!}"); // type arguments
+        userEvent.click(getByTestId("done-main")); // click done
+        userEvent.click(getByTestId("run")); // click run
+
+        await waitFor(() => expect(getByTestId("response-data-1")).toBeInTheDocument()); // JSON response present
+    });
+
     test("Regular Expression Replacement in Arguments", async () => {
         const { getByTestId } = render(<Workflow />);
         const URL = "https://httpbin.org/";

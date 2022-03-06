@@ -71,6 +71,11 @@ function Save({ handleSave, checkForVariableConflicts, response = {}, idx }) {
         setVarError(false);
     };
 
+    /**
+     * Performs generic saving steps: prepare data format and reset form. Saving of values is done using logic
+     * provided by the parent component to allow additional actions to be completed on submission.
+     * @param {*} event the event caused by the form being submitted
+     */
     const onValueSave = (event) => {
         event.preventDefault();
 

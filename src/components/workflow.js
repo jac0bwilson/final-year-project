@@ -280,7 +280,7 @@ function Workflow() {
         let config = {
             url: processSavedValuesURL(request.url, availableSaved),
             method: request.method,
-            headers: request.headers.length > 0 ? JSON.parse(request.headers) : {}
+            headers: request.headers.length > 0 ? JSON.parse(processSavedValuesJSON(request.headers, availableSaved)) : {}
         };
 
         if (!["get", "head", "options"].includes(config.method)) {
