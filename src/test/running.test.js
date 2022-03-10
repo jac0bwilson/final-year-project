@@ -412,9 +412,9 @@ describe("Saved Values", () => {
 
     test("Arbitrary Value Saving in Sidebar", async () => {
         const { getByTestId } = render(<Workflow />);
-    
+
         userEvent.click(getByTestId("show-sidebar")); // show the sidebar
-    
+
         await waitFor(() => expect(getByTestId("sidebar")).toBeInTheDocument()); // sidebar present
 
         userEvent.type(getByTestId("save-value-data-main"), "https://httpbin.org/get");

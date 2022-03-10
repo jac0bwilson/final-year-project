@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { nanoid } from "nanoid";
 
 import { Request } from "./request";
 import { Icon, TextIconButton } from "./icon";
@@ -115,7 +116,8 @@ function Workflow() {
             url: event.target.elements.url.value,
             method: event.target.elements.method.value,
             arguments: event.target.elements.arguments.value,
-            headers: event.target.elements.headers.value
+            headers: event.target.elements.headers.value,
+            identifier: nanoid()
         };
 
         editRequests(requests.concat([newRequest])); // adds the new data to the list in state
@@ -131,7 +133,8 @@ function Workflow() {
             url: event.target.elements.url.value,
             method: event.target.elements.method.value,
             arguments: event.target.elements.arguments.value,
-            headers: event.target.elements.headers.value
+            headers: event.target.elements.headers.value,
+            identifier: nanoid()
         };
 
         editRequests(previous => {
@@ -255,7 +258,8 @@ function Workflow() {
                 "url": "",
                 "method": "get",
                 "arguments": "",
-                "headers": ""
+                "headers": "",
+                "identifier": nanoid()
             });
 
             return newRequests;
@@ -527,7 +531,7 @@ function Workflow() {
                     {requests.length > 0 && requests.map((value, index) => {
                         return (
                             <Request
-                                key={index}
+                                key={value.identifier}
                                 handleSubmit={handleSubmit}
                                 handleEdit={handleEdit}
                                 handleDelete={handleDelete}

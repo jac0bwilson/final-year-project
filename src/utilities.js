@@ -13,10 +13,10 @@ function processSavedValuesJSON(args, saved) {
     if (matches) {
         matches.forEach((match) => {
             const components = match.slice(1, -1).split(":"); // remove "!" from value reference
-            
+
             if (components[0] in saved) {
                 let newValue = saved[components[0]]["data"];
-                
+
                 if (typeof newValue === "object") { // objects need to be handled separately to print properly
                     newValue = JSON.stringify(newValue);
                 } else if (typeof newValue === "string") {
