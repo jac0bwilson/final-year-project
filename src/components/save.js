@@ -56,7 +56,7 @@ function Save({ handleSave, checkForVariableConflicts, response = {}, idx }) {
 
     /**
      * Checks the current value of the name to assign to a saved value and sets the state to indicate if it is valid
-     * @param {*} event the event caused by the field being edited
+     * @param {Object} event the event caused by the field being edited
      */
     const validateVariableName = (event) => {
         let toCheck = event.target.value;
@@ -74,7 +74,7 @@ function Save({ handleSave, checkForVariableConflicts, response = {}, idx }) {
     /**
      * Performs generic saving steps: prepare data format and reset form. Saving of values is done using logic
      * provided by the parent component to allow additional actions to be completed on submission.
-     * @param {*} event the event caused by the form being submitted
+     * @param {Object} event the event caused by the form being submitted
      */
     const onValueSave = (event) => {
         event.preventDefault();

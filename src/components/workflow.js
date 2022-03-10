@@ -123,7 +123,7 @@ function Workflow() {
 
     /**
      * Handles the updating of existing item information
-     * @param {*} event the event from the trigger
+     * @param {Object} event the event from the trigger
      * @param {number} index the index of the item to be updated
      */
     const handleEdit = (event, index) => {
@@ -227,7 +227,7 @@ function Workflow() {
 
     /**
      * Saves a specific value from an executed request
-     * @param {*} config the information about the value to be saved 
+     * @param {Object} config the information about the value to be saved 
      */
     const handleSave = (config) => {
         editSavedValues(previous => {

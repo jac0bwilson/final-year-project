@@ -72,7 +72,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
 
     /**
      * Checks the current value of the URL field and sets the state to indicate if it is valid
-     * @param {*} event the event caused by the field being edited
+     * @param {Object} event the event caused by the field being edited
      */
     const validateURL = (event) => {
         let toCheck = processSavedValuesURL(event.target.value, saved);
@@ -105,7 +105,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
 
     /**
      * Checks the current value of the arguments field and sets the state to indicate if it is valid
-     * @param {*} event the event caused by the field being edited
+     * @param {Object} event the event caused by the field being edited
      */
     const validateArgs = (event) => {
         let toCheck = processSavedValuesJSON(event.target.value, saved); // apply the saved values and then do the validation
@@ -135,7 +135,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
 
     /**
      * Performs error checking, then submits the entered details
-     * @param {*} event the event caused by the field being edited
+     * @param {Object} event the event caused by the field being edited
      */
     const onSubmit = (event) => {
         event.preventDefault(); // prevents the values from being added to the URL
@@ -164,7 +164,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
 
     /**
      * Handles the action when the edit button is pressed
-     * @param {*} event the event caused by the edit button being pressed
+     * @param {Object} event the event caused by the edit button being pressed
      */
     const startEditing = (event) => {
         event.preventDefault();
@@ -208,7 +208,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
 
     /**
      * Handles the action when the run individual button is pressed
-     * @param {*} event the event caused by the run button being pressed
+     * @param {Object} event the event caused by the run button being pressed
      */
     const runRequest = (event) => {
         event.preventDefault();
@@ -218,7 +218,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
 
     /**
      * Handles the action when the run from here onwards button is pressed
-     * @param {*} event the event caused by the run button being pressed
+     * @param {Object} event the event caused by the run button being pressed
      */
     const runRequestOnwards = (event) => {
         event.preventDefault();
@@ -228,7 +228,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
 
     /**
      * Wrapper to pass saving from response functionality and closing of modal
-     * @param {*} config the information to be stored in saved values
+     * @param {Object} config the information to be stored in saved values
      */
     const savingWrapper = (config) => {
         handleSave(config);

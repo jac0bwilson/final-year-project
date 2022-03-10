@@ -16,7 +16,7 @@ function Sidebar({ savedValues, handleSave, checkForVariableConflicts }) {
 
     /**
      * Naive method of turning saved data into a string to be displayed in the sidebar
-     * @param {*} data the value to be confirmed as a string
+     * @param {Object} data the value to be confirmed as a string
      * @returns the string of the data
      */
     const stringify = (data) => {
