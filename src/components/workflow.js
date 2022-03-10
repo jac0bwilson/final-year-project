@@ -53,6 +53,7 @@ function Workflow() {
             editRequests([]);
             editResponses({});
             editSavedValues({});
+            setSidebar(false);
         }
     };
 

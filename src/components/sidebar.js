@@ -42,10 +42,12 @@ function Sidebar({ savedValues, handleSave, checkForVariableConflicts }) {
             </section>
 
             <div className="box">
+                <h3>Save a New Value</h3>
+
                 <Save handleSave={handleSave} checkForVariableConflicts={checkForVariableConflicts} />
             </div>
 
-            <table className="table is-narrow is-striped is-hoverable">
+            <table className="table is-narrow is-striped is-hoverable is-bordered">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -66,7 +68,9 @@ function Sidebar({ savedValues, handleSave, checkForVariableConflicts }) {
                                 </tr>
                             )
                         })
-                        : <></>
+                        : <tr>
+                            <td colSpan="3">You have not saved any values yet.</td>
+                        </tr>
                     }
                 </tbody>
             </table>
