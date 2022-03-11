@@ -16,19 +16,19 @@ function Navbar({ upload, downloadUrl, reset, help }) {
     const [uploadingFile, setUploading] = useState(false);
 
     /**
-     * When focus returns to the window, file input has been cancelled, so animation should be stopped
+     * When focus returns to the window, file input has finished or been cancelled, so animation should be stopped
      */
-    const windowFocus = () => {
+    const stopAnimation = () => {
         setUploading(false);
 
-        window.removeEventListener("focus", windowFocus);
+        window.removeEventListener("focus", stopAnimation);
     };
 
     /**
      * When the upload button is clicked, start the animation while file picker is open
      */
     const onUpload = () => {
-        window.addEventListener("focus", windowFocus);
+        window.addEventListener("focus", stopAnimation);
 
         setUploading(true);
     };
@@ -40,9 +40,7 @@ function Navbar({ upload, downloadUrl, reset, help }) {
     const uploadWrapper = (event) => {
         upload(event);
 
-        setUploading(false);
-
-        window.removeEventListener("focus", windowFocus);
+        stopAnimation();
     };
 
     /**

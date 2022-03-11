@@ -104,18 +104,17 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
     };
 
     /**
-     * Checks the current value of the arguments field and sets the state to indicate if it is valid
+     * Checks the current value of the arguments/headers field and sets the state to indicate if it is valid
      * @param {Object} event the event caused by the field being edited
      */
     const validateArgs = (event) => {
-        let toCheck = processSavedValuesJSON(event.target.value, saved); // apply the saved values and then do the validation
-        let name = event.target.name;
+        const toCheck = processSavedValuesJSON(event.target.value, saved); // apply the saved values and then do the validation
+        const name = event.target.name;
 
         if (toCheck.length > 0) {
             try {
                 JSON.parse(toCheck);
             } catch (e) {
-
                 if (name === "arguments") {
                     setArgsError(true);
                 } else if (name === "headers") {
@@ -142,8 +141,8 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
 
         if (!urlError && !argsError) {
             // if the arguments are a valid JSON string, replace it with a formatted version
-            let tempArgs = event.target.elements.arguments.value;
-            let tempHeaders = event.target.elements.headers.value;
+            const tempArgs = event.target.elements.arguments.value;
+            const tempHeaders = event.target.elements.headers.value;
             event.target.elements.arguments.value = tempArgs.length > 0 ? customFormatJSON(tempArgs) : "";
             event.target.elements.headers.value = tempHeaders.length > 0 ? customFormatJSON(tempHeaders) : "";
 

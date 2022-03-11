@@ -169,7 +169,7 @@ function Workflow() {
         const modifier = inserting ? 1 : -1;
 
         for (const [key, value] of Object.entries(previous)) {
-            let keyInt = parseInt(key);
+            const keyInt = parseInt(key);
 
             if (keyInt > index) { // if response came after target, increment/decrement key
                 newResponses[keyInt + modifier] = value;
@@ -195,7 +195,7 @@ function Workflow() {
         const modifier = inserting ? 1 : -1;
 
         for (const [key, value] of Object.entries(previous)) {
-            let comparison = value.availableFrom;
+            const comparison = value.availableFrom;
 
             if (comparison > index) {
                 let newValue = { ...value };
@@ -353,11 +353,10 @@ function Workflow() {
             return {};
         }); // reset stored responses before running
 
-        let temp = requests;
-        temp.map((request, index) => {
+        const temp = requests;
+        
+        temp.forEach((request, index) => {
             runRequest(request, index);
-
-            return {};
         });
     };
 
@@ -367,10 +366,10 @@ function Workflow() {
      * @param {boolean} onwards whether or not to run all after this point
      */
     const runSomeRequests = (startIndex, onwards) => {
-        let temp = requests;
+        const temp = requests;
 
         if (onwards) {
-            for (let i = 0; i < temp.length; i++) {
+            for (let i = startIndex; i < temp.length; i++) {
                 runRequest(temp[i], i);
             }
         } else {
@@ -387,7 +386,7 @@ function Workflow() {
         let available = {};
 
         for (const [key, value] of Object.entries(savedValues)) {
-            let comp = value.availableFrom;
+            const comp = value.availableFrom;
 
             if (index > comp) { // if value is available after the index of the item, allow it
                 available[key] = value;

@@ -84,7 +84,7 @@ function processSavedValuesURL(url, saved) {
  * @returns the JSON formatted string
  */
 function formatJSON(toFormat) {
-    let parsed = JSON.parse(toFormat);
+    const parsed = JSON.parse(toFormat);
 
     return JSON.stringify(parsed, null, 2);
 }
@@ -101,7 +101,7 @@ function customFormatJSON(toFormat) {
         output = formatJSON(toFormat);
     } catch (e) { // if input is using additional saved values
         const placeholder = "\"SAVED_VALUE_PLACEHOLDER_123\"";
-        let matches = toFormat.match(matchSavedValuesJSON);
+        const matches = toFormat.match(matchSavedValuesJSON);
 
         let saved = [];
 
@@ -128,7 +128,7 @@ function customFormatJSON(toFormat) {
  * @returns the extracted data, or null if no data is available
  */
 function extractNestedResponseData(key, response) {
-    let levels = key.split("/");
+    const levels = key.split("/");
 
     if (response.data) {
         let data = response.data;

@@ -172,7 +172,7 @@ describe("Refined Controls", () => {
 
         userEvent.click(getByTestId("run-onwards-1")); // click run individual
 
-        await waitFor(() => expect(screen.queryByTestId("response-data-0")).not.toBeInTheDocument()); // JSON response not present
+        expect(screen.queryByTestId("response-data-0")).not.toBeInTheDocument(); // JSON response not present
         await waitFor(() => expect(getByTestId("response-data-1")).toBeInTheDocument()); // JSON response present
         await waitFor(() => expect(getByTestId("response-data-2")).toBeInTheDocument()); // JSON response present
     });
