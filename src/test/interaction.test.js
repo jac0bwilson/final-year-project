@@ -188,6 +188,17 @@ describe("Navbar", () => {
         await waitFor(() => expect(getByTestId("request-0")).toBeInTheDocument()); // request present
     });
 
+    test("Cancel Uploading", async () => {
+        window.confirm = jest.fn();
+
+        const { getByTestId } = render(<Workflow />);
+
+        userEvent.upload(getByTestId("upload"), []); // add no files - same as pressing cancel
+
+        expect(getByTestId("upload").files).toHaveLength(0); // no files present
+        expect(window.confirm).toHaveBeenCalledTimes(0); // confirmation not needed
+    });
+
     test("Workflow Downloading", async () => {
         const { getByTestId } = render(<Workflow />);
         const URL = "https://httpbin.org/get";

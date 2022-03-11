@@ -63,7 +63,8 @@ function Workflow() {
      * @param {Object} event the event from the trigger
      */
     const uploadWorkflow = (event) => {
-        if (window.confirm("Opening a workflow will overwrite the current workflow. Do you wish to continue?")) {
+        if (event.target.files.length > 0 &&
+            window.confirm("Opening a workflow will overwrite the current workflow. Do you wish to continue?")) {
             // reset the workflow
             editRequests([]);
             editResponses({});
@@ -77,7 +78,11 @@ function Workflow() {
                     const data = JSON.parse(reader.result); // parse file
 
                     // set all needed components
-                    editRequests(data["requests"]);
+                    editRequests(data["requests"].map((value) => {
+                        value.id = nanoid(); // regenerate ID to avoid possible duplicates
+
+                        return value;
+                    }));
                     editResponses(data["responses"]);
                     editSavedValues(data["saved"]);
                 } catch (e) {
