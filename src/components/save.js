@@ -84,12 +84,11 @@ function Save({ handleSave, checkForVariableConflicts, response = {}, idx }) {
             data: extractNestedResponseData(event.target.elements.target.value, response),
             key: event.target.elements.target.value,
             availableFrom: idx
-        }
-        : {
+        } : {
             name: event.target.elements.name.value,
             data: event.target.elements.data.value,
             key: "",
-            availableFrom: 0
+            availableFrom: -1
         };
 
         handleSave(config);
