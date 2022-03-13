@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import isURL from "validator/lib/isURL";
 
-import { TextIcon, Icon, TextIconButton } from "./icon";
+import { TextIconButton } from "./icon";
 import { Modal } from "./modal";
 import { Save } from "./save";
 
@@ -374,6 +374,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                             placeholder="{ ... }"
                             readOnly={!editable || !httpMethods[selectedMethod].requestHasBody}
                             onChange={validateArgs}
+                            spellCheck="false"
                         />
                         <textarea
                             name="headers"
@@ -383,6 +384,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                             placeholder="{ ... }"
                             readOnly={!editable}
                             onChange={validateArgs}
+                            spellCheck="false"
                         />
 
                         {(argsError && editable) &&
@@ -407,42 +409,22 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                     <div className="level-left">
                         {(!editable && idx != null) &&
                             <div className="level-item">
-                                <button data-testid={getTestId("insert")} className="button is-primary" type="button" onClick={onInsert}>
-                                    {idx === 0
-                                        ? <TextIcon text="Insert Request Below" iconName="fa-plus" />
-                                        : <Icon iconName="fa-plus" />
-                                    }
-                                </button>
+                                <TextIconButton testId={getTestId("insert")} buttonClass="is-primary" type="button" onClick={onInsert} text="Insert Request Below" icon="fa-plus" />
                             </div>
                         }
                         {!editable &&
                             <div className="level-item">
-                                <button data-testid={getTestId("run-individual")} className="button is-primary" type="button" onClick={runRequest}>
-                                    {idx === 0
-                                        ? <TextIcon text="Run Individual" iconName="fa-angle-down" />
-                                        : <Icon iconName="fa-angle-down" />
-                                    }
-                                </button>
+                                <TextIconButton testId={getTestId("run-individual")} buttonClass="is-primary" type="button" onClick={runRequest} text="Run Individual" icon="fa-angle-down" />
                             </div>
                         }
                         {!editable &&
                             <div className="level-item">
-                                <button data-testid={getTestId("run-onwards")} className="button is-primary" type="button" onClick={runRequestOnwards}>
-                                    {idx === 0
-                                        ? <TextIcon text="Run from Here Onwards" iconName="fa-angle-double-down" />
-                                        : <Icon iconName="fa-angle-double-down" />
-                                    }
-                                </button>
+                                <TextIconButton testId={getTestId("run-onwards")} buttonClass="is-primary" type="button" onClick={runRequestOnwards} text="Run From Here Onwards" icon="fa-angle-double-down" />
                             </div>
                         }
                         {(!editable && response.data) &&
                             <div className="level-item">
-                                <button data-testid={getTestId("open-value-saving")} className="button is-info" type="button" onClick={toggleSaving}>
-                                    {idx === 0
-                                        ? <TextIcon text="Save Values" iconName="fa-save" />
-                                        : <Icon iconName="fa-save" />
-                                    }
-                                </button>
+                                <TextIconButton testId={getTestId("open-value-saving")} buttonClass="is-info" type="button" onClick={toggleSaving} text="Save Values" icon="fa-save" />
                             </div>
                         } {/* only show if not editing and response.data is present - indicating a successful request */}
                     </div>

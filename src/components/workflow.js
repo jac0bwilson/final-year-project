@@ -431,9 +431,14 @@ function Workflow() {
                     <h3>Saving & Using Values</h3>
                     <h4>Saving Values</h4>
                     <p>
-                        When a request (or the whole workflow) has been run, you are able to extract values
-                        from the returned payload. This can be done by pressing the 'Save Values' button,
-                        then selecting a value to save and assigning it a name.
+                        When a request (or the whole workflow) has been executed, you are able to extract
+                        values from the returned payload. This can be done by pressing the 'Save Values'
+                        button, then selecting a value to save and assigning it a name.
+                    </p>
+                    <p>
+                        It is also possible to save any text string for use globally. This can be done from
+                        within the sidebar, which is accessed by using the button in the bottom left of the
+                        screen.
                     </p>
                     <h4>Seeing Saved Values</h4>
                     <p>
@@ -518,8 +523,8 @@ function Workflow() {
                     <h4>Resetting the Current Workflow</h4>
                     <p>
                         To clear all data in the current workflow, press the 'Reset' button in the menu bar
-                        of the application. You will be asked to confirm that you understand the workflow will
-                        be completely overwritten.
+                        of the application. You will be asked to confirm that you understand that all
+                        unsaved data in the current workflow will be completely overwritten.
                     </p>
                 </div>
             </Modal>
