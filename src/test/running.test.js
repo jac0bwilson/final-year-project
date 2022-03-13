@@ -222,6 +222,7 @@ describe("Saved Values", () => {
         userEvent.click(getByTestId("save-value-0")); // click save value
 
         userEvent.type(getByTestId("url-main"), URL + METHOD); // type URL
+        userEvent.click(getByTestId("toggle-headers-main")); // show header input
         userEvent.type(getByTestId("headers-main"), "{\"url\": !url!}"); // type arguments
         userEvent.click(getByTestId("done-main")); // click done
         userEvent.click(getByTestId("run")); // click run

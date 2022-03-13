@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { nanoid } from "nanoid";
 
@@ -23,7 +23,17 @@ function Workflow() {
     const [help, setHelp] = useState(false);
     const [fileUrl, setFileUrl] = useState("");
 
+    const mounted = useRef(true);
+
     const sidebarWidth = 4;
+
+    /**
+     * When the component unmounts, cancel state setting as a result of test running.
+     * Fixes an error that appears during test execution.
+     */
+    useEffect(() => {
+        return () => { mounted.current = false };
+    }, []);
 
     /**
      * When any of the data that comprises the workflow changes, a new downloadable file is required to be generated
@@ -314,32 +324,34 @@ function Workflow() {
                 statusText: error.response.statusText
             };
         }).then((values) => {
-            // add responses to an object with the index of the request used as the key for the responses
-            // this prevents the order being corrupted due to any asynchronous weirdness 
-            editResponses(previous => {
-                let newResponses = { ...previous };
-                newResponses[index] = values;
+            if (mounted.current) {
+                // add responses to an object with the index of the request used as the key for the responses
+                // this prevents the order being corrupted due to any asynchronous weirdness 
+                editResponses(previous => {
+                    let newResponses = { ...previous };
+                    newResponses[index] = values;
 
-                return newResponses;
-            });
+                    return newResponses;
+                });
 
-            editSavedValues(previous => {
-                let newValues = { ...previous };
+                editSavedValues(previous => {
+                    let newValues = { ...previous };
 
-                if ("data" in values) { // check if request went well
-                    for (const [key, value] of Object.entries(previous)) { // iterate through saved values
-                        if (value.availableFrom === index) { // if value defined in this request
-                            let updatedValue = extractNestedResponseData(value.key, values); // extract new value
+                    if ("data" in values) { // check if request went well
+                        for (const [key, value] of Object.entries(previous)) { // iterate through saved values
+                            if (value.availableFrom === index) { // if value defined in this request
+                                let updatedValue = extractNestedResponseData(value.key, values); // extract new value
 
-                            if (updatedValue !== null) {
-                                newValues[key]["data"] = updatedValue;
+                                if (updatedValue !== null) {
+                                    newValues[key]["data"] = updatedValue;
+                                }
                             }
                         }
                     }
-                }
 
-                return newValues;
-            });
+                    return newValues;
+                });
+            }
         }).catch(() => { // likely a CORS error
             console.log("Likely CORS error");
         });
@@ -354,7 +366,7 @@ function Workflow() {
         }); // reset stored responses before running
 
         const temp = requests;
-        
+
         temp.forEach((request, index) => {
             runRequest(request, index);
         });

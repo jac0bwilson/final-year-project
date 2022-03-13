@@ -432,7 +432,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
                     <div className="level-right">
                         <div className="level-item control">
                             {editable
-                                ? <TextIconButton testId={getTestId("done")} buttonClass="is-success" type="submit" disabled={urlError || argsError} text="Done" icon="fa-check" />
+                                ? <TextIconButton testId={getTestId("done")} buttonClass="is-success" type="submit" disabled={urlError || argsError || headerError} text="Done" icon="fa-check" />
                                 : <TextIconButton testId={getTestId("edit")} buttonClass="is-warning" onClick={startEditing} text="Edit" icon="fa-edit" />
                             } {/* if editable - present submit button, if not - show the edit button */}
                         </div>
