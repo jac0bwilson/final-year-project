@@ -70,6 +70,14 @@
       "package.json"
     ],
     "extends": null,
+    "publish": [
+      "github",
+      {
+        "provider": "spaces",
+        "name": "fyp-download",
+        "region": "fra1"
+      }
+    ],
     "linux": {
       "category": "Utility",
       "target": "AppImage"
