@@ -1,14 +1,9 @@
-const { app, BrowserWindow, screen } = require("electron");
+const { app, BrowserWindow, screen, nativeImage } = require("electron");
 const isDev = require("electron-is-dev");
 const path = require("path");
 
-function mainWindow() {
-    let window = new BrowserWindow({
-        width: screen.getPrimaryDisplay().workArea.width,
-        height: screen.getPrimaryDisplay().workArea.height,
-        show: false,
-        backgroundColor: "white"
-    });
+function mainWindow(options) {
+    let window = new BrowserWindow(options);
 
     const startUrl = isDev ? "http://localhost:3000": `file://${path.join(__dirname, "../build/index.html")}`;
 
@@ -22,11 +17,23 @@ function mainWindow() {
 }
 
 app.whenReady().then(() => {
-    mainWindow();
+    let options = {
+        width: screen.getPrimaryDisplay().workArea.width,
+        height: screen.getPrimaryDisplay().workArea.height,
+        show: false,
+        backgroundColor: "white"
+    }
+
+    if (process.platform === "linux") {
+        let image = nativeImage.createFromPath(path.join(__dirname, "../public/icons/Icon-2048x2048.png"));
+        options.icon = image;
+    }
+
+    mainWindow(options);
 
     app.on("activate", () => {
         if (!BrowserWindow.getAllWindows().length) {
-            mainWindow();
+            mainWindow(options);
         }
     });
 });

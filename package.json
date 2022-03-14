@@ -67,8 +67,12 @@
     "files": [
       "build/**/*",
       "electron/main.js",
-      "package.json"
+      "package.json",
+      "public/**/*"
     ],
+    "directories": {
+      "buildResources": "public"
+    },
     "extends": null,
     "publish": [
       "github",
@@ -80,14 +84,17 @@
     ],
     "linux": {
       "category": "Utility",
-      "target": "AppImage"
+      "target": "AppImage",
+      "icon": "public/icons/Icon-2048x2048.png"
     },
     "mac": {
       "category": "public.app-category-developer-tools",
-      "target": "dmg"
+      "target": "dmg",
+      "icon": "public/icons/icon.icns"
     },
     "win": {
-      "target": "portable"
+      "target": "portable",
+      "icon": "public/icons/Icon-2048x2048.png"
     }
   }
 }
