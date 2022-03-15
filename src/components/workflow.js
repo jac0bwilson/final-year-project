@@ -88,13 +88,13 @@ function Workflow() {
                     const data = JSON.parse(reader.result); // parse file
 
                     // set all needed components
+                    editSavedValues(data["saved"]);
                     editRequests(data["requests"].map((value) => {
                         value.id = nanoid(); // regenerate ID to avoid possible duplicates
 
                         return value;
                     }));
                     editResponses(data["responses"]);
-                    editSavedValues(data["saved"]);
                 } catch (e) {
                     window.alert("This file does not seem to be a valid workflow.");
                 }
