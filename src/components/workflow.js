@@ -87,14 +87,19 @@ function Workflow() {
                 try {
                     const data = JSON.parse(reader.result); // parse file
 
-                    // set all needed components
-                    editSavedValues(data["saved"]);
-                    editRequests(data["requests"].map((value) => {
-                        value.id = nanoid(); // regenerate ID to avoid possible duplicates
+                    if ("requests" in data && "responses" in data && "saved" in data) {
+                        editSavedValues(data["saved"]); // run first to prevent errors with URL validation
 
-                        return value;
-                    }));
-                    editResponses(data["responses"]);
+                        editRequests(data["requests"].map((value) => {
+                            value.id = nanoid(); // regenerate ID to avoid possible duplicates
+    
+                            return value;
+                        }));
+
+                        editResponses(data["responses"]);
+                    } else {
+                        throw new Error("Missing fields in file");
+                    }
                 } catch (e) {
                     window.alert("This file does not seem to be a valid workflow.");
                 }

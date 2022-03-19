@@ -1,6 +1,6 @@
 # API Automation
 
-<img src="https://download.jacobw.uk/icon2048.png" align="center" width="512" height="512">
+<img src="public/icons/Icon-2048x2048.png" align="center" width="512" height="512">
 
 My project idea is to build a tool that allows users to create repeatable
 workflows for interacting with APIs. These workflows will be able to be saved
