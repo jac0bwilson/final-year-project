@@ -275,7 +275,7 @@ function Request({ handleSubmit, handleEdit, handleDelete, handleSave, handleIns
     const renderResponse = () => {
         if (response.status === 200) { // if request worked okay, display the data that was returned
             return (
-                <pre data-testid={getTestId("response-data")}>
+                <pre data-testid={getTestId("response-data")} className="response">
                     <code data-testid={getTestId("response-data-text")}>
                         {JSON.stringify(displayPayload ? response.data : response.headers, null, 2)}
                     </code>

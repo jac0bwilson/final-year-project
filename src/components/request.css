@@ -29,3 +29,7 @@
 input.is-warning {
     outline: hsl(48, 100%, 29%) !important;
 }
+
+.response {
+    max-height: 375px !important;
+}
