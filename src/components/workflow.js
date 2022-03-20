@@ -370,11 +370,15 @@ function Workflow() {
             return {};
         }); // reset stored responses before running
 
-        const temp = requests;
+        runSomeRequests(0, true);
+    };
 
-        temp.forEach((request, index) => {
-            runRequest(request, index);
-        });
+    const delay = () => {
+        return new Promise(resolve => {
+            setTimeout(() => {
+              resolve(2);
+            }, 250);
+          });
     };
 
     /**
@@ -382,12 +386,13 @@ function Workflow() {
      * @param {number} startIndex the index of the request to be run
      * @param {boolean} onwards whether or not to run all after this point
      */
-    const runSomeRequests = (startIndex, onwards) => {
+    const runSomeRequests = async (startIndex, onwards) => {
         const temp = requests;
 
         if (onwards) {
             for (let i = startIndex; i < temp.length; i++) {
                 runRequest(temp[i], i);
+                await delay();
             }
         } else {
             runRequest(temp[startIndex], startIndex);
