@@ -1,4 +1,4 @@
-const matchSavedValuesJSON = /![a-zA-Z0-9]+(:.+:(.+)?)?!/gm; // TODO: may want to reject if prefixed with quotes
+const matchSavedValuesJSON = /![a-zA-Z0-9]+(:no-quotes)?(:.+:(.+)?)?!/gm; // TODO: may want to reject if prefixed with quotes
 const matchSavedValuesURL = /![a-zA-Z0-9]+(:raw)?(:.+:(.+)?)?!/gm;
 
 /**
@@ -17,16 +17,18 @@ function processSavedValuesJSON(args, saved) {
             if (components[0] in saved) {
                 let newValue = saved[components[0]]["data"];
 
+                const length = components.length;
+
                 if (typeof newValue === "object") { // objects need to be handled separately to print properly
                     newValue = JSON.stringify(newValue);
-                } else if (typeof newValue === "string") {
+                } else if (typeof newValue === "string" && components[1] !== "no-quotes") {
                     newValue = "\"" + String(newValue) + "\"";
                 } else {
                     newValue = String(newValue);
                 }
 
-                if (components.length === 3) { // perform regex replacement
-                    newValue = newValue.replace(new RegExp(components[1]), components[2]);
+                if (components.length >= 3) { // perform regex replacement
+                    newValue = newValue.replace(new RegExp(components[length - 2], "gm"), components[length - 1]);
                 }
 
                 args = args.replace(match, newValue); // replace reference with string of the value
