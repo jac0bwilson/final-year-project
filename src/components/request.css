@@ -33,3 +33,7 @@ input.is-warning {
 .response {
     max-height: 375px !important;
 }
+
+.column.is-half.box {
+    max-width: 50vw;
+}
