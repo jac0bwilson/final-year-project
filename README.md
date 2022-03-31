@@ -2,9 +2,12 @@
 
 <img src="public/icons/Icon-2048x2048.png" align="center" width="512" height="512">
 
-My project idea is to build a tool that allows users to create repeatable
-workflows for interacting with APIs. These workflows will be able to be saved
-and reused, and will be able to run in the style of Jupyter Notebooks.
+Over the course of this project I have been building a tool to allow users to
+create repeatable workflows by chaining together HTTP requests. Users are able
+to save values from responses, and use these throughout the workflow. When
+referencing these values, users are able to substitute the contents by using
+regular expressions, all using the syntax which I have built on top of JSON.
+The workflows are able to be saved and opened at a later point.
 
 ## Running my Project
 
@@ -16,12 +19,12 @@ generates an executable file for each platform: Windows, macOS and Linux.
 
 These executables are then pushed to DigitalOcean, where they are made
 available to be downloaded using the following links:
-# TODO: add file hashes & check versions
+
 | Platform | Download URL | SHA256 Hash |
 | -------- | ------------ | ----------- |
-| Windows  | https://download.jacobw.uk/Final%20Year%20Project%200.1.0.exe | ... |
-| Linux    | https://download.jacobw.uk/Final%20Year%20Project-0.1.0.AppImage | ... |
-| macOS    | https://download.jacobw.uk/Final%20Year%20Project-0.1.0.dmg | ... |
+| Windows  | https://download.jacobw.uk/Final%20Year%20Project%200.1.0.exe | d95eb0017b934279e17eddfc6cf2bfd987ba5280e6595ba817bff73291c5dce7 |
+| Linux    | https://download.jacobw.uk/Final%20Year%20Project-0.1.0.AppImage | 407f7f1167fe9d43299b9ac59cdfc34f5e2554d78e3cc617ba7b81e05511f0b8 |
+| macOS    | https://download.jacobw.uk/Final%20Year%20Project-0.1.0.dmg | 9c82de2cb4c4de57cbb0edc8c99ec931e545f7436c745c8b799e8a1fc4c44c36 |
 
 When opening the application on macOS or Windows, you may have to take an extra
 step to allow the application to be executed. This is because the executable
@@ -31,6 +34,10 @@ has not been notarized and signed.
 *SmartScreen* prompt.
 - On macOS, instructions are available on Apple's support pages,
 [here](https://support.apple.com/en-us/HT202491).
+
+On Linux you will likely have to set the downloaded file to be executed. This
+can be done in the permissions settings for the file (right click -> Properties
+-> Permissions).
 
 ### Manual Setup
 
