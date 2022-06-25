@@ -22,11 +22,13 @@ generates an executable file for each platform: Windows, macOS and Linux.
 These executables are then pushed to DigitalOcean, where they are made
 available to be downloaded using the following links:
 
-| Platform | Download URL | SHA256 Hash |
+**No longer available due to hosting costs.**
+
+<!-- | Platform | Download URL | SHA256 Hash |
 | -------- | ------------ | ----------- |
 | Windows  | https://download.jacobw.uk/Final%20Year%20Project%200.1.0.exe | d95eb0017b934279e17eddfc6cf2bfd987ba5280e6595ba817bff73291c5dce7 |
 | Linux    | https://download.jacobw.uk/Final%20Year%20Project-0.1.0.AppImage | 407f7f1167fe9d43299b9ac59cdfc34f5e2554d78e3cc617ba7b81e05511f0b8 |
-| macOS    | https://download.jacobw.uk/Final%20Year%20Project-0.1.0.dmg | 9c82de2cb4c4de57cbb0edc8c99ec931e545f7436c745c8b799e8a1fc4c44c36 |
+| macOS    | https://download.jacobw.uk/Final%20Year%20Project-0.1.0.dmg | 9c82de2cb4c4de57cbb0edc8c99ec931e545f7436c745c8b799e8a1fc4c44c36 | -->
 
 When opening the application on macOS or Windows, you will have to take an
 extra step to allow the application to be executed. This is because the
